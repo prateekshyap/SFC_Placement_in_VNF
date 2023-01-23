@@ -17,63 +17,81 @@ clc
 %	2, 7, 8: 2 instances
 %	1, 3, 5, 6: 3 instances
 %	4: 4 instances
-%
-%
-%
-%				  	1	2	3	4	5	6 
-sampleNetwork1Original = [	
-					0	3	4	0	1	3; %1
-				  	3	0	2	0	2	0; %2
-				  	4	2	0	1	4	0; %3
-				  	0	0	1	0	2	3; %4
-				  	1	2	4	2	0	4; %5
-				  	3	0	0	3	4	0 %6
-				 ];
-
-sampleNetwork1 = allPairShortestPath(6,sampleNetwork1Original);
-
-% sampleNetwork1
-% sampleNetwork1'
 
 %% Constants and Variables
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-N = 6;
-V = 3;
-VI = 13;
-F = 8;
-FI = 22;
-S = 5;
+% V = 3;
+% VI = 13;
+% F = 8;
+% FI = 22;
+% S = 5;
+
+fileID = fopen('constants.txt','r');
+formatSpecifier = '%f';
+dimension = [1,9];
+
+constants = fscanf(fileID,formatSpecifier,dimension)
+
+N = constants(1,1);
+V = constants(1,2);
+VI = constants(1,3);
+F = constants(1,4);
+FI = constants(1,5);
+S = constants(1,6);
+% Failure Probabilities
+rhoNode = constants(1,7);
+rhoVm = constants(1,8);
+rhoVnf = constants(1,9);
+
+fileID = fopen('network.txt','r');
+formatSpecifier = '%f';
+dimension = [N,N];
+
+sampleNetwork1Original = fscanf(fileID,formatSpecifier,dimension);
+
+sampleNetwork1 = allPairShortestPath(N,sampleNetwork1Original);
 
 % Network Status
-nodes = [1 2 2 3 2 3]; nodeTypes = [1 3 2];
-vms = [1 2 2 2 2 3 3 3 2 2 3 3 3]; vmTypes = [1 6 6];
-vnfs = [2 3 2 1 2 2 3 2 2 2 3 2 1 2 3 1 2 3 1 2 2 3]; vnfInstanceCounts = [3 2 3 4 3 3 2 2];
-vnfServiceRates = [1 2 3 1 2 3 2 1];
-sfcLengths = [3,3,4,2,3];
+% nodes = [1 2 2 3 2 3];
+% nodeTypes = [1 3 2];
+% vmTypes = [1 6 6];
+% vnfInstanceCounts = [3 2 3 4 3 3 2 2];
+% vnfServiceRates = [1 2 3 1 2 3 2 1];
 
-% Failure Probabilities
-rhoNode = 0.2;
-rhoVm = 0.25;
-rhoVnf = 0.3;
+% vms = [1 2 2 2 2 3 3 3 2 2 3 3 3];
+fileID = fopen('vms.txt','r');
+formatSpecifier = '%d';
+dimension = [1,VI];
+vms = fscanf(fileID,formatSpecifier,dimension);
+
+% vnfs = [2 3 2 1 2 2 3 2 2 2 3 2 1 2 3 1 2 3 1 2 2 3];
+fileID = fopen('vnfs.txt','r');
+formatSpecifier = '%d';
+dimension = [1,FI];
+vnfs = fscanf(fileID,formatSpecifier,dimension);
+
+% sfcLengths = [3 3 4 2 3];
+fileID = fopen('sfcLengths.txt','r');
+formatSpecifier = '%d';
+dimension = [1,S];
+sfcLengths = fscanf(fileID,formatSpecifier,dimension);
 
 % Cost Matrices of setting up the Network
 
 % Cost of hosting VMs on Physical Nodes
-% 		1   2   3   4   5   6
-Cvn = [ 
-		1   1   1   1   1   1; %1
-    	2   2   2   2   2   2; %2
-    	4   4   4   4   4   4; %3
-    ];
+% Cv = [	1	2	4];
+fileID = fopen('costVN.txt','r');
+formatSpecifier = '%f';
+dimension = [1,V];
+Cv = fscanf(fileID,formatSpecifier,dimension);
 
 % Cost of deploying VNFs on VMs
-% 		1   2   3
-Cfv = [ 
-		4   4   4; %1
-		2   2   2; %2
-		1   1   1; %3
-	];
+% Cf = [	4	2	1];
+fileID = fopen('costFV.txt','r');
+formatSpecifier = '%f';
+dimension = [1,F];
+Cf = fscanf(fileID,formatSpecifier,dimension);
 
 % Failure level
 iota = 0;
@@ -81,7 +99,7 @@ iota = 0;
 % Binary Variables
 X = 0;
 
-% VM to Physical Node matrix
+% VM to Physical Node matrix --- to be generated
 % 		1	2	3	4	5	6
 Xvn = [ 
 		1	0	0	0	0	0; %1
@@ -99,7 +117,7 @@ Xvn = [
 		0	0	0	0	0	1 %13
 	];
 
-% Function to VM map
+% Function to VM map --- to be generated
 % 		1 	2 	3 	4	5 	6	7	8	9	10	11	12	13
 Xfv = [ 
 		0	0	0	1	0	0	0	0	0	0	0	0	0; %1_1
@@ -138,7 +156,7 @@ Xfv2 = [
 		0	1	0	0	0	0	0	0	0	0	1	0	0; %8
 	];
 
-% SFC to VNF map
+% SFC to VNF map --- to be generated
 % 		1_1	1_2	1_3	2_1	2_2	3_1	3_2	3_3	4_1	4_2	4_3	4_4	5_1	5_2	5_3	6_1	6_2	6_3	7_1	7_2	8_1	8_2
 Xsf = [ 
 		0	0	1	0	0	1	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0; %1
@@ -157,7 +175,7 @@ Xsf2 = [
 		1	0	0	1	1	0	0	0; %5
 	];
 
-% SFC graphs
+% SFC graphs --- to be generated
 % SFC-1 : f1 -> f4 -> f3
 % SFC-2 : f3 -> f2 -> f5
 % SFC-3 : f4 -> f8 -> f7 -> f1
@@ -407,12 +425,12 @@ y1 = 0;
 for n = 1 : N %1 to 6
 	for v = 1 : VI %1 to 13
 		% fprintf('%d node, %d VM :',n,v);
-		y1 = y1 + Cvn(vms(v),n)*Xvn(v,n);
+		y1 = y1 + Cv(1,vms(v))*Xvn(v,n);
 	end
 end
 for v = 1 : VI %1 to 13
 	for f = 1 : FI %1 to 22
-		y1 = y1 + Cfv(vnfs(f),vms(v))*Xfv(f,v);
+		y1 = y1 + Cf(1,vnfs(f))*Xfv(f,v);
 		% if (Xfv(f,v) ~= 0)
 		% 	fprintf('%d VM, %d vnf',v,f);
 		% 	y1
@@ -506,3 +524,7 @@ for s = 1 : S %1 to 5
         % fprintf('===============================================\n');
     end
 end
+
+y1
+y2
+y3
