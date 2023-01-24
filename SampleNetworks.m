@@ -31,7 +31,7 @@ fileID = fopen('constants.txt','r');
 formatSpecifier = '%f';
 dimension = [1,9];
 
-constants = fscanf(fileID,formatSpecifier,dimension)
+constants = fscanf(fileID,formatSpecifier,dimension);
 
 N = constants(1,1);
 V = constants(1,2);
@@ -39,6 +39,7 @@ VI = constants(1,3);
 F = constants(1,4);
 FI = constants(1,5);
 S = constants(1,6);
+
 % Failure Probabilities
 rhoNode = constants(1,7);
 rhoVm = constants(1,8);
@@ -181,6 +182,33 @@ Xsf2 = [
 % SFC-3 : f4 -> f8 -> f7 -> f1
 % SFC-4 : f2 -> f6
 % SFC-5 : f5 -> f1 -> f4
+
+% sfcMatrix = zeros(FI,FI);
+% sfcMatrix2 = zeros(F,F);
+% sfcStatus = input('Choose one option for SFC:\n\t1. Random SFC Generation\n\t2. Custom Input\nEnter your choice:\n');
+% if sfcStatus == 1
+% elseif sfcStatus == 2
+% 	for i = 1 : S
+% 		chain = zeros(3);
+% 		if mod(i,10) == 1 && mod(i,100) ~= 11
+% 			chain = input(sprintf('Enter %dst chain:\n',i));
+% 		elseif mod(i,10) == 2 && mod(i,100) ~= 12
+% 			chain = input(sprintf('Enter %dnd chain:\n',i));
+% 		elseif mod(i,10) == 3 && mod(i,100) ~= 13
+% 			chain = input(sprintf('Enter %drd chain:\n',i));
+% 		else
+% 			chain = input(sprintf('Enter %dth chain:\n',i));
+% 		end
+% 		chainLength = size(chain)-1;
+% 		% sfcMatrix(:,:,i) = zeros(FI,FI);
+% 		sfcMatrix2(:,:,i) = zeros(F,F);
+% 		for node = 1 : chainLength(1,2)
+% 			sfcMatrix2(chain(1,node),chain(1,node+1),i) = 1;
+% 		end
+% 	end
+% end
+
+% sfcMatrix2
 
 % 		1_1	1_2	1_3	2_1	2_2	3_1	3_2	3_3	4_1	4_2	4_3	4_4	5_1	5_2	5_3	6_1	6_2	6_3	7_1	7_2	8_1	8_2
 sfcMatrix = [ 
@@ -421,109 +449,111 @@ Xski = Xsf; % for iota 0, this new binary vairable boils down to the existing bi
 
 
 % y_1
-y1 = 0;
-for n = 1 : N %1 to 6
-	for v = 1 : VI %1 to 13
-		% fprintf('%d node, %d VM :',n,v);
-		y1 = y1 + Cv(1,vms(v))*Xvn(v,n);
-	end
-end
-for v = 1 : VI %1 to 13
-	for f = 1 : FI %1 to 22
-		y1 = y1 + Cf(1,vnfs(f))*Xfv(f,v);
-		% if (Xfv(f,v) ~= 0)
-		% 	fprintf('%d VM, %d vnf',v,f);
-		% 	y1
-		% end
-	end
-end
+% y1 = 0;
+% for n = 1 : N %1 to 6
+% 	for v = 1 : VI %1 to 13
+% 		% fprintf('%d node, %d VM :',n,v);
+% 		y1 = y1 + Cv(1,vms(v))*Xvn(v,n);
+% 	end
+% end
+% for v = 1 : VI %1 to 13
+% 	for f = 1 : FI %1 to 22
+% 		y1 = y1 + Cf(1,vnfs(f))*Xfv(f,v);
+% 		% if (Xfv(f,v) ~= 0)
+% 		% 	fprintf('%d VM, %d vnf',v,f);
+% 		% 	y1
+% 		% end
+% 	end
+% end
 
-% y_2
-y2 = 0;
-dq = zeros(1,FI); % Queueing Delay
-for f = 1 : FI %1 to 22
-	lambdaSF = 0;
-	deltaSF = 0;
-	for s = 1 : S %1 to 5
-		lambdaSF = lambdaSF+lambda(s,f);
-		deltaSF = deltaSF+delta(s,f);
-	end
-	dq(1,f) = (lambdaSF-deltaSF)/mu(1,f);
-end
-dpc = zeros(1,FI); % Processing Delay
-for f = 1 : FI %1 to 22
-    dpc(1,f) = 1/mu(1,f);
-end
-for s = 1 : S %1 to 5
-    for v = 1 : VI %1 to 13
-        for f = 1 : FI %1 to 22
-            y2 = y2+(dq(1,f)+dpc(1,f))*Xfvi(f,v)*Xski(s,f);
-            % if (Xfvi(f,v)*Xski(s,f) ~= 0)
-            %     fprintf('%d %d %d = ',s,f,v);
-            %     y2
-            % end
-        end
-    end
-end
+% % y_2
+% y2 = 0;
+% dq = zeros(1,FI); % Queueing Delay
+% for f = 1 : FI %1 to 22
+% 	lambdaSF = 0;
+% 	deltaSF = 0;
+% 	for s = 1 : S %1 to 5
+% 		lambdaSF = lambdaSF+lambda(s,f);
+% 		deltaSF = deltaSF+delta(s,f);
+% 	end
+% 	dq(1,f) = (lambdaSF-deltaSF)/mu(1,f);
+% end
+% dpc = zeros(1,FI); % Processing Delay
+% for f = 1 : FI %1 to 22
+%     dpc(1,f) = 1/mu(1,f);
+% end
+% for s = 1 : S %1 to 5
+%     for v = 1 : VI %1 to 13
+%         for f = 1 : FI %1 to 22
+%             y2 = y2+(dq(1,f)+dpc(1,f))*Xfvi(f,v)*Xski(s,f);
+%             % if (Xfvi(f,v)*Xski(s,f) ~= 0)
+%             %     fprintf('%d %d %d = ',s,f,v);
+%             %     y2
+%             % end
+%         end
+%     end
+% end
 
-% y_3
-y3 = 0;
-for s = 1 : S %1 to 5
-    currSfcLength = sfcLengths(1,s); %get the length of sth sfc
-    currSfcMatrix = sfcMatrix(:,:,s); %get the sth sfc matrix
-    for currSfcNode = 1 : currSfcLength-1 %for all edges
-        currSrc = 0;
-        currDest = 0;
-        vnfRow = -1;
-        vnfCol = -1;
-        % fprintf('\n\n sfc %d, length %d', s, currSfcLength);
-        for r = 1 : FI %1 to 22
-            for c = 1 : FI %1 to 22
-                if currSfcMatrix(r,c) == 1 %if a virtual link is found
-                    vnfRow = r; %store the row
-                    vnfCol = c; %store the column
-                    currSfcMatrix(r,c) = 0; %mark the link as visited
-                    break;
-                end
-            end
-            if vnfRow ~= -1
-                break;
-            end
-        end
-        vmSrc = -1;
-        vmDest = -1;
-        for vm = 1 : VI %1 to 13
-            if Xfv(vnfRow,vm) == 1 %if the corresponding VM is spotted
-                vmSrc = vm; %store the corresponding source vm
-                break;
-            end
-        end
-        for vm = 1 : VI %1 to 13
-            if Xfv(vnfCol,vm) == 1 %if the corresponding VM is spotted
-                vmDest = vm; %store the corresponding destination vm
-                break;
-            end
-        end
-        for node = 1 : N %1 to 6
-            if Xvn(vmSrc,node) == 1 %if the corresponding physical node is spotted
-                currSrc = node; %store the corresponding source node
-                break;
-            end
-        end
-        for node = 1 : N %1 to 6
-            if Xvn(vmDest,node) == 1 %if the corresponding physical node is spotted
-                currDest = node; %store the corresponding destination node
-                break;
-            end
-        end
-        % s
-        % currSrc
-        % currDest
-        y3 = y3+sampleNetwork1(currSrc,currDest);
-        % y3
-        % fprintf('===============================================\n');
-    end
-end
+% % y_3
+% y3 = 0;
+% for s = 1 : S %1 to 5
+%     currSfcLength = sfcLengths(1,s); %get the length of sth sfc
+%     currSfcMatrix = sfcMatrix(:,:,s); %get the sth sfc matrix
+%     for currSfcNode = 1 : currSfcLength-1 %for all edges
+%         currSrc = 0;
+%         currDest = 0;
+%         vnfRow = -1;
+%         vnfCol = -1;
+%         % fprintf('\n\n sfc %d, length %d', s, currSfcLength);
+%         for r = 1 : FI %1 to 22
+%             for c = 1 : FI %1 to 22
+%                 if currSfcMatrix(r,c) == 1 %if a virtual link is found
+%                     vnfRow = r; %store the row
+%                     vnfCol = c; %store the column
+%                     currSfcMatrix(r,c) = 0; %mark the link as visited
+%                     break;
+%                 end
+%             end
+%             if vnfRow ~= -1
+%                 break;
+%             end
+%         end
+%         vmSrc = -1;
+%         vmDest = -1;
+%         for vm = 1 : VI %1 to 13
+%             if Xfv(vnfRow,vm) == 1 %if the corresponding VM is spotted
+%                 vmSrc = vm; %store the corresponding source vm
+%                 break;
+%             end
+%         end
+%         for vm = 1 : VI %1 to 13
+%             if Xfv(vnfCol,vm) == 1 %if the corresponding VM is spotted
+%                 vmDest = vm; %store the corresponding destination vm
+%                 break;
+%             end
+%         end
+%         for node = 1 : N %1 to 6
+%             if Xvn(vmSrc,node) == 1 %if the corresponding physical node is spotted
+%                 currSrc = node; %store the corresponding source node
+%                 break;
+%             end
+%         end
+%         for node = 1 : N %1 to 6
+%             if Xvn(vmDest,node) == 1 %if the corresponding physical node is spotted
+%                 currDest = node; %store the corresponding destination node
+%                 break;
+%             end
+%         end
+%         % s
+%         % currSrc
+%         % currDest
+%         y3 = y3+sampleNetwork1(currSrc,currDest);
+%         % y3
+%         % fprintf('===============================================\n');
+%     end
+% end
+
+[y1, y2, y3] = objective(N, VI, FI, S, sfcLengths, sampleNetwork1, sfcMatrix, Cv, Cf, Xvn, Xfv, lambda, delta, mu, Xfvi, Xski, vms, vnfs);
 
 y1
 y2
