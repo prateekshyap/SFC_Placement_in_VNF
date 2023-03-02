@@ -1,0 +1,14 @@
+digraph G
+{
+ranksep = "equally"
+rankdir = LR
+node [shape=circle]
+{rank = same; f3; };
+{rank = same; f2; };
+{rank = same; f5; };
+f3[style=filled label=<f<SUB>3</SUB>> color="lightgrey"]
+f2[style=filled label=<f<SUB>2</SUB>> color="lightgrey"]
+f5[style=filled label=<f<SUB>5</SUB>> color="lightgrey"]
+f3 -> f2
+f2 -> f5
+}

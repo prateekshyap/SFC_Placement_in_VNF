@@ -1,4 +1,4 @@
-function [y1, y2, y3] = objective(N, VI, FI, S, sfcLengths, sampleNetwork1, sfcMatrix, Cv, Cf, Xvn, Xfv, lambda, delta, mu, Xfvi, Xski, vms, vnfs)
+function [y1, y2, y3] = objective(N, VI, FI, S, L, medium, sfcLengths, sampleNetwork1Original, sampleNetwork1, nextHop, bandwidths, sfcMatrix, Cv, Cf, Xvn, Xfv, lambda, delta, mu, Xfvi, Xski, vms, vnfs)
 	y1 = 0;
 	for n = 1 : N %1 to 6
 		for v = 1 : VI %1 to 13
@@ -118,7 +118,20 @@ function [y1, y2, y3] = objective(N, VI, FI, S, sfcLengths, sampleNetwork1, sfcM
 	        % s
 	        % currSrc
 	        % currDest
-	        y3 = y3+sampleNetwork1(currSrc,currDest);
+
+	        % y3 = y3+sampleNetwork1(currSrc,currDest)*medium; %Propagation delay
+	        % y3 = y3+L/bandwidths(currSrc,currDest); %Transmission delay
+
+	        startNode = currSrc;
+	        visitedNode = zeros(1,N);
+	        while startNode ~= currDest
+	        	uNode = startNode;
+	        	vNode = nextHop(startNode,currDest);
+	        	y3 = y3+sampleNetwork1Original(uNode,vNode)*medium;
+	        	y3 = y3+L/bandwidths(uNode,vNode);
+	        	startNode = nextHop(startNode,currDest);
+	        end
+
 	        % y3
 	        % fprintf('===============================================\n');
 	    end
