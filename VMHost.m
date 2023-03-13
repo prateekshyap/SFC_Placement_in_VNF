@@ -1,6 +1,7 @@
-function [Xvn, vnMap, vmStatus] = VMHost(N, V, VI, nodeStatus, vmTypes, vmCoreRequirements)
+function [Xvn, vnMap, vmStatus, hostingStatus] = VMHost(N, V, VI, nodeStatus, vmTypes, vmCoreRequirements)
 	import java.util.TreeMap;
 	import java.util.ArrayList;
+    hostingStatus = 1;
 	Xvn = zeros(VI,N); %VIxN matrix to indicate whether a vm instance v is hosted on the node n or not
 	vnMap = TreeMap(); %Map Version of Xvn
 	vmStatus = zeros(1,VI); %This will indicate which instance is of which type
@@ -10,7 +11,9 @@ function [Xvn, vnMap, vmStatus] = VMHost(N, V, VI, nodeStatus, vmTypes, vmCoreRe
 	    totalRequiredCores = totalRequiredCores+vmTypes(1,v)*vmCoreRequirements(1,v); %Add to the total required cores
 	end
 	if totalRequiredCores > totalAvailableCores %If the required cores is more than the available cores
-	    fprintf('All VMs cannot be hosted'); %Show error
+	    fprintf('All VMs cannot be hosted\n'); %Show error
+        hostingStatus = 0;
+        return;
 	end
 	coreCount = TreeMap();
 	for c = 1 : N

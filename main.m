@@ -4,8 +4,10 @@ clc
 
 %{
 %	VNFDeploy deploys the VNFs in ascending order of availability
-%	
+%	greedyDeployment follows a greedy approach to deploy the VNFs
 %}
+global VMCombination;
+global VMCost;
 
 import java.util.TreeMap;
 import java.util.HashSet;
@@ -16,9 +18,9 @@ import java.util.LinkedList;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-fileID = fopen('input/mainSample1/constants.txt','r');
+fileID = fopen('input/sevenReliabilityOne/constants.txt','r');
 formatSpecifier = '%f';
-dimension = [1,8];
+dimension = [1,9];
 
 constants = fscanf(fileID,formatSpecifier,dimension);
 
@@ -28,36 +30,44 @@ VI = 0; %Total number of VM instances
 F = constants(1,3); %Types of VNFs being considered
 FI = 0; %Total number of VNF instances
 S = 0; %Total number of SFCs
-medium = constants(1,4); %Inverted Velocity depending on the transmission medium
+vnfCoreRequirement = constants(1,4); %Required number of cores for each function
+medium = constants(1,5); %Inverted Velocity depending on the transmission medium
 
 % Failure Probabilities
-rhoNode = constants(1,5); %Failure probability of nodes
-rhoVm = constants(1,6); %Failure probability of VMs
-rhoVnf = constants(1,7); %Failure probability of VNFs
+rhoNode = constants(1,6); %Failure probability of nodes
+rhoVm = constants(1,7); %Failure probability of VMs
+rhoVnf = constants(1,8); %Failure probability of VNFs
 
 % Other constants
-L = constants(1,8); %Packet size
+L = constants(1,9); %Packet size
 maximumCores = 64; %Maximum allowed cores on a physical node
 
-fileID = fopen('input/mainSample1/network.txt','r');
+fileID = fopen('input/sevenReliabilityOne/network.txt','r');
 formatSpecifier = '%f';
 dimension = [N,N];
 
-sampleNetwork1Original = fscanf(fileID,formatSpecifier,dimension); %Physical network
+inputNetwork = fscanf(fileID,formatSpecifier,dimension); %Physical network
+for i = 1 : N
+    for j = 1 : N
+        if inputNetwork(i,j) ~= inputNetwork(j,i)
+            fprintf('Incorrect Network at %d,%d',i,j);
+        end
+    end
+end
 
-[sampleNetwork1,nextHop] = allPairShortestPath(N,sampleNetwork1Original); %Floyd-Warshall
+[network,nextHop] = allPairShortestPath(N,inputNetwork); %Floyd-Warshall
 
-fileID = fopen('input/mainSample1/bandwidth.txt','r');
+fileID = fopen('input/sevenReliabilityOne/bandwidth.txt','r');
 formatSpecifier = '%f';
 dimension = [N,N];
 bandwidths = fscanf(fileID,formatSpecifier,dimension); %Bandwidths of physical links
 
-fileID = fopen('input/mainSample1/nodeTypes.txt','r');
+fileID = fopen('input/sevenReliabilityOne/nodeTypes.txt','r');
 formatSpecifier = '%d';
 dimension = [1,N];
 nodeStatus = fscanf(fileID,formatSpecifier,dimension); %Type of nodes indicating the number of cores
 
-fileID = fopen('input/mainSample1/vmTypes.txt','r');
+fileID = fopen('input/sevenReliabilityOne/vmTypes.txt','r');
 formatSpecifier = '%d';
 dimension = [V,2];
 temp = fscanf(fileID,formatSpecifier,dimension); %Type of VMs and their requirements
@@ -65,23 +75,22 @@ vmTypes = temp(1:V,1)';
 vmCoreRequirements = temp(1:V,2)';
 VI = sum(vmTypes);
 
-fileID = fopen('input/mainSample1/vnfTypes.txt','r');
+fileID = fopen('input/sevenReliabilityOne/vnfTypes.txt','r');
 formatSpecifier = '%d';
 dimension = [1,F];
 vnfTypes = fscanf(fileID,formatSpecifier,dimension); %Type of VNFs and their requirements
 FI = sum(vnfTypes);
 
-fileID = fopen('input/mainSample1/costVN.txt','r');
+fileID = fopen('input/sevenReliabilityOne/costVN.txt','r');
 formatSpecifier = '%f';
 dimension = [1,V];
-Cv = fscanf(fileID,formatSpecifier,dimension); %Cost of hosting VMs on Nodes
+Cvn = fscanf(fileID,formatSpecifier,dimension); %Cost of hosting VMs on Nodes
 
 % Cost of deploying VNFs on VMs
-% Cf = [	4	2	1];
-fileID = fopen('input/mainSample1/costFV.txt','r');
+fileID = fopen('input/sevenReliabilityOne/costFV.txt','r');
 formatSpecifier = '%f';
 dimension = [1,F];
-Cf = fscanf(fileID,formatSpecifier,dimension); %Cost of deploying VNFs on VMs
+Cfv = fscanf(fileID,formatSpecifier,dimension); %Cost of deploying VNFs on VMs
 
 % Failure level
 iota = 0;
@@ -94,6 +103,16 @@ sfcClassData = SFC(1,S,zeros(1,2),zeros(1,2));
 sfcGraph = zeros(F,F);
 sfcStatus = input('Choose one option for SFC:\n\t1. Random SFC Generation\n\t2. Custom Input\nEnter your choice:\n');
 if sfcStatus == 1 %Random SFC generation
+    S = input('Enter the number of SFCs:\n');
+    lengths = input('Enter the lengths as an array:\n');
+    for i = 1 : S
+        chain = randperm(F,lengths(i));
+        sfcClassData(1,i) = SFC(lengths(i),chain,zeros(1,2),zeros(1,2));
+		sfcGraph(:,:,i) = zeros(F,F);
+		for node = 1 : lengths(i)-1
+			sfcGraph(chain(1,node),chain(1,node+1),i) = 1;
+		end
+    end
 elseif sfcStatus == 2 %Manual SFC input
 	S = input('Enter the number of SFCs:\n');
 	for i = 1 : S
@@ -116,8 +135,22 @@ elseif sfcStatus == 2 %Manual SFC input
 	end
 end
 
+%% Generate the function parameters
+lambda = zeros(S,F);
+for s = 1 : S
+	chain = sfcClassData(s).chain;
+	chainLength = sfcClassData(s).chainLength;
+	for c = 1 : chainLength
+		lambda(s,chain(c)) = round(rand(1,1)*9+1);
+	end
+end
+delta = zeros(S,F);
+mu = ones(F);
+
 %% VM hosting on the network
-[Xvn, vnMap, vmStatus] = VMHost(N, V, VI, nodeStatus, vmTypes, vmCoreRequirements);
+% [Xvn, vnMap, vmStatus, hostingStatus] = VMHost(N, V, VI, nodeStatus, vmTypes, vmCoreRequirements); %Sequential hosting
+% if hostingStatus == 0 return; end
+[VI, Xvn, vnMap, vmStatus, vmTypes] = greedyHosting(N, V, nodeStatus, vmCoreRequirements, Cvn); %greedy VM hosting
 
 %% Array to store all node objects
 nodeClassData = Node(1,zeros(1,2)); %to store the node status
@@ -135,8 +168,9 @@ for i = 1 : N %for each node
 end
 
 %% Function deployment on the network
-[Xfv, fvMap, vnfStatus] = VNFDeploy(N, VI, F, FI, vmStatus, vmCoreRequirements, vnfTypes);
-
+% [Xfv, fvMap, vnfStatus] = VNFDeploy(N, VI, F, FI, vmStatus, vmCoreRequirements, vnfTypes, vnfCoreRequirement); %Sequential deployment
+[Xfv, fvMap, vnfStatus] = greedyDeployment(N, VI, F, FI, inputNetwork, vnMap, vmStatus, vmCoreRequirements, vnfTypes) %Greedy algorithm
+%{
 %% Arary to store all VM objects
 vmClassData = VM(1,zeros(1,2)); %to store the VM status
 vnfCount = sum(Xfv); %count the vnfs on each VM
@@ -155,32 +189,13 @@ end
 %% SFC assignment on the network
 [Xsf, sfcClassData] = SFCAssign(F, FI, S, vnfTypes, sfcClassData, fvMap, vnMap);
 
-% packet arrival rates
-% 			1	2	3	4	5	6	7	8
-lambda = [	2	0	3	4	0	0	0	0; %1
-			0	4	3	0	2	0	0	0; %2
-			1	0	0	3	0	0	2	4; %3
-			0	2	0	0	0	3	0	0; %4
-			1	0	0	2	3	0	0	0 %5
-		];
-% packet drop rates
-% 			1	2	3	4	5	6	7	8
-delta = [	0	0	0	0	0	0	0	0; %1
-			0	0	0	0	0	0	0	0; %2
-			0	0	0	0	0	0	0	0; %3
-			0	0	0	0	0	0	0	0; %4
-			0	0	0	0	0	0	0	0 %5
-		];
-
-% service rates
-% 		1	2	3	4	5	6	7	8
-mu = [	1	1	1	1	1	1	1	1];
-
 % Binary Variables
 Xfvi = Xfv; % for iota 0, this new binary variable boils down to the existing binary variable indicating the VNF deployment
 Xski = Xsf; % for iota 0, this new binary vairable boils down to the existing binary variable indicating the SFC assignment
 
-[y1,y2,y3] = calculateCost(N, VI, F, FI, S, L, medium, sfcClassData, sampleNetwork1Original, nextHop, bandwidths, Cv, Cf, Xvn, Xfv, lambda, delta, mu, Xfvi, Xski, vmStatus, vnfStatus);
+y1 = getY1(N, VI, FI, Cvn, Xvn, Cfv, Xfv, vmStatus, vnfStatus);
+y2 = getY2(VI, F, FI, S, lambda, delta, mu, Xfvi, Xski, vnfStatus);
+y3 = getY3(L, S, medium, network, bandwidths, nextHop, sfcClassData);
 
 preSumVnf = zeros(1,F);
 for i = 2 : F
@@ -253,7 +268,7 @@ while q.size() ~= 0
         nodeData = nodeData+newline+nodeNames(1,node);
         rankData = sprintf("%s%d; ",rankData,node);
         for adj = 1 : N
-            if sampleNetwork1Original(node,adj) ~= 0 && visited(1,adj) == 0
+            if inputNetwork(node,adj) ~= 0 && visited(1,adj) == 0
                 q.add(adj);
                 visited(1,adj) = 1;
             end
@@ -264,8 +279,8 @@ end
 
 for i = 1 : N
 	for j = i+1 : N
-		if (sampleNetwork1Original(i,j) ~= 0)
-			linkData = linkData+newline+sprintf("%d",i)+" -> "+sprintf("%d",j)+"[label="""+sprintf("%d",sampleNetwork1Original(i,j))+""" dir = none]";
+		if (inputNetwork(i,j) ~= 0)
+			linkData = linkData+newline+sprintf("%d",i)+" -> "+sprintf("%d",j)+"[label="""+sprintf("%d",inputNetwork(i,j))+""" dir = none]";
 		end
 	end
 end
@@ -276,7 +291,7 @@ gvText = gvText+linkData;
 gvText = gvText+newline+"splines=false";
 gvText = gvText+newline+"}";
 
-fileID = fopen('output/mainSample1/gv/graphPrint.gv','w+');
+fileID = fopen('output/sevenReliabilityOne/gv/graphPrint.gv','w+');
 commands = commands+"dot -Tpng gv/graphPrint.gv -o img/graph.png";
 fprintf(fileID,"%s",gvText);
 
@@ -341,7 +356,7 @@ for c = 1 : S
 	        node = q.remove();
 	        rankData = sprintf("%s%d; ",rankData,node);
 	        for adj = 1 : N
-	            if sampleNetwork1Original(node,adj) ~= 0 && visited(1,adj) == 0 %if the link is connected in the original graph and not visited
+	            if inputNetwork(node,adj) ~= 0 && visited(1,adj) == 0 %if the link is connected in the original graph and not visited
 	                q.add(adj); %add to queue
 	                visited(1,adj) = 1; %mark as visited
 	            end
@@ -397,7 +412,7 @@ for c = 1 : S
         while (startNode ~= currDest) %till starting node becomes equal to the destination
 			uNode = startNode; %get the current node
 			vNode = nextHop(startNode,currDest); %get the next hop node
-			linkData = linkData+newline+sprintf("%d",uNode)+" -> "+sprintf("%d",vNode)+"[label="""+sprintf("%d",sampleNetwork1Original(uNode,vNode))+""" color=""black"" penwidth=2]"; %include the link data with black color
+			linkData = linkData+newline+sprintf("%d",uNode)+" -> "+sprintf("%d",vNode)+"[label="""+sprintf("%d",inputNetwork(uNode,vNode))+""" color=""black"" penwidth=2]"; %include the link data with black color
 			visitedEdge(startNode,nextHop(startNode,currDest)) = 1; %mark edge as visited
 			visitedEdge(nextHop(startNode,currDest),startNode) = 1; %mark edge as visited
 			startNode = nextHop(startNode,currDest); %update the current node
@@ -410,7 +425,7 @@ for c = 1 : S
 	
 	for i = 1 : N
 		for j = i+1 : N
-			if (sampleNetwork1Original(i,j) ~= 0) %if the edge exists in the original network
+			if (inputNetwork(i,j) ~= 0) %if the edge exists in the original network
 				if (visitedNode(1,i) ~= 1) %if ith node is not already visited
 					nodeData = nodeData+newline+nodeNames(1,i); %include in gray color
 					visitedNode(1,i) = 1; %mark as visited
@@ -420,7 +435,7 @@ for c = 1 : S
 					visitedNode(1,j) = 1; %mark as visited
 				end
 				if (visitedEdge(i,j) ~= 1) %if the edge between them is not visited
-					linkData = linkData+newline+sprintf("%d",i)+" -> "+sprintf("%d",j)+"[label="""+sprintf("%d",sampleNetwork1Original(i,j))+""" color=""gray"" fontcolor=""gray"" dir = none]"; %include in gray color
+					linkData = linkData+newline+sprintf("%d",i)+" -> "+sprintf("%d",j)+"[label="""+sprintf("%d",inputNetwork(i,j))+""" color=""gray"" fontcolor=""gray"" dir = none]"; %include in gray color
 					visitedEdge(i,j) = 1; %mark as visited
 					visitedEdge(j,i) = 1; %mark as visited
 				end
@@ -438,14 +453,35 @@ for c = 1 : S
 	end
 	gvText = gvText+newline+"}";
 
-	fileID = fopen(sprintf('%s%d%s','output/mainSample1/gv/sfcAssgn',c,'.gv'),'w+');
+	fileID = fopen(sprintf('%s%d%s','output/sevenReliabilityOne/gv/sfcAssgn',c,'.gv'),'w+');
 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfcAssgn',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfcAssgn',c,'.png');
 	fprintf(fileID,"%s",gvText);
 end
 
-fileID = fopen('output/mainSample1/commands.bat','w+');
+fileID = fopen('output/sevenReliabilityOne/commands.bat','w+');
 fprintf(fileID,"%s",commands);
 fclose(fileID);
+
+%}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 %{
@@ -482,7 +518,7 @@ fclose(fileID);
 % 	gvText = gvText+linkData;
 % 	gvText = gvText+newline+"}";
 
-% 	fileID = fopen(sprintf('%s%d%s','output/mainSample1/gv/sfc',c,'.gv'),'w+');
+% 	fileID = fopen(sprintf('%s%d%s','output/sevenReliabilityOne/gv/sfc',c,'.gv'),'w+');
 % 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfc',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfc',c,'.png');
 % 	fprintf(fileID,"%s",gvText);
 % end
@@ -558,7 +594,7 @@ fclose(fileID);
 % 	        node = q.remove();
 % 	        rankData = sprintf("%s%d; ",rankData,node);
 % 	        for adj = 1 : N
-% 	            if sampleNetwork1Original(node,adj) ~= 0 && visited(1,adj) == 0 %if the link is connected in the original graph and not visited
+% 	            if inputNetwork(node,adj) ~= 0 && visited(1,adj) == 0 %if the link is connected in the original graph and not visited
 % 	                q.add(adj); %add to queue
 % 	                visited(1,adj) = 1; %mark as visited
 % 	            end
@@ -578,7 +614,7 @@ fclose(fileID);
 %         while (startNode ~= currDest) %till starting node becomes equal to the destination
 % 			uNode = startNode; %get the current node
 % 			vNode = nextHop(startNode,currDest); %get the next hop node
-% 			linkData = linkData+newline+sprintf("%d",uNode)+" -> "+sprintf("%d",vNode)+"[label="""+sprintf("%d",sampleNetwork1Original(uNode,vNode))+""" color=""black"" penwidth=2]"; %include the link data with black color
+% 			linkData = linkData+newline+sprintf("%d",uNode)+" -> "+sprintf("%d",vNode)+"[label="""+sprintf("%d",inputNetwork(uNode,vNode))+""" color=""black"" penwidth=2]"; %include the link data with black color
 % 			visitedEdge(startNode,nextHop(startNode,currDest)) = 1; %mark edge as visited
 % 			visitedEdge(nextHop(startNode,currDest),startNode) = 1; %mark edge as visited
 % 			startNode = nextHop(startNode,currDest); %update the current node
@@ -591,7 +627,7 @@ fclose(fileID);
 	
 % 	for i = 1 : N
 % 		for j = i+1 : N
-% 			if (sampleNetwork1Original(i,j) ~= 0) %if the edge exists in the original network
+% 			if (inputNetwork(i,j) ~= 0) %if the edge exists in the original network
 % 				if (visitedNode(1,i) ~= 1) %if ith node is not already visited
 % 					nodeData = nodeData+newline+nodeNames(1,i); %include in gray color
 % 					visitedNode(1,i) = 1; %mark as visited
@@ -601,7 +637,7 @@ fclose(fileID);
 % 					visitedNode(1,j) = 1; %mark as visited
 % 				end
 % 				if (visitedEdge(i,j) ~= 1) %if the edge between them is not visited
-% 					linkData = linkData+newline+sprintf("%d",i)+" -> "+sprintf("%d",j)+"[label="""+sprintf("%d",sampleNetwork1Original(i,j))+""" color=""gray"" fontcolor=""gray"" dir = none]"; %include in gray color
+% 					linkData = linkData+newline+sprintf("%d",i)+" -> "+sprintf("%d",j)+"[label="""+sprintf("%d",inputNetwork(i,j))+""" color=""gray"" fontcolor=""gray"" dir = none]"; %include in gray color
 % 					visitedEdge(i,j) = 1; %mark as visited
 % 					visitedEdge(j,i) = 1; %mark as visited
 % 				end
@@ -614,12 +650,12 @@ fclose(fileID);
 % 	gvText = gvText+linkData;
 % 	gvText = gvText+newline+"}";
 
-% 	fileID = fopen(sprintf('%s%d%s','output/mainSample1/gv/sfcAssgn',c,'.gv'),'w+');
+% 	fileID = fopen(sprintf('%s%d%s','output/sevenReliabilityOne/gv/sfcAssgn',c,'.gv'),'w+');
 % 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfcAssgn',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfcAssgn',c,'.png');
 % 	fprintf(fileID,"%s",gvText);
 % end
 
-% fileID = fopen('output/mainSample1/commands.bat','w+');
+% fileID = fopen('output/sevenReliabilityOne/commands.bat','w+');
 % fprintf(fileID,"%s",commands);
 % fclose(fileID);
 
@@ -656,7 +692,7 @@ fclose(fileID);
 % 	gvText = gvText+linkData;
 % 	gvText = gvText+newline+"}";
 
-% 	fileID = fopen(sprintf('%s%d%s','output/mainSample1/gv/sfc',c,'.gv'),'w+');
+% 	fileID = fopen(sprintf('%s%d%s','output/sevenReliabilityOne/gv/sfc',c,'.gv'),'w+');
 % 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfc',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfc',c,'.png');
 % 	fprintf(fileID,"%s",gvText);
 % end

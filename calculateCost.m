@@ -1,13 +1,13 @@
-function [y1,y2,y3] = calculateCost(N, VI, F, FI, S, L, medium, sfcClassData, sampleNetwork1Original, nextHop, bandwidths, Cv, Cf, Xvn, Xfv, lambda, delta, mu, Xfvi, Xski, vms, vnfs);
+function [y1,y2,y3] = calculateCost(N, VI, F, FI, S, L, medium, sfcClassData, network, nextHop, bandwidths, Cvn, Cfv, Xvn, Xfv, lambda, delta, mu, Xfvi, Xski, vms, vnfs);
 	y1 = 0;
 	for n = 1 : N %1 to 6
 		for v = 1 : VI %1 to 13
-			y1 = y1 + Cv(1,vms(v))*Xvn(v,n);
+			y1 = y1 + Cvn(1,vms(v))*Xvn(v,n);
 		end
 	end
 	for v = 1 : VI %1 to 13
 		for f = 1 : FI %1 to 22
-			y1 = y1 + Cf(1,vnfs(f))*Xfv(f,v);
+			y1 = y1 + Cfv(1,vnfs(f))*Xfv(f,v);
 		end
 	end
 
@@ -38,7 +38,7 @@ function [y1,y2,y3] = calculateCost(N, VI, F, FI, S, L, medium, sfcClassData, sa
 	        while startNode ~= finalNode %Till we reach the destination
 	        	uNode = startNode; %current node
 	        	vNode = nextHop(startNode,finalNode); %next hop node
-	        	y3 = y3+sampleNetwork1Original(uNode,vNode)*medium; %Propagation delay
+	        	y3 = y3+network(uNode,vNode)*medium; %Propagation delay
 	        	y3 = y3+L/bandwidths(uNode,vNode); %Transmission delay
 	        	startNode = nextHop(startNode,finalNode); %Update the start node
 	        end

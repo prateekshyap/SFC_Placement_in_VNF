@@ -1,0 +1,238 @@
+digraph G
+{
+ranksep = "equally"
+rankdir = LR
+node [shape=none]
+{rank = same; 1; };
+{rank = same; 2; 3; 8; 15; };
+{rank = same; 4; 6; 7; 9; };
+{rank = same; 5; 11; 10; 14; 12; 13; };
+{rank = same; 16; };
+1[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="lightblue">
+<TR><TD PORT="f12" BGCOLOR="lightblue">f<SUB>4</SUB></TD></TR>
+<TR><TD PORT="f13" BGCOLOR="lightblue">f<SUB>5</SUB></TD></TR>
+</TABLE>
+</TD>
+<TD>
+<TABLE BORDER="0" BGCOLOR="lightgreen">
+<TR><TD PORT="f14" BGCOLOR="lightgreen">f<SUB>5</SUB></TD></TR>
+<TR><TD PORT="f15" BGCOLOR="lightgreen">f<SUB>5</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+2[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="lightblue">
+<TR><TD PORT="f16" BGCOLOR="lightblue">f<SUB>6</SUB></TD></TR>
+<TR><TD PORT="f17" BGCOLOR="lightblue">f<SUB>6</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+3[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="lightblue">
+<TR><TD PORT="f1" BGCOLOR="lightblue">f<SUB>1</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+8[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="lightblue">
+<TR><TD PORT="f4" BGCOLOR="lightblue">f<SUB>2</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+15[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="lightblue">
+<TR><TD PORT="f10" BGCOLOR="lightblue">f<SUB>4</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+4[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="lightblue">
+<TR><TD PORT="f18" BGCOLOR="lightblue">f<SUB>6</SUB></TD></TR>
+<TR><TD PORT="f19" BGCOLOR="lightblue">f<SUB>7</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+6[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="lightblue">
+<TR><TD PORT="f3" BGCOLOR="lightblue">f<SUB>1</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+7[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="lightblue">
+<TR><TD PORT="f20" BGCOLOR="lightblue">f<SUB>7</SUB></TD></TR>
+<TR><TD PORT="f21" BGCOLOR="lightblue">f<SUB>8</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+9[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="lightblue">
+<TR><TD PORT="f5" BGCOLOR="lightblue">f<SUB>2</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+5[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="lightblue">
+<TR><TD PORT="f2" BGCOLOR="lightblue">f<SUB>1</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+11[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="lightblue">
+<TR><TD PORT="f7" BGCOLOR="lightblue">f<SUB>3</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+10[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="lightblue">
+<TR><TD PORT="f6" BGCOLOR="lightblue">f<SUB>3</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+14[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="lightblue">
+<TR><TD PORT="f9" BGCOLOR="lightblue">f<SUB>4</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+12[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="lightblue">
+<TR><TD PORT="f22" BGCOLOR="lightblue">f<SUB>8</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+13[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="lightblue">
+<TR><TD PORT="f8" BGCOLOR="lightblue">f<SUB>3</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+16[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="lightblue">
+<TR><TD PORT="f11" BGCOLOR="lightblue">f<SUB>4</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+1 -> 2[label="12" dir = none]
+1 -> 3[label="29" dir = none]
+1 -> 8[label="25" dir = none]
+1 -> 15[label="15" dir = none]
+2 -> 4[label="10" dir = none]
+3 -> 6[label="26" dir = none]
+4 -> 5[label="27" dir = none]
+4 -> 11[label="26" dir = none]
+4 -> 15[label="22" dir = none]
+5 -> 6[label="12" dir = none]
+5 -> 7[label="18" dir = none]
+6 -> 10[label="28" dir = none]
+6 -> 14[label="21" dir = none]
+7 -> 8[label="19" dir = none]
+8 -> 9[label="14" dir = none]
+9 -> 10[label="15" dir = none]
+9 -> 12[label="13" dir = none]
+9 -> 13[label="27" dir = none]
+11 -> 12[label="13" dir = none]
+11 -> 13[label="27" dir = none]
+12 -> 14[label="22" dir = none]
+12 -> 16[label="17" dir = none]
+13 -> 14[label="20" dir = none]
+13 -> 16[label="22" dir = none]
+splines=false
+}
