@@ -6,6 +6,7 @@ clc
 %	VNFDeploy deploys the VNFs in ascending order of availability
 %	greedyDeployment follows a greedy approach to deploy the VNFs
 %}
+
 global VMCombination;
 global VMCost;
 
@@ -150,7 +151,7 @@ mu = ones(F);
 %% VM hosting on the network
 % [Xvn, vnMap, vmStatus, hostingStatus] = VMHost(N, V, VI, nodeStatus, vmTypes, vmCoreRequirements); %Sequential hosting
 % if hostingStatus == 0 return; end
-[VI, Xvn, vnMap, vmStatus, vmTypes] = greedyHosting(N, V, nodeStatus, vmCoreRequirements, Cvn); %greedy VM hosting
+[VI, Xvn, vnMap, vmStatus, vmTypes] = greedyHosting(N, V, nodeStatus, vmCoreRequirements, Cvn) %greedy VM hosting
 
 %% Array to store all node objects
 nodeClassData = Node(1,zeros(1,2)); %to store the node status
@@ -169,7 +170,7 @@ end
 
 %% Function deployment on the network
 % [Xfv, fvMap, vnfStatus] = VNFDeploy(N, VI, F, FI, vmStatus, vmCoreRequirements, vnfTypes, vnfCoreRequirement); %Sequential deployment
-[Xfv, fvMap, vnfStatus] = greedyDeployment(N, VI, F, FI, inputNetwork, vnMap, vmStatus, vmCoreRequirements, vnfTypes) %Greedy algorithm
+% [Xfv, fvMap, vnfStatus] = greedyDeployment(N, VI, F, FI, inputNetwork, vnMap, vmStatus, vmCoreRequirements, vnfTypes) %Greedy algorithm
 %{
 %% Arary to store all VM objects
 vmClassData = VM(1,zeros(1,2)); %to store the VM status

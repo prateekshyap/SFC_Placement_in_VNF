@@ -45,8 +45,8 @@ function [] = hostVMs(availableCores, Cvn, vmCoreRequirements, index, currCost, 
 		if currCost < VMCost %If the current cost is less than the global cost
 			VMCost = currCost; %Update the current cost
 			VMCombination = currComb; %Update the combination
-			return; %Return
 		end
+		return; %Return
 	end
 	len = size(vmCoreRequirements);
 	for core = 1 : len(2) %For each VM size
