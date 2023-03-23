@@ -122,7 +122,7 @@ if sfcStatus == 1 %Random SFC generation
         lengths = input('Enter the lengths as an array:\n');
     end
     for i = 1 : S
-        chain = randperm(F,lengths(i)); % Generate a random permutation as an SFC
+        chain = randperm(F,lengths(i)); % Generat
         sfcClassData(1,i) = SFC(lengths(i),chain,zeros(1,2),zeros(1,2));
 		sfcGraph(:,:,i) = zeros(F,F);
 		for node = 1 : lengths(i)-1
@@ -187,11 +187,10 @@ end
 
 %% Function deployment on the network
 % [Xfv, fvMap, vnfStatus] = VNFDeploy(VI, F, FI, vmStatus, vmCoreRequirements, vnfTypes, vnfCoreRequirement); %Sequential deployment
-
-% [Xfv, fvMap, vnfStatus] = greedyDeployment(N, VI, F, FI, inputNetwork, vnMap, vmStatus, vmCoreRequirements, vnfTypes) %Greedy algorithm when SFCs are not known
-
-[FI, vnfTypes] = generateVNFData(V, F, S, vmTypes, vmCoreRequirements, sfcClassData);
-[Xfv, fvMap, vnfStatus] = metaHeuristicDeployment(VI, F, FI, vnfTypes);
+% [Xfv, fvMap, vnfStatus] = greedyDeployment(N, VI, F, FI, inputNetwork,
+% vnMap, vmStatus, vmCoreRequirements, vnfTypes) %Greedy algorithm when
+% SFCs are not known
+[FI, Xfv, fvMap, vnfStatus, vnfTypes] = generateVNFData(V,VI,F,S,vmTypes,vmCoreRequirements,sfcClassData);
 
 %{
 %% Arary to store all VM objects

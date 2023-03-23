@@ -5,6 +5,7 @@ function [y2] = getY2(VI, F, FI, S, lambda, delta, mu, Xfvi, Xski, vnfs)
 	for f = 1 : FI %1 to 22
 		lambdaSF = 0;
 		deltaSF = 0;
+        if (vnfs(f) == 0) continue; end
 		dpc(1,f) = 1/mu(1,vnfs(f));
 		for s = 1 : S %1 to 5
 			lambdaSF = lambdaSF+lambda(s,vnfs(f));

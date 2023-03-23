@@ -1,4 +1,4 @@
-function [Xfv, fvMap, vnfStatus] = VNFDeploy(N, VI, F, FI, vmStatus, vmCoreRequirements, vnfTypes, vnfCoreRequirement)
+function [Xfv, fvMap, vnfStatus] = VNFDeploy(VI, F, FI, vmStatus, vmCoreRequirements, vnfTypes, vnfCoreRequirement)
 	import java.util.TreeMap;
 	import java.util.ArrayList;
 	Xfv = zeros(FI,VI); %FIxVI matrix to indicate whether a vnf instance f is deployed on the VM v or not
@@ -21,6 +21,7 @@ function [Xfv, fvMap, vnfStatus] = VNFDeploy(N, VI, F, FI, vmStatus, vmCoreRequi
 		for i = 1 : instanceCount %For each instance
 			VMCores = vnfCoreRequirement; %Store the required cores to VM cores
 			if coreCount.containsKey(VMCores) == 0 %If VM cores is not available in the nodes
+                if coreCount.size() == 0 return; end
 				VMCores = coreCount.higherEntry(VMCores).getKey(); %Get the node that is having the next higher number of cores
 			end
 			availableMachines = coreCount.get(VMCores); %Get the machines that are available for the required number of cores
@@ -47,4 +48,3 @@ function [Xfv, fvMap, vnfStatus] = VNFDeploy(N, VI, F, FI, vmStatus, vmCoreRequi
 	    end
 	end
 end
-
