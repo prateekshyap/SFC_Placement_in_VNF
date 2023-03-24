@@ -9,6 +9,12 @@ clc
 
 global VMCombination;
 global VMCost;
+global VNFDeployment;
+global SFCAssignment;
+global SFCCost;
+global SFCData;
+global globFvMap;
+global minSfcCost;
 
 import java.util.TreeMap;
 import java.util.HashSet;
@@ -19,7 +25,7 @@ import java.util.LinkedList;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-fileID = fopen('input/sevenReliabilityOne/constants.txt','r');
+fileID = fopen('input/smallNet/constants.txt','r');
 formatSpecifier = '%f';
 dimension = [1,9];
 
@@ -44,7 +50,7 @@ L = constants(1,9); %Packet size
 maximumCores = 64; %Maximum allowed cores on a physical node
 
 %% Reading Network Data
-fileID = fopen('input/sevenReliabilityOne/network.txt','r');
+fileID = fopen('input/smallNet/network.txt','r');
 formatSpecifier = '%f';
 dimension = [N,N];
 
@@ -65,7 +71,7 @@ end
 [network,nextHop] = allPairShortestPath(N,inputNetwork); %Floyd-Warshall
 
 %% Reading Network Data
-fileID = fopen('input/sevenReliabilityOne/bandwidth.txt','r');
+fileID = fopen('input/smallNet/bandwidth.txt','r');
 formatSpecifier = '%f';
 dimension = [N,N];
 bandwidths = fscanf(fileID,formatSpecifier,dimension); %Bandwidths of physical links
@@ -73,12 +79,12 @@ bandwidths = fscanf(fileID,formatSpecifier,dimension); %Bandwidths of physical l
 %% Generating Network Data
 % [bandwidths] = generateBandwidth(inputNetwork,N);
 
-fileID = fopen('input/sevenReliabilityOne/nodeTypes.txt','r');
+fileID = fopen('input/smallNet/nodeTypes.txt','r');
 formatSpecifier = '%d';
 dimension = [1,N];
 nodeStatus = fscanf(fileID,formatSpecifier,dimension); %Type of nodes indicating the number of cores
 
-fileID = fopen('input/sevenReliabilityOne/vmTypes.txt','r');
+fileID = fopen('input/smallNet/vmTypes.txt','r');
 formatSpecifier = '%d';
 dimension = [V,2];
 temp = fscanf(fileID,formatSpecifier,dimension); %Type of VMs and their requirements
@@ -86,19 +92,19 @@ vmTypes = temp(1:V,1)';
 vmCoreRequirements = temp(1:V,2)';
 VI = sum(vmTypes);
 
-fileID = fopen('input/sevenReliabilityOne/vnfTypes.txt','r');
+fileID = fopen('input/smallNet/vnfTypes.txt','r');
 formatSpecifier = '%d';
 dimension = [1,F];
 vnfTypes = fscanf(fileID,formatSpecifier,dimension); %Type of VNFs and their requirements
 FI = sum(vnfTypes);
 
-fileID = fopen('input/sevenReliabilityOne/costVN.txt','r');
+fileID = fopen('input/smallNet/costVN.txt','r');
 formatSpecifier = '%f';
 dimension = [1,V];
 Cvn = fscanf(fileID,formatSpecifier,dimension); %Cost of hosting VMs on Nodes
 
 % Cost of deploying VNFs on VMs
-fileID = fopen('input/sevenReliabilityOne/costFV.txt','r');
+fileID = fopen('input/smallNet/costFV.txt','r');
 formatSpecifier = '%f';
 dimension = [1,F];
 Cfv = fscanf(fileID,formatSpecifier,dimension); %Cost of deploying VNFs on VMs
@@ -190,10 +196,11 @@ end
 
 % [Xfv, fvMap, vnfStatus] = greedyDeployment(N, VI, F, FI, inputNetwork, vnMap, vmStatus, vmCoreRequirements, vnfTypes) %Greedy algorithm when SFCs are not known
 
-[FI, vnfTypes] = generateVNFData(V, F, S, vmTypes, vmCoreRequirements, sfcClassData);
-[Xfv, fvMap, vnfStatus] = metaHeuristicDeployment(VI, F, FI, vnfTypes);
+[FI, vnfTypes] = generateVNFData(V, F, S, vmTypes, vmCoreRequirements, vnfCoreRequirement, sfcClassData);
+[Xfv, fvMap, vnfStatus, Xsf, sfcClassData] = bruteForceDeployment(N, V, VI, F, FI, S, inputNetwork, network, vmTypes, vmStatus, vmCoreRequirements, vnMap, vnfTypes, vnfCoreRequirement, sfcClassData);
+% [Xfv, fvMap, vnfStatus] = metaHeuristicDeployment(VI, F, FI, vnfTypes);
 
-%{
+
 %% Arary to store all VM objects
 vmClassData = VM(1,zeros(1,2)); %to store the VM status
 vnfCount = sum(Xfv); %count the vnfs on each VM
@@ -210,15 +217,15 @@ for i = 1 : VI %for each VM instance
 end
 
 %% SFC assignment on the network
-[Xsf, sfcClassData] = SFCAssign(F, FI, S, vnfTypes, sfcClassData, fvMap, vnMap);
+% [Xsf, sfcClassData] = SFCAssign(F, FI, S, vnfTypes, sfcClassData, fvMap, vnMap);
 
 % Binary Variables
-Xfvi = Xfv; % for iota 0, this new binary variable boils down to the existing binary variable indicating the VNF deployment
-Xski = Xsf; % for iota 0, this new binary vairable boils down to the existing binary variable indicating the SFC assignment
-
-y1 = getY1(N, VI, FI, Cvn, Xvn, Cfv, Xfv, vmStatus, vnfStatus);
-y2 = getY2(VI, F, FI, S, lambda, delta, mu, Xfvi, Xski, vnfStatus);
-y3 = getY3(L, S, medium, network, bandwidths, nextHop, sfcClassData);
+% Xfvi = Xfv; % for iota 0, this new binary variable boils down to the existing binary variable indicating the VNF deployment
+% Xski = Xsf; % for iota 0, this new binary vairable boils down to the existing binary variable indicating the SFC assignment
+% 
+% y1 = getY1(N, VI, FI, Cvn, Xvn, Cfv, Xfv, vmStatus, vnfStatus);
+% y2 = getY2(VI, F, FI, S, lambda, delta, mu, Xfvi, Xski, vnfStatus);
+% y3 = getY3(L, S, medium, network, bandwidths, nextHop, sfcClassData);
 
 preSumVnf = zeros(1,F);
 for i = 2 : F
@@ -314,10 +321,11 @@ gvText = gvText+linkData;
 gvText = gvText+newline+"splines=false";
 gvText = gvText+newline+"}";
 
-fileID = fopen('output/sevenReliabilityOne/gv/graphPrint.gv','w+');
+fileID = fopen('output/smallNet/gv/graphPrint.gv','w+');
 commands = commands+"dot -Tpng gv/graphPrint.gv -o img/graph.png";
 fprintf(fileID,"%s",gvText);
 
+%{
 %% SFC and SFC assignment print
 for c = 1 : S
 	gvText = "digraph G";
@@ -476,16 +484,17 @@ for c = 1 : S
 	end
 	gvText = gvText+newline+"}";
 
-	fileID = fopen(sprintf('%s%d%s','output/sevenReliabilityOne/gv/sfcAssgn',c,'.gv'),'w+');
+	fileID = fopen(sprintf('%s%d%s','output/smallNet/gv/sfcAssgn',c,'.gv'),'w+');
 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfcAssgn',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfcAssgn',c,'.png');
 	fprintf(fileID,"%s",gvText);
 end
+%}
 
-fileID = fopen('output/sevenReliabilityOne/commands.bat','w+');
+fileID = fopen('output/smallNet/commands.bat','w+');
 fprintf(fileID,"%s",commands);
 fclose(fileID);
 
-%}
+
 
 
 
@@ -541,7 +550,7 @@ fclose(fileID);
 % 	gvText = gvText+linkData;
 % 	gvText = gvText+newline+"}";
 
-% 	fileID = fopen(sprintf('%s%d%s','output/sevenReliabilityOne/gv/sfc',c,'.gv'),'w+');
+% 	fileID = fopen(sprintf('%s%d%s','output/smallNet/gv/sfc',c,'.gv'),'w+');
 % 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfc',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfc',c,'.png');
 % 	fprintf(fileID,"%s",gvText);
 % end
@@ -673,12 +682,12 @@ fclose(fileID);
 % 	gvText = gvText+linkData;
 % 	gvText = gvText+newline+"}";
 
-% 	fileID = fopen(sprintf('%s%d%s','output/sevenReliabilityOne/gv/sfcAssgn',c,'.gv'),'w+');
+% 	fileID = fopen(sprintf('%s%d%s','output/smallNet/gv/sfcAssgn',c,'.gv'),'w+');
 % 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfcAssgn',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfcAssgn',c,'.png');
 % 	fprintf(fileID,"%s",gvText);
 % end
 
-% fileID = fopen('output/sevenReliabilityOne/commands.bat','w+');
+% fileID = fopen('output/smallNet/commands.bat','w+');
 % fprintf(fileID,"%s",commands);
 % fclose(fileID);
 
@@ -715,7 +724,7 @@ fclose(fileID);
 % 	gvText = gvText+linkData;
 % 	gvText = gvText+newline+"}";
 
-% 	fileID = fopen(sprintf('%s%d%s','output/sevenReliabilityOne/gv/sfc',c,'.gv'),'w+');
+% 	fileID = fopen(sprintf('%s%d%s','output/smallNet/gv/sfc',c,'.gv'),'w+');
 % 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfc',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfc',c,'.png');
 % 	fprintf(fileID,"%s",gvText);
 % end

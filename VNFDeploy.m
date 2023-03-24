@@ -10,10 +10,10 @@ function [Xfv, fvMap, vnfStatus] = VNFDeploy(VI, F, FI, vmStatus, vmCoreRequirem
 		preSumVnf(1,i) = vnfTypes(1,i-1)+preSumVnf(1,i-1);
 	end
 	for v = 1 : VI
-		if coreCount.containsKey(vmCoreRequirements(vmStatus(1,v))) == 0 %If the number of cores is not present as an entry
-			coreCount.put(vmCoreRequirements(vmStatus(1,v)),ArrayList()); %Add an entry
+		if coreCount.containsKey(vmCoreRequirements(vmStatus(v))) == 0 %If the number of cores is not present as an entry
+			coreCount.put(vmCoreRequirements(vmStatus(v)),ArrayList()); %Add an entry
 		end
-		coreCount.get(vmCoreRequirements(vmStatus(1,v))).add(v); %Add to the map
+		coreCount.get(vmCoreRequirements(vmStatus(v))).add(v); %Add to the map
 	end
 	vnfIndex = 1; %Initialize
 	for f = 1 : F %For each VNF type

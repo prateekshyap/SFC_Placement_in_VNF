@@ -13,7 +13,7 @@ function [VI, Xvn, vnMap, vmStatus, vmTypes] = greedyHosting(N, V, nodeStatus, v
     for node = 1 : N %For each node
 		totalCores = nodeStatus(node); %Total available cores on that node
 		VMCost = Inf; %Store max in VMCost
-		hostVMs(totalCores,Cvn,vmCoreRequirements,1,0,zeros(1,1)); %Recursion call
+		recurHost(totalCores,Cvn,vmCoreRequirements,1,0,zeros(1,1)); %Recursion call
 		len = size(VMCombination);
         for i = 1 : len(2) %For each VM
             tempAlloc(node,coreIndex.get(VMCombination(i))) = tempAlloc(node,coreIndex.get(VMCombination(i)))+1; %Store the allocation
@@ -38,7 +38,7 @@ function [VI, Xvn, vnMap, vmStatus, vmTypes] = greedyHosting(N, V, nodeStatus, v
     end
 end
 
-function [] = hostVMs(availableCores, Cvn, vmCoreRequirements, index, currCost, currComb)
+function [] = recurHost(availableCores, Cvn, vmCoreRequirements, index, currCost, currComb)
 	global VMCombination;
     global VMCost;
     if availableCores == 0 %If all cores are filled
@@ -52,7 +52,7 @@ function [] = hostVMs(availableCores, Cvn, vmCoreRequirements, index, currCost, 
 	for core = 1 : len(2) %For each VM size
 		if vmCoreRequirements(core) <= availableCores %If the required number of cores are available
 			currComb(index) = vmCoreRequirements(core); %Update the combination
-			hostVMs(availableCores-vmCoreRequirements(core),Cvn,vmCoreRequirements,index+1,currCost+Cvn(core),currComb); %Recursion call
+			recurHost(availableCores-vmCoreRequirements(core),Cvn,vmCoreRequirements,index+1,currCost+Cvn(core),currComb); %Recursion call
 			currComb(index) = 0; %Backtrack
 		end
 	end

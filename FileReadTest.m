@@ -61,6 +61,7 @@ clc;
 % a == b
 % a/b
 
+%{
 network = zeros(97,97);
 links = round(rand(1,100)*20+10);
 
@@ -236,3 +237,43 @@ end
 
 vnfs = ceil(rand(1,30)*3)+1
 sum(vnfs)
+%}
+
+network = zeros(11,11);
+links = ceil(rand(1,100)*15);
+network(1,10) = links(1); network(10,1) = links(1);
+network(5,7) = links(2); network(7,5) = links(2);
+network(9,6) = links(3); network(6,9) = links(3);
+network(10,4) = links(4); network(4,10) = links(4);
+network(1,2) = links(5); network(2,1) = links(5);
+network(8,11) = links(6); network(11,8) = links(6);
+network(2,3) = links(7); network(3,2) = links(7);
+network(2,9) = links(8); network(9,2) = links(8);
+network(2,6) = links(9); network(6,2) = links(9);
+network(8,10) = links(10); network(10,8) = links(10);
+network(9,2) = links(11); network(2,9) = links(11);
+network(4,11) = links(12); network(11,4) = links(12);
+network(7,9) = links(13); network(9,7) = links(13);
+network(4,7) = links(14); network(7,4) = links(14);
+network(2,4) = links(15); network(4,2) = links(15);
+network(10,5) = links(16); network(5,10) = links(16);
+network(8,7) = links(17); network(7,8) = links(17);
+network(9,10) = links(18); network(10,9) = links(18);
+network(7,3) = links(19); network(3,7) = links(19);
+network(8,1) = links(20); network(1,8) = links(20);
+network(1,5) = links(21); network(5,1) = links(21);
+% network(1,1) = 1; network(1,1) = 1;
+% network(1,1) = 1; network(1,1) = 1;
+% network(1,1) = 1; network(1,1) = 1;
+% network(1,1) = 1; network(1,1) = 1;
+% network(1,1) = 1; network(1,1) = 1;
+% network(1,1) = 1; network(1,1) = 1;
+% network(1,1) = 1; network(1,1) = 1;
+% network(1,1) = 1; network(1,1) = 1;
+% network(1,1) = 1; network(1,1) = 1;
+% network(1,1) = 1; network(1,1) = 1;
+% network(1,1) = 1; network(1,1) = 1;
+% network(1,1) = 1; network(1,1) = 1;
+% G = graph(network);
+% plot(G);
+network
