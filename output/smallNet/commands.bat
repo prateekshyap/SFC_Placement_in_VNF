@@ -1,1 +1,0 @@
-dot -Tpng gv/graphPrint.gv -o img/graph.png

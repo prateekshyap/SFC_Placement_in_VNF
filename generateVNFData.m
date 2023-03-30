@@ -1,4 +1,4 @@
-function [FI, vnfTypes] = generateVNFData(V, F, S, vmTypes, vmCoreRequirements, vnfCoreRequirement, sfcClassData)
+function [FI, vnfTypes, vnfFreq] = generateVNFData(V, F, S, vmTypes, vmCoreRequirements, vnfCoreRequirement, sfcClassData)
     
     FI = 0; %Total number of function instances
     vnfTypes = zeros(1,F); % This stores the count of each VNF type
@@ -97,6 +97,4 @@ function [FI, vnfTypes] = generateVNFData(V, F, S, vmTypes, vmCoreRequirements, 
         end
     end
     %}
-    vnfTypes
-    FI
 end
