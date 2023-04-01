@@ -135,8 +135,8 @@ fprintf('Choose one option for SFC:\n    1. Random SFC Generation\n    2. Custom
 sfcStatus = 1;
 if sfcStatus == 1 %Random SFC generation
 %     S = input('Enter the number of SFCs:\n');
-    fprintf('Enter the number of SFCs:\n1\n');
-    S = 1;
+    fprintf('Enter the number of SFCs:\n2\n');
+    S = 2;
 %     lengthStatus = input('Choose one option for the length of SFC:\n    1. Random Length Generation\n    2. Custom Input\nEnter your choice:\n');
     fprintf('Choose one option for the length of SFC:\n    1. Random Length Generation\n    2. Custom Input\nEnter your choice:\n1\n');
     lengthStatus = 1;
