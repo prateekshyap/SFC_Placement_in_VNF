@@ -46,6 +46,9 @@ Cost matrix of hosting VMs on physical nodes.
 11. costFV.txt <br>
 Cost matrix of deploying VNFs on VMs.
 
+12. GAPar.txt <br>
+Parameters for GA
+
 # sampleNetworks.m
 This is the main file for the first small sample network taken for verification purpose.
 

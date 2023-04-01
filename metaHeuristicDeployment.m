@@ -41,8 +41,13 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDepl
     end
 
     % Setting GA parameters
+    fileID = fopen('input/smallNet/GAPar.txt','r');
+    formatSpecifier = '%f';
+    dimension = [1,3];
+
+    parameters = fscanf(fileID,formatSpecifier,dimension);
     mutationCount = 0;
-    mutationProbability = 0; % READ HERE FROM FILE
+    mutationProbability = parameters(1); % probability of mutation
     if (mutationCount == 0) % If the count is 0
         mutationIterations = randi([1 100],1,mutationProbability); % Then generate probability number of random iterations in which mutation will be performed
         mutationIterations = randperm(100,mutationProbability*100); % Then generate probability number of random iterations in which mutation will be performed
@@ -52,8 +57,8 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDepl
         end
     end
 
-    iterations = 0; % READ HERE FROM FILE
-    populationSize = 0; % READ HERE FROM FILE
+    iterations = parameters(2); % total number of GA iterations
+    populationSize = parameters(3); % population size
 
     Xfv = zeros(FI,VI); % FIxVI matrix to indicate whether a vnf instance f is deployed on the VM v or not
     Xsf = zeros(1,FI); % SxFI matrix to indicate whether an SFC uses the f instance of VNFs or not
