@@ -42,22 +42,22 @@ dimension = [1,9];
 
 constants = fscanf(fileID,formatSpecifier,dimension);
 
-N = constants(1,1); %Number of nodes in the physical network
-V = constants(1,2); %Types of VMs being considered
+N = constants(1); %Number of nodes in the physical network
+V = constants(2); %Types of VMs being considered
 VI = 0; %Total number of VM instances
-F = constants(1,3); %Types of VNFs being considered
+F = constants(3); %Types of VNFs being considered
 FI = 0; %Total number of VNF instances
 S = 0; %Total number of SFCs
-vnfCoreRequirement = constants(1,4); %Required number of cores for each function
-medium = constants(1,5); %Inverted Velocity depending on the transmission medium
+vnfCoreRequirement = constants(4); %Required number of cores for each function
+medium = constants(5); %Inverted Velocity depending on the transmission medium
 
 % Failure Probabilities
-rhoNode = constants(1,6); %Failure probability of nodes
-rhoVm = constants(1,7); %Failure probability of VMs
-rhoVnf = constants(1,8); %Failure probability of VNFs
+rhoNode = constants(6); %Failure probability of nodes
+rhoVm = constants(7); %Failure probability of VMs
+rhoVnf = constants(8); %Failure probability of VNFs
 
 % Other constants
-L = constants(1,9); %Packet size
+L = constants(9); %Packet size
 maximumCores = 64; %Maximum allowed cores on a physical node
 
 %% Reading Network Data
