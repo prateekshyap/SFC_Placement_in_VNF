@@ -1,4 +1,4 @@
-function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement)
+function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID)
     
     global mutationProbability;
     global mutationCount;
@@ -64,6 +64,13 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDepl
     Xsf = zeros(1,FI); % SxFI matrix to indicate whether an SFC uses the f instance of VNFs or not
 
     for s = 1 : S % For each SFC
-        [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, nodeStatus, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, nodeCapacity, vmCapacity, vnfCapacity, preSumVnf, iterations, populationSize, s); % Call GA
+        [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vnfCapacity, preSumVnf, iterations, populationSize, s, logFileID) % Call GA
+        fprintf(logFileID,'\n\n');
+        fprintf(logFileID,'%d',optCost);
+        fprintf(logFileID,'\n\n');
+        for i = 1 : sfcClassData(s).chainLength;
+            fprintf(logFileID,'%d\t',optPlacement(i));
+        end
+        fprintf(logFileID,'\n\n');
     end
 end

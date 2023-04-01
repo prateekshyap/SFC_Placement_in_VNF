@@ -1,4 +1,4 @@
-function [cost] = calculateFitnessValue(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, nodeStatus, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, nodeCapacity, vmCapacity, vnfCapacity, preSumVnf, iterations, populationSize, sIndex, vmGene, nodeGene)
+function [cost] = calculateFitnessValue(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vnfCapacity, preSumVnf, sIndex, vmGene)
 
 	XfvTemp = Xfv; % Create a copy of Xfv for modification
 	XsfTemp = Xsf; % Create a copy of Xsf for modification
@@ -23,6 +23,7 @@ function [cost] = calculateFitnessValue(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, Xfv, 
 		if indicator == 1 && vnfCapacity(chosenInstance) > 0 % If the chosen VM has an instance of the required VNF
 			XfvTemp(chosenInstance,chosenVM) = 1; % Deploy
 			XsfTemp(sIndex,chosenInstance) = 1; % Assign
+            usedLinks(pos) = vnMap.get(vmGene(pos)); % Store the physical node
             nodeMaps(pos) = chosenInstance; % Store the instance number
 			% Decrease the capacity
 		else % If the assignment couldn't be done, we need to find another instance and assignment
@@ -46,6 +47,7 @@ function [cost] = calculateFitnessValue(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, Xfv, 
 			if freeVNF ~= 0 % If we got an undeployed VNF instance
 				XfvTemp(freeVNF,chosenVM) = 1; % Deploy
 				XsfTemp(sIndex,freeVNF) = 1; % Assign
+                usedLinks(pos) = vnMap.get(vmGene(pos)); % Store the physical node
                 nodeMaps(pos) = freeVNF; % Store the instance number
 			else % If no such instance could be found
 				% Step 3 - Choose a random instance to assign
@@ -60,8 +62,9 @@ function [cost] = calculateFitnessValue(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, Xfv, 
 						end
 						XfvTemp(fin,chosenVM) = 1; % Deploy
 						XsfTemp(sIndex,freeVNF) = 1; % Assign
-                        nodeMaps(pos) = fin; % Store the instance number
 						vmGene(pos) = chosenVM; % Modify the vm gene
+                        usedLinks(pos) = vnMap.get(vmGene(pos)); % Store the physical node
+                        nodeMaps(pos) = fin; % Store the instance number
 						% nodeGene(pos) = vnMap.get(chosenVM); % Modify the node gene
 						break;
 					end
@@ -70,7 +73,7 @@ function [cost] = calculateFitnessValue(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, Xfv, 
         end
     end
     
-    % sfcClassData(sIndex).usedLinks = nodeGene;
+    sfcClassData(sIndex).usedLinks = usedLinks;
     sfcClassData(sIndex).nodeMaps = nodeMaps;
 	y1 = getY1(N, VI, FI, Cvn, Xvn, Cfv, XfvTemp, vmStatus, vnfStatus);
 	y2 = getY2(VI, F, FI, sIndex, lambda, delta, mu, XfvTemp, XsfTemp, vnfStatus);

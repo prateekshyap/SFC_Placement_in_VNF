@@ -1,8 +1,6 @@
 function [i1, i2] = getBestTwoChildren(c)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
-    i1 = 0;
-    i2 = 0;
     if c(1) < c(2) && c(1) < c(3) && c(1) < c(4)
         i1 = 1;
         c(1) = Inf;
