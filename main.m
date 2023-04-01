@@ -33,7 +33,7 @@ logFileID = fopen('log.txt','a+');
 
 %% Constants and Variables
 
-parfor loop = 1 : 10
+% parfor loop = 1 : 10
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 fileID = fopen('input/smallNet8/constants.txt','r');
@@ -135,8 +135,8 @@ fprintf('Choose one option for SFC:\n    1. Random SFC Generation\n    2. Custom
 sfcStatus = 1;
 if sfcStatus == 1 %Random SFC generation
 %     S = input('Enter the number of SFCs:\n');
-    fprintf('Enter the number of SFCs:\n2\n');
-    S = 2;
+    fprintf('Enter the number of SFCs:\n1\n');
+    S = 1;
 %     lengthStatus = input('Choose one option for the length of SFC:\n    1. Random Length Generation\n    2. Custom Input\nEnter your choice:\n');
     fprintf('Choose one option for the length of SFC:\n    1. Random Length Generation\n    2. Custom Input\nEnter your choice:\n1\n');
     lengthStatus = 1;
@@ -189,9 +189,9 @@ delta = zeros(S,F);
 mu = ones(1,F);
 
 %% Before starting the process, print the details of the entire input that is being considered
-fprintf('=========================================================================================\n');
-fprintf('                                   Observation %d\n',loop);
-fprintf('=========================================================================================\n');
+% fprintf('=========================================================================================\n');
+% fprintf('                                   Observation %d\n',loop);
+% fprintf('=========================================================================================\n');
 fprintf('\n');
 fprintf('----------------------------------Physical Network---------------------------------------\n');
 inputNetwork
@@ -289,10 +289,10 @@ fprintf('----------------------------------------VNF Counts---------------------
 vnfTypes
 
 tic;
-[Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = bruteForceDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement);
-% [Xfv, fvMap, vnfStatus] = metaHeuristicDeployment(VI, F, FI, vnfTypes);
+% [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = bruteForceDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement);
+[Xfv, fvMap, vnfStatus] = metaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement);
 toc; %This will print the time automatically
-
+%{
 %% After Deployment and Assignment, print the generated data
 fprintf('\n');
 fprintf('-------------------------------------------Xfv-------------------------------------------\n');
@@ -339,7 +339,7 @@ y1+y2+y3
 end
 
 fclose(logFileID);
-
+%}
 % preSumVnf = zeros(1,F);
 % for i = 2 : F
 % 	preSumVnf(1,i) = vnfTypes(1,i-1)+preSumVnf(1,i-1);

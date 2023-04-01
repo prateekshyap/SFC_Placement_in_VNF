@@ -5,6 +5,7 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDepl
     global randomMutationIterations;
 
     import java.util.TreeMap;
+    import java.util.TreeSet;
     import java.util.ArrayList;
     
     Xfv = zeros(FI,VI); %FIxVI matrix to indicate whether a vnf instance f is deployed on the VM v or not
@@ -29,7 +30,7 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDepl
     %% Genetic algorithm
     nodeCapacity = zeros(1,N); % This will store the empty slots for the VNFs on the nodes
     vmCapacity = zeros(1,VI); % This will store the empty slots for the VNFs on the VMs
-    vnfCapacity = zeros(1,FI) % This will store the capacity of the VNFs in terms of how many SFCs they can serve
+    vnfCapacity = zeros(1,FI); % This will store the capacity of the VNFs in terms of how many SFCs they can serve
     for n = 1 : N % For each node
         nodeCapacity(n) = nodeStatus(n)/vnfCoreRequirement;
     end
@@ -41,7 +42,7 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDepl
     end
 
     % Setting GA parameters
-    fileID = fopen('input/smallNet/GAPar.txt','r');
+    fileID = fopen('input/smallNet8/GAPar.txt','r');
     formatSpecifier = '%f';
     dimension = [1,3];
 
@@ -49,7 +50,6 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDepl
     mutationCount = 0;
     mutationProbability = parameters(1); % probability of mutation
     if (mutationCount == 0) % If the count is 0
-        mutationIterations = randi([1 100],1,mutationProbability); % Then generate probability number of random iterations in which mutation will be performed
         mutationIterations = randperm(100,mutationProbability*100); % Then generate probability number of random iterations in which mutation will be performed
         randomMutationIterations = TreeSet(); % Set version of the above permutation
         for in = 1 : mutationProbability*100 % For each index
