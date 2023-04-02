@@ -34,13 +34,15 @@ logFileID = fopen('log.txt','wt');
 %% Constants and Variables
 
 % parfor loop = 1 : 10
+for loop = 1 : 10
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-fileID = fopen('input/smallNet11/constants.txt','r');
+fileID = fopen('input/smallNet6/constants.txt','r');
 formatSpecifier = '%f';
 dimension = [1,9];
 
 constants = fscanf(fileID,formatSpecifier,dimension);
+fclose(fileID);
 
 N = constants(1); %Number of nodes in the physical network
 V = constants(2); %Types of VMs being considered
@@ -61,11 +63,12 @@ L = constants(9); %Packet size
 maximumCores = 64; %Maximum allowed cores on a physical node
 
 %% Reading Network Data
-fileID = fopen('input/smallNet11/network.txt','r');
+fileID = fopen('input/smallNet6/network.txt','r');
 formatSpecifier = '%f';
 dimension = [N,N];
 
 inputNetwork = fscanf(fileID,formatSpecifier,dimension); %Physical network
+fclose(fileID);
 
 %% Generating Network Data
 % [inputNetwork] = generateNetwork(97,126);
@@ -82,43 +85,49 @@ end
 [network,nextHop] = allPairShortestPath(N,inputNetwork); %Floyd-Warshall
 
 %% Reading Network Data
-fileID = fopen('input/smallNet11/bandwidth.txt','r');
+fileID = fopen('input/smallNet6/bandwidth.txt','r');
 formatSpecifier = '%f';
 dimension = [N,N];
 bandwidths = fscanf(fileID,formatSpecifier,dimension); %Bandwidths of physical links
+fclose(fileID);
 
 %% Generating Network Data
 % [bandwidths] = generateBandwidth(inputNetwork,N);
 
-fileID = fopen('input/smallNet11/nodeTypes.txt','r');
+fileID = fopen('input/smallNet6/nodeTypes.txt','r');
 formatSpecifier = '%d';
 dimension = [1,N];
 nodeStatus = fscanf(fileID,formatSpecifier,dimension); %Type of nodes indicating the number of cores
+fclose(fileID);
 
-fileID = fopen('input/smallNet11/vmTypes.txt','r');
+fileID = fopen('input/smallNet6/vmTypes.txt','r');
 formatSpecifier = '%d';
 dimension = [V,2];
 temp = fscanf(fileID,formatSpecifier,dimension); %Type of VMs and their requirements
+fclose(fileID);
 vmTypes = temp(1:V,1)';
 vmCoreRequirements = temp(1:V,2)';
 VI = sum(vmTypes);
 
-fileID = fopen('input/smallNet11/vnfTypes.txt','r');
+fileID = fopen('input/smallNet6/vnfTypes.txt','r');
 formatSpecifier = '%d';
 dimension = [1,F];
 vnfTypes = fscanf(fileID,formatSpecifier,dimension); %Type of VNFs and their requirements
+fclose(fileID);
 FI = sum(vnfTypes);
 
-fileID = fopen('input/smallNet11/costVN.txt','r');
+fileID = fopen('input/smallNet6/costVN.txt','r');
 formatSpecifier = '%f';
 dimension = [1,V];
 Cvn = fscanf(fileID,formatSpecifier,dimension); %Cost of hosting VMs on Nodes
+fclose(fileID);
 
 % Cost of deploying VNFs on VMs
-fileID = fopen('input/smallNet11/costFV.txt','r');
+fileID = fopen('input/smallNet6/costFV.txt','r');
 formatSpecifier = '%f';
 dimension = [1,F];
 Cfv = fscanf(fileID,formatSpecifier,dimension); %Cost of deploying VNFs on VMs
+fclose(fileID);
 
 % Failure level
 iota = 0;
@@ -131,14 +140,14 @@ sfcClassData = SFC(1,S,zeros(1,2),zeros(1,2));
 sfcGraph = zeros(F,F);
 lengths = 0;
 % sfcStatus = input('Choose one option for SFC:\n    1. Random SFC Generation\n    2. Custom Input\nEnter your choice:\n');
-fprintf('Choose one option for SFC:\n    1. Random SFC Generation\n    2. Custom Input\nEnter your choice:\n1\n');
-fprintf(logFileID,'%s\n%s\n%s\n%s\n%s\n','Choose one option for SFC:','    1. Random SFC Generation','    2. Custom Input','Enter your choice:','1');
-sfcStatus = 1;
+fprintf('Choose one option for SFC:\n    1. Random SFC Generation\n    2. Custom Input\nEnter your choice:\n2\n');
+fprintf(logFileID,'%s\n%s\n%s\n%s\n%s\n','Choose one option for SFC:','    1. Random SFC Generation','    2. Custom Input','Enter your choice:','2');
+sfcStatus = 2;
 if sfcStatus == 1 %Random SFC generation
 %     S = input('Enter the number of SFCs:\n');
-    fprintf('Enter the number of SFCs:\n1\n');
-    fprintf(logFileID,'%s\n%s\n','Enter the number of SFCs:','1');
-    S = 1;
+    fprintf('Enter the number of SFCs:\n10\n');
+    fprintf(logFileID,'%s\n%s\n','Enter the number of SFCs:','10');
+    S = 10;
 %     lengthStatus = input('Choose one option for the length of SFC:\n    1. Random Length Generation\n    2. Custom Input\nEnter your choice:\n');
     fprintf('Choose one option for the length of SFC:\n    1. Random Length Generation\n    2. Custom Input\nEnter your choice:\n1\n');
     fprintf(logFileID,'%s\n%s\n%s\n%s\n%s\n','Choose one option for the length of SFC:','    1. Random Length Generation','    2. Custom Input','Enter your choice:','1');
@@ -157,11 +166,21 @@ if sfcStatus == 1 %Random SFC generation
 		end
     end
 elseif sfcStatus == 2 %Manual SFC input
-	S = input('Enter the number of SFCs:\n');
-    fprintf(logFileID,'%s\n%d\n','Enter the number of SFCs:',S);
+	% S = input('Enter the number of SFCs:\n');
+	fprintf('Enter the number of SFCs:3\n');
+    fprintf(logFileID,'%s\n%s\n','Enter the number of SFCs:','3');
+    S = 3;
 	for i = 1 : S
-        chain = zeros(1,3);
-		if mod(i,10) == 1 && mod(i,100) ~= 11
+        % chain = zeros(1,3);
+        if i == 1
+            chain = [1 4 2 5 3];
+        elseif i == 2
+            chain = [1 4 5];
+        elseif i == 3
+            chain = [3 2 1 4];
+        end
+		%{
+if mod(i,10) == 1 && mod(i,100) ~= 11
 			chain = input(sprintf('Enter %dst chain:\n',i));
 		elseif mod(i,10) == 2 && mod(i,100) ~= 12
 			chain = input(sprintf('Enter %dnd chain:\n',i));
@@ -170,6 +189,8 @@ elseif sfcStatus == 2 %Manual SFC input
 		else
 			chain = input(sprintf('Enter %dth chain:\n',i));
         end
+%}
+
 		chainLength = size(chain)-1;
         sfcClassData(1,i) = SFC(chainLength(1,2)+1,chain,zeros(1,2),zeros(1,2));
 		sfcGraph(:,:,i) = zeros(F,F);
@@ -193,74 +214,9 @@ delta = zeros(S,F);
 mu = ones(1,F);
 
 %% Before starting the process, print the details of the entire input that is being considered
-% fprintf('=========================================================================================\n');
-% fprintf('                                   Observation %d\n',loop);
-% fprintf('=========================================================================================\n');
-fprintf('\n');
-fprintf('----------------------------------Physical Network---------------------------------------\n');
-inputNetwork
-fprintf('\n');
-fprintf('----------------------------------Network Bandwidth--------------------------------------\n');
-bandwidths
-fprintf('\n');
-fprintf('--------------------------------------Node Types-----------------------------------------\n');
-nodeStatus
-fprintf('\n');
-fprintf('---------------------------------------VM Types------------------------------------------\n');
-vmCoreRequirements
-fprintf('\n');
-fprintf('---------------------------------------VNF Types-----------------------------------------\n');
-F
-vnfCoreRequirement
-fprintf('\n');
-fprintf('----------------------------------Transmission medium------------------------------------\n');
-medium
-fprintf('\n');
-fprintf('--------------------------------------Packet size----------------------------------------\n');
-L
-fprintf('\n');
-fprintf('----------------------Data Generated from Floyd-Warshall Algorithm-----------------------\n');
-network
-nextHop
-fprintf('\n');
-fprintf('-------------------------------------------Cvn-------------------------------------------\n');
-Cvn
-fprintf('\n');
-fprintf('-------------------------------------------Cfv-------------------------------------------\n');
-Cfv
-fprintf('\n');
-fprintf('--------------------------------------Arrival Rate---------------------------------------\n');
-lambda
-fprintf('\n');
-fprintf('--------------------------------------Service Rate---------------------------------------\n');
-mu
-
-
-%% VM hosting on the network
-% [Xvn, vnMap, vmStatus, hostingStatus] = VMHost(N, V, VI, nodeStatus, vmTypes, vmCoreRequirements); %Sequential hosting
-% if hostingStatus == 0 return; end
-[VI, Xvn, vnMap, vmStatus, vmTypes] = greedyHosting(N, V, nodeStatus, vmCoreRequirements, Cvn); %greedy VM hosting
-
-%% After VM Hosting, print the generated data
-fprintf('\n');
-fprintf('-------------------------------------------VI--------------------------------------------\n');
-VI
-fprintf('\n');
-fprintf('------------------------------------------Xvn--------------------------------------------\n');
-Xvn
-fprintf('\n');
-fprintf('-----------------------------------------VN Map------------------------------------------\n');
-vnMap
-fprintf('\n');
-fprintf('----------------------------------------VM Counts----------------------------------------\n');
-vmTypes
-for s = 1 : S
-    sfcClassData(s)
-end
-
-% fprintf(logFileID,'%s\n','=========================================================================================');
-% fprintf(logFileID,'%s%d\n','                                   Observation ',loop);
-% fprintf(logFileID,'%s\n','=========================================================================================');
+fprintf(logFileID,'%s\n','=========================================================================================');
+fprintf(logFileID,'%s%d\n','                                   Observation ',loop);
+fprintf(logFileID,'%s\n','=========================================================================================');
 fprintf(logFileID,'\n');
 fprintf(logFileID,'%s\n\n','----------------------------------Physical Network---------------------------------------');
 for i = 1 : N
@@ -351,21 +307,6 @@ fprintf(logFileID,'\n\n');
 [VI, Xvn, vnMap, vmStatus, vmTypes] = greedyHosting(N, V, nodeStatus, vmCoreRequirements, Cvn); %greedy VM hosting
 
 %% After VM Hosting, print the generated data
-fprintf('\n');
-fprintf('-------------------------------------------VI--------------------------------------------\n');
-VI
-fprintf('\n');
-fprintf('------------------------------------------Xvn--------------------------------------------\n');
-Xvn
-fprintf('\n');
-fprintf('-----------------------------------------VN Map------------------------------------------\n');
-vnMap
-fprintf('\n');
-fprintf('----------------------------------------VM Counts----------------------------------------\n');
-vmTypes
-for s = 1 : S
-    sfcClassData(s)
-end
 fprintf(logFileID,'\n');
 fprintf(logFileID,'%s\n\n','-------------------------------------------VI--------------------------------------------');
 fprintf(logFileID,'%d\n',VI);
@@ -421,15 +362,6 @@ end
 [FI, vnfTypes, vnfFreq] = generateVNFData(V, F, S, vmTypes, vmCoreRequirements, vnfCoreRequirement, sfcClassData);
 
 %% After VNF Instance Counting, print the generated data
-fprintf('\n');
-fprintf('-------------------------------------------FI--------------------------------------------\n');
-FI
-fprintf('\n');
-fprintf('--------------------------------------VNF Frequencies------------------------------------\n');
-vnfFreq
-fprintf('\n');
-fprintf('----------------------------------------VNF Counts---------------------------------------\n');
-vnfTypes
 fprintf(logFileID,'\n');
 fprintf(logFileID,'%s\n\n','-------------------------------------------FI--------------------------------------------');
 fprintf(logFileID,'%d\n',FI);
@@ -447,22 +379,60 @@ fprintf(logFileID,'\n\n');
 
 tic;
 % [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = bruteForceDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement);
-[Xfv, fvMap, vnfStatus] = metaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID);
+[Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID);
 toc; %This will print the time automatically
+
+optCost
+
 %{
 %% After Deployment and Assignment, print the generated data
-fprintf('\n');
-fprintf('-------------------------------------------Xfv-------------------------------------------\n');
-Xfv
-fprintf('\n');
-fprintf('-----------------------------------------FV Map------------------------------------------\n');
-fvMap
-fprintf('\n');
-fprintf('-------------------------------------------Xsf-------------------------------------------\n');
-Xsf
-fprintf('\n');
-fprintf('---------------------------------------SFC Details---------------------------------------\n');
-sfcClassData
+fprintf(logFileID,'\n\n');
+fprintf(logFileID,'%s\n\n','-------------------------------------------Xfv-------------------------------------------');
+for i = 1 : FI
+    for j = 1 : VI
+        fprintf(logFileID,'%d\t',Xfv(i,j));
+    end
+    fprintf(logFileID,'\n');
+end
+fprintf(logFileID,'\n\n');
+fprintf(logFileID,'%s\n\n','-----------------------------------------FV Map------------------------------------------');
+for i = 1 : F
+	vnfCount = vnfTypes(i);
+	fprintf(logFileID,'%s%d\n','f',i);
+	instanceVMList = fvMap.get(i);
+	for j = 1 : vnfCount
+        instanceDetails = instanceVMList.get(j-1);
+		fprintf(logFileID,'\t%s%d%s%d\n','Instance: ',instanceDetails(1),' -> ',instanceDetails(2));
+	end
+end
+fprintf(logFileID,'\n\n');
+fprintf(logFileID,'%s\n\n','-------------------------------------------Xsf-------------------------------------------');
+for i = 1 : S
+    for j = 1 : FI
+        fprintf(logFileID,'%d\t',Xsf(i,j));
+    end
+    fprintf(logFileID,'\n');
+end
+fprintf(logFileID,'\n\n');
+fprintf(logFileID,'%s\n\n','---------------------------------------SFC Details---------------------------------------');
+for s = 1 : S
+    fprintf(logFileID,'%s%d\n','length: ',sfcClassData(s).chainLength);
+    fprintf(logFileID,'%s\n','chain ');
+    for i = 1 : sfcClassData(s).chainLength
+        fprintf(logFileID,'%d\t',sfcClassData(s).chain(i));
+    end
+    fprintf(logFileID,'\n\n');
+    fprintf(logFileID,'%s\n','Used Links ');
+    for i = 1 : sfcClassData(s).chainLength
+        fprintf(logFileID,'%d\t',sfcClassData(s).usedLinks(i));
+    end
+    fprintf(logFileID,'\n\n');
+    fprintf(logFileID,'%s\n','Used Function Instances ');
+    for i = 1 : sfcClassData(s).chainLength
+        fprintf(logFileID,'%d\t',sfcClassData(s).nodeMaps(i));
+    end
+    fprintf(logFileID,'\n\n');
+end
 
 %% Arary to store all VM objects
 vmClassData = VM(1,zeros(1,2)); %to store the VM status
@@ -482,19 +452,19 @@ end
 %% SFC assignment on the network
 % [Xsf, sfcClassData] = SFCAssign(F, FI, S, vnfTypes, sfcClassData, fvMap, vnMap);
 
-% Binary Variables
-Xfvi = Xfv; % for iota 0, this new binary variable boils down to the existing binary variable indicating the VNF deployment
-Xski = Xsf; % for iota 0, this new binary vairable boils down to the existing binary variable indicating the SFC assignment
-
-fprintf('\n');
-fprintf('------------------------------------------Costs------------------------------------------\n');
-y1 = getY1(N, VI, FI, Cvn, Xvn, Cfv, Xfv, vmStatus, vnfStatus)
-y2 = getY2(VI, F, FI, S, lambda, delta, mu, Xfvi, Xski, vnfStatus)
-y3 = getY3(L, S, medium, network, bandwidths, nextHop, sfcClassData)
-y1+y2+y3
-
-end
+% % Binary Variables
+% Xfvi = Xfv; % for iota 0, this new binary variable boils down to the existing binary variable indicating the VNF deployment
+% Xski = Xsf; % for iota 0, this new binary vairable boils down to the existing binary variable indicating the SFC assignment
+% 
+% fprintf('\n');
+% fprintf('------------------------------------------Costs------------------------------------------\n');
+% y1 = getY1(N, VI, FI, Cvn, Xvn, Cfv, Xfv, vmStatus, vnfStatus)
+% y2 = getY2(VI, F, FI, S, lambda, delta, mu, Xfvi, Xski, vnfStatus)
+% y3 = getY3(L, S, medium, network, bandwidths, nextHop, sfcClassData)
+% y1+y2+y3
 %}
+end
+
 fclose(logFileID);
 
 % preSumVnf = zeros(1,F);
@@ -591,7 +561,7 @@ gvText = gvText+linkData;
 gvText = gvText+newline+"splines=false";
 gvText = gvText+newline+"}";
 
-fileID = fopen('output/smallNet11/gv/graphPrint.gv','w+');
+fileID = fopen('output/smallNet6/gv/graphPrint.gv','w+');
 commands = commands+"dot -Tpng gv/graphPrint.gv -o img/graph.png";
 fprintf(fileID,"%s",gvText);
 %}
@@ -754,13 +724,13 @@ for c = 1 : S
 	end
 	gvText = gvText+newline+"}";
 
-	fileID = fopen(sprintf('%s%d%s','output/smallNet11/gv/sfcAssgn',c,'.gv'),'w+');
+	fileID = fopen(sprintf('%s%d%s','output/smallNet6/gv/sfcAssgn',c,'.gv'),'w+');
 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfcAssgn',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfcAssgn',c,'.png');
 	fprintf(fileID,"%s",gvText);
 end
 %}
 % 
-% fileID = fopen('output/smallNet11/commands.bat','w+');
+% fileID = fopen('output/smallNet6/commands.bat','w+');
 % fprintf(fileID,"%s",commands);
 % fclose(fileID);
 
@@ -820,7 +790,7 @@ end
 % 	gvText = gvText+linkData;
 % 	gvText = gvText+newline+"}";
 
-% 	fileID = fopen(sprintf('%s%d%s','output/smallNet11/gv/sfc',c,'.gv'),'w+');
+% 	fileID = fopen(sprintf('%s%d%s','output/smallNet6/gv/sfc',c,'.gv'),'w+');
 % 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfc',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfc',c,'.png');
 % 	fprintf(fileID,"%s",gvText);
 % end
@@ -952,12 +922,12 @@ end
 % 	gvText = gvText+linkData;
 % 	gvText = gvText+newline+"}";
 
-% 	fileID = fopen(sprintf('%s%d%s','output/smallNet11/gv/sfcAssgn',c,'.gv'),'w+');
+% 	fileID = fopen(sprintf('%s%d%s','output/smallNet6/gv/sfcAssgn',c,'.gv'),'w+');
 % 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfcAssgn',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfcAssgn',c,'.png');
 % 	fprintf(fileID,"%s",gvText);
 % end
 
-% fileID = fopen('output/smallNet11/commands.bat','w+');
+% fileID = fopen('output/smallNet6/commands.bat','w+');
 % fprintf(fileID,"%s",commands);
 % fclose(fileID);
 
@@ -994,7 +964,7 @@ end
 % 	gvText = gvText+linkData;
 % 	gvText = gvText+newline+"}";
 
-% 	fileID = fopen(sprintf('%s%d%s','output/smallNet11/gv/sfc',c,'.gv'),'w+');
+% 	fileID = fopen(sprintf('%s%d%s','output/smallNet6/gv/sfc',c,'.gv'),'w+');
 % 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfc',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfc',c,'.png');
 % 	fprintf(fileID,"%s",gvText);
 % end

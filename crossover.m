@@ -58,9 +58,7 @@ function [children] = crossover(gene1, gene2, len, C)
     
         orderIndex1 = 1;
         orderIndex2 = 1;
-        gene1
-        gene2
-        len
+        
         for i = 1 : len
             if (common.contains(gene1(i)))
                 gene1(i) = order2(orderIndex2);
