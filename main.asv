@@ -33,7 +33,7 @@ logFileID = fopen('log.txt','a+');
 
 %% Constants and Variables
 
-parfor loop = 1 : 10
+% parfor loop = 1 : 10
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 fileID = fopen('input/smallNet8/constants.txt','r');
@@ -289,10 +289,10 @@ fprintf('----------------------------------------VNF Counts---------------------
 vnfTypes
 
 tic;
-[Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = bruteForceDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement);
-% [Xfv, fvMap, vnfStatus] = metaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement);
+% [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = bruteForceDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement);
+[Xfv, fvMap, vnfStatus] = metaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement);
 toc; %This will print the time automatically
-
+%{
 %% After Deployment and Assignment, print the generated data
 fprintf('\n');
 fprintf('-------------------------------------------Xfv-------------------------------------------\n');
@@ -339,7 +339,7 @@ y1+y2+y3
 end
 
 fclose(logFileID);
-
+%}
 % preSumVnf = zeros(1,F);
 % for i = 2 : F
 % 	preSumVnf(1,i) = vnfTypes(1,i-1)+preSumVnf(1,i-1);
