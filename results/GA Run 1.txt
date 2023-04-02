@@ -1,0 +1,6233 @@
+Choose one option for SFC:
+    1. Random SFC Generation
+    2. Custom Input
+Enter your choice:
+1
+Enter the number of SFCs:
+1
+Choose one option for the length of SFC:
+    1. Random Length Generation
+    2. Custom Input
+Enter your choice:
+1
+
+----------------------------------Physical Network---------------------------------------
+
+0	3	0	0	3	0	0	12	
+3	0	5	10	0	5	0	0	
+0	5	0	0	0	0	1	0	
+0	10	0	0	0	0	11	0	
+3	0	0	0	0	0	9	0	
+0	5	0	0	0	0	0	0	
+0	0	1	11	9	0	0	3	
+12	0	0	0	0	0	3	0	
+
+----------------------------------Network Bandwidth--------------------------------------
+
+0	10	0	0	10	0	0	20	
+10	0	10	20	0	10	0	0	
+0	10	0	0	0	0	10	0	
+0	20	0	0	0	0	20	0	
+10	0	0	0	0	0	10	0	
+0	10	0	0	0	0	0	0	
+0	0	10	20	10	0	0	10	
+20	0	0	0	0	0	10	0	
+
+--------------------------------------Node Types-----------------------------------------
+
+4	4	2	2	2	4	2	2	
+
+---------------------------------------VM Cores------------------------------------------
+
+2	6	4	
+
+---------------------------------------VNF Types-----------------------------------------
+
+F: 5
+VNF Cores: 2
+
+
+----------------------------------Transmission medium------------------------------------
+
+1
+
+--------------------------------------Packet size----------------------------------------
+
+1000
+
+----------------------Data Generated from Floyd-Warshall Algorithm-----------------------
+
+Shortest Paths
+
+0	3	8	13	3	8	9	12	
+3	0	5	10	6	5	6	9	
+8	5	0	12	10	10	1	4	
+13	10	12	0	16	15	11	14	
+3	6	10	16	0	11	9	12	
+8	5	10	15	11	0	11	14	
+9	6	1	11	9	11	0	3	
+12	9	4	14	12	14	3	0	
+
+
+Next Hops
+
+1	2	2	2	5	2	2	8	
+1	2	3	4	1	6	3	3	
+2	2	3	7	7	2	7	7	
+2	2	7	4	2	2	7	7	
+1	1	7	1	5	1	7	7	
+2	2	2	2	2	6	2	2	
+3	3	3	4	5	3	7	8	
+1	7	7	7	7	7	7	8	
+
+-------------------------------------------Cvn-------------------------------------------
+
+3	1.500000e+00	4	
+
+-------------------------------------------Cfv-------------------------------------------
+
+5	7	2	1	3	
+
+--------------------------------------Arrival Rate---------------------------------------
+
+8	3	7	7	8	
+
+
+----------------------------------------Drop Rate----------------------------------------
+
+0	0	0	0	0	
+
+
+--------------------------------------Service Rate---------------------------------------
+
+1	1	1	1	1	
+
+
+-------------------------------------------VI--------------------------------------------
+
+8
+
+------------------------------------------Xvn--------------------------------------------
+
+0	0	1	0	0	0	0	0	
+0	0	0	1	0	0	0	0	
+0	0	0	0	1	0	0	0	
+0	0	0	0	0	0	1	0	
+0	0	0	0	0	0	0	1	
+1	0	0	0	0	0	0	0	
+0	1	0	0	0	0	0	0	
+0	0	0	0	0	1	0	0	
+
+
+-----------------------------------------VN Map------------------------------------------
+
+1 -> 3
+2 -> 4
+3 -> 5
+4 -> 7
+5 -> 8
+6 -> 1
+7 -> 2
+8 -> 6
+
+----------------------------------------VM Counts----------------------------------------
+
+5	0	3	
+
+------------------------------------------SFCs-------------------------------------------
+
+length: 5
+chain 
+1	2	3	4	5	
+
+
+-------------------------------------------FI--------------------------------------------
+
+11
+
+----------------------------------------VNF Freqs----------------------------------------
+
+1	1	1	1	1	
+
+----------------------------------------VNF Counts---------------------------------------
+
+2	3	2	2	2	
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	6	3	2	7	
+2	6	3	1	5	
+1	3	6	2	8	
+7	6	4	3	5	
+1	3	4	7	8	
+1	6	5	2	3	
+2	1	5	4	8	
+7	5	2	6	1	
+1	2	4	8	3	
+3	5	2	6	1	
+
+
+Fitness Values 
+712	755	716	808	705	775	855	919	920	822	
+
+Best Gene 
+1	3	4	7	8	
+
+Worst Gene 
+1	2	4	8	3	
+
+Second Worst Gene 
+7	5	2	6	1	
+
+Best Fitness Value 
+705.000000
+
+Worst Fitness Value 
+920.000000
+
+Second Worst Fitness Value 
+919.000000
+
+Iteration number: 1
+
+Parent 1 
+1	2	4	8	3	
+
+Parent 2 
+7	5	2	6	1	
+
+Children 
+2	1	4	8	3	
+7	5	1	6	2	
+2	1	7	5	6	
+4	8	1	3	2	
+
+
+Children Fitness Values 
+960	959	713	1072	
+
+Optimal Indices 
+3, 2	3, 2	3, 2	3, 2	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	6	3	2	7	
+2	6	3	1	5	
+1	3	6	2	8	
+7	6	4	3	5	
+1	3	4	7	8	
+1	6	5	2	3	
+2	1	5	4	8	
+7	5	1	6	2	
+2	1	7	5	6	
+3	5	2	6	1	
+
+
+Fitness Values 
+712	755	716	808	705	775	855	959	713	822	
+
+Best Gene 
+1	3	4	7	8	
+
+Worst Gene 
+7	5	1	6	2	
+
+Second Worst Gene 
+2	1	5	4	8	
+
+Best Fitness Value 
+705.000000
+
+Worst Fitness Value 
+959.000000
+
+Second Worst Fitness Value 
+855.000000
+
+Iteration number: 2
+
+Parent 1 
+7	5	1	6	2	
+
+Parent 2 
+2	1	5	4	8	
+
+Children 
+7	2	1	6	5	
+5	1	2	4	8	
+4	2	1	8	5	
+5	1	2	7	6	
+
+
+Children Fitness Values 
+567	813	922	604	
+
+Optimal Indices 
+1, 4	1, 4	1, 4	1, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	6	3	2	7	
+2	6	3	1	5	
+1	3	6	2	8	
+7	6	4	3	5	
+1	3	4	7	8	
+1	6	5	2	3	
+5	1	2	7	6	
+7	2	1	6	5	
+2	1	7	5	6	
+3	5	2	6	1	
+
+
+Fitness Values 
+712	755	716	808	705	775	604	567	713	822	
+
+Best Gene 
+7	2	1	6	5	
+
+Worst Gene 
+3	5	2	6	1	
+
+Second Worst Gene 
+7	6	4	3	5	
+
+Best Fitness Value 
+567.000000
+
+Worst Fitness Value 
+822.000000
+
+Second Worst Fitness Value 
+808.000000
+
+Iteration number: 3
+
+Parent 1 
+3	5	2	6	1	
+
+Parent 2 
+7	6	4	3	5	
+
+Children 
+6	3	2	5	1	
+7	3	4	5	6	
+6	3	7	5	4	
+2	3	1	5	6	
+
+
+Children Fitness Values 
+812	555	796	817	
+
+Optimal Indices 
+2, 3	2, 3	2, 3	2, 3	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	6	3	2	7	
+2	6	3	1	5	
+1	3	6	2	8	
+6	3	7	5	4	
+1	3	4	7	8	
+1	6	5	2	3	
+5	1	2	7	6	
+7	2	1	6	5	
+2	1	7	5	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+712	755	716	796	705	775	604	567	713	555	
+
+Best Gene 
+7	3	4	5	6	
+
+Worst Gene 
+6	3	7	5	4	
+
+Second Worst Gene 
+1	6	5	2	3	
+
+Best Fitness Value 
+555.000000
+
+Worst Fitness Value 
+796.000000
+
+Second Worst Fitness Value 
+775.000000
+
+Iteration number: 4
+
+Parent 1 
+6	3	7	5	4	
+
+Parent 2 
+1	6	5	2	3	
+
+Children 
+6	5	7	3	4	
+1	6	3	2	5	
+6	5	1	3	2	
+7	6	3	4	5	
+
+
+Children Fitness Values 
+761	816	817	493	
+
+Optimal Indices 
+4, 1	4, 1	4, 1	4, 1	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	6	3	2	7	
+2	6	3	1	5	
+1	3	6	2	8	
+7	6	3	4	5	
+1	3	4	7	8	
+6	5	7	3	4	
+5	1	2	7	6	
+7	2	1	6	5	
+2	1	7	5	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+712	755	716	493	705	761	604	567	713	555	
+
+Best Gene 
+7	6	3	4	5	
+
+Worst Gene 
+6	5	7	3	4	
+
+Second Worst Gene 
+2	6	3	1	5	
+
+Best Fitness Value 
+493.000000
+
+Worst Fitness Value 
+761.000000
+
+Second Worst Fitness Value 
+755.000000
+
+Iteration number: 5
+
+Parent 1 
+6	5	7	3	4	
+
+Parent 2 
+2	6	3	1	5	
+
+Children 
+6	3	7	5	4	
+2	6	5	1	3	
+6	3	2	5	1	
+7	6	5	4	3	
+
+
+Children Fitness Values 
+796	714	812	452	
+
+Optimal Indices 
+4, 2	4, 2	4, 2	4, 2	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	6	3	2	7	
+2	6	5	1	3	
+1	3	6	2	8	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+2	1	7	5	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+712	714	716	493	705	452	604	567	713	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+1	3	6	2	8	
+
+Second Worst Gene 
+2	6	5	1	3	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+716.000000
+
+Second Worst Fitness Value 
+714.000000
+
+Iteration number: 6
+
+Parent 1 
+1	3	6	2	8	
+
+Parent 2 
+2	6	5	1	3	
+
+Children 
+2	6	1	3	8	
+1	3	5	6	2	
+2	6	1	3	5	
+1	3	8	6	2	
+
+
+Children Fitness Values 
+967	722	868	967	
+
+Optimal Indices 
+2, 3	2, 3	2, 3	2, 3	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	6	3	2	7	
+2	6	1	3	5	
+1	3	5	6	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+2	1	7	5	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+712	868	722	493	705	452	604	567	713	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+2	6	1	3	5	
+
+Second Worst Gene 
+1	3	5	6	2	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+868.000000
+
+Second Worst Fitness Value 
+722.000000
+
+Iteration number: 7
+
+Parent 1 
+2	6	1	3	5	
+
+Parent 2 
+1	3	5	6	2	
+
+Children 
+1	3	5	6	2	
+2	6	1	3	5	
+1	3	5	6	2	
+2	6	1	3	5	
+
+
+Children Fitness Values 
+722	868	722	868	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	6	3	2	7	
+2	6	1	3	5	
+1	3	5	6	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+2	1	7	5	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+712	868	722	493	705	452	604	567	713	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+2	6	1	3	5	
+
+Second Worst Gene 
+1	3	5	6	2	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+868.000000
+
+Second Worst Fitness Value 
+722.000000
+
+Iteration number: 8
+
+Parent 1 
+2	6	1	3	5	
+
+Parent 2 
+1	3	5	6	2	
+
+Children 
+1	3	5	6	2	
+2	6	1	3	5	
+1	3	5	6	2	
+2	6	1	3	5	
+
+
+Children Fitness Values 
+722	868	722	868	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	6	3	2	7	
+2	6	1	3	5	
+1	3	5	6	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+2	1	7	5	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+712	868	722	493	705	452	604	567	713	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+2	6	1	3	5	
+
+Second Worst Gene 
+1	3	5	6	2	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+868.000000
+
+Second Worst Fitness Value 
+722.000000
+
+Iteration number: 9
+
+Parent 1 
+2	6	1	3	5	
+
+Parent 2 
+1	3	5	6	2	
+
+Children 
+1	3	5	6	2	
+2	6	1	3	5	
+1	3	5	6	2	
+2	6	1	3	5	
+
+
+Children Fitness Values 
+722	868	722	868	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	6	3	2	7	
+2	6	1	3	5	
+1	3	5	6	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+2	1	7	5	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+712	868	722	493	705	452	604	567	713	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+2	6	1	3	5	
+
+Second Worst Gene 
+1	3	5	6	2	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+868.000000
+
+Second Worst Fitness Value 
+722.000000
+
+Iteration number: 10
+
+Parent 1 
+2	6	1	3	5	
+
+Parent 2 
+1	3	5	6	2	
+
+Children 
+1	3	5	6	2	
+2	6	1	3	5	
+1	3	5	6	2	
+2	6	1	3	5	
+
+
+Children Fitness Values 
+722	868	722	868	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	6	3	2	7	
+2	6	1	3	5	
+1	3	5	6	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+2	1	7	5	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+712	868	722	493	705	452	604	567	713	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+2	6	1	3	5	
+
+Second Worst Gene 
+1	3	5	6	2	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+868.000000
+
+Second Worst Fitness Value 
+722.000000
+
+Iteration number: 11
+
+Parent 1 
+2	6	1	3	5	
+
+Parent 2 
+1	3	5	6	2	
+
+Children 
+1	3	5	6	2	
+2	6	1	3	5	
+1	3	5	6	2	
+2	6	1	3	5	
+
+
+Children Fitness Values 
+722	868	722	868	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	6	3	2	7	
+2	6	1	3	5	
+1	3	5	6	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+2	1	7	5	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+712	868	722	493	705	452	604	567	713	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+2	6	1	3	5	
+
+Second Worst Gene 
+1	3	5	6	2	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+868.000000
+
+Second Worst Fitness Value 
+722.000000
+
+Iteration number: 12
+
+Parent 1 
+2	6	1	3	5	
+
+Parent 2 
+1	3	5	6	2	
+
+Children 
+1	3	5	6	2	
+2	6	1	3	5	
+1	3	5	6	2	
+2	6	1	3	5	
+
+
+Children Fitness Values 
+722	868	722	868	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	6	3	2	7	
+2	6	1	3	5	
+1	3	5	6	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+2	1	7	5	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+712	868	722	493	705	452	604	567	713	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+2	6	1	3	5	
+
+Second Worst Gene 
+1	3	5	6	2	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+868.000000
+
+Second Worst Fitness Value 
+722.000000
+
+Iteration number: 13
+
+Parent 1 
+2	6	1	3	5	
+
+Parent 2 
+1	3	5	6	2	
+
+Children 
+1	3	5	6	2	
+2	6	1	3	5	
+1	3	5	6	2	
+2	6	1	3	5	
+
+
+Children Fitness Values 
+722	868	722	868	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	6	3	2	7	
+2	6	1	3	5	
+1	3	5	6	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+2	1	7	5	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+712	868	722	493	705	452	604	567	713	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+2	6	1	3	5	
+
+Second Worst Gene 
+1	3	5	6	2	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+868.000000
+
+Second Worst Fitness Value 
+722.000000
+
+Iteration number: 14
+
+Parent 1 
+2	6	1	3	5	
+
+Parent 2 
+1	3	5	6	2	
+
+Children 
+1	3	5	6	2	
+2	6	1	3	5	
+1	3	5	6	2	
+2	6	1	3	5	
+
+
+Children Fitness Values 
+722	868	722	868	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	6	3	2	7	
+2	6	1	3	5	
+1	3	5	6	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+2	1	7	5	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+712	868	722	493	705	452	604	567	713	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+2	6	1	3	5	
+
+Second Worst Gene 
+1	3	5	6	2	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+868.000000
+
+Second Worst Fitness Value 
+722.000000
+
+Iteration number: 15
+
+Parent 1 
+2	6	1	3	5	
+
+Parent 2 
+1	3	5	6	2	
+
+Children 
+1	3	5	6	2	
+2	6	1	3	5	
+1	3	5	6	2	
+2	6	1	3	5	
+
+
+Children Fitness Values 
+722	868	722	868	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	6	3	2	7	
+2	6	1	3	5	
+1	3	5	6	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+2	1	7	5	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+712	868	722	493	705	452	604	567	713	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+2	6	1	3	5	
+
+Second Worst Gene 
+1	3	5	6	2	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+868.000000
+
+Second Worst Fitness Value 
+722.000000
+
+Iteration number: 16
+
+Parent 1 
+2	6	1	3	5	
+
+Parent 2 
+1	3	5	6	2	
+
+Children 
+1	3	5	6	2	
+2	6	1	3	5	
+1	3	5	6	2	
+2	6	1	3	5	
+
+
+Children Fitness Values 
+722	868	722	868	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	6	3	2	7	
+2	6	1	3	5	
+1	3	5	6	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+2	1	7	5	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+712	868	722	493	705	452	604	567	713	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+2	6	1	3	5	
+
+Second Worst Gene 
+1	3	5	6	2	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+868.000000
+
+Second Worst Fitness Value 
+722.000000
+
+Iteration number: 17
+
+Parent 1 
+2	6	1	3	5	
+
+Parent 2 
+1	3	5	6	2	
+
+Children 
+1	3	5	6	2	
+2	6	1	3	5	
+1	3	5	6	2	
+2	6	1	3	5	
+
+
+Children 
+7	3	5	6	2	
+7	6	1	3	5	
+1	3	5	8	2	
+2	6	8	3	5	
+
+
+Children Fitness Values 
+718	808	1076	969	
+
+Optimal Indices 
+1, 2	1, 2	1, 2	1, 2	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	6	3	2	7	
+7	3	5	6	2	
+7	6	1	3	5	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+2	1	7	5	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+712	718	808	493	705	452	604	567	713	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+7	6	1	3	5	
+
+Second Worst Gene 
+7	3	5	6	2	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+808.000000
+
+Second Worst Fitness Value 
+718.000000
+
+Iteration number: 18
+
+Parent 1 
+7	6	1	3	5	
+
+Parent 2 
+7	3	5	6	2	
+
+Children 
+7	3	1	5	6	
+7	6	3	5	2	
+7	3	2	5	6	
+7	6	3	5	1	
+
+
+Children Fitness Values 
+757	657	773	697	
+
+Optimal Indices 
+2, 4	2, 4	2, 4	2, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	6	3	2	7	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+2	1	7	5	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+712	697	657	493	705	452	604	567	713	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+2	1	7	5	6	
+
+Second Worst Gene 
+8	6	3	2	7	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+713.000000
+
+Second Worst Fitness Value 
+712.000000
+
+Iteration number: 19
+
+Parent 1 
+2	1	7	5	6	
+
+Parent 2 
+8	6	3	2	7	
+
+Children 
+6	1	2	5	7	
+8	2	3	7	6	
+6	8	2	3	7	
+1	2	5	7	6	
+
+
+Children Fitness Values 
+918	815	920	813	
+
+Optimal Indices 
+4, 2	4, 2	4, 2	4, 2	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	6	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+815	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	6	
+
+Second Worst Gene 
+8	2	3	7	6	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+815.000000
+
+Second Worst Fitness Value 
+815.000000
+
+Iteration number: 20
+
+Parent 1 
+8	2	3	7	6	
+
+Parent 2 
+8	2	3	7	6	
+
+Children 
+8	2	3	7	6	
+8	2	3	7	6	
+8	2	3	7	6	
+8	2	3	7	6	
+
+
+Children Fitness Values 
+815	815	815	815	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	6	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+815	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	6	
+
+Second Worst Gene 
+8	2	3	7	6	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+815.000000
+
+Second Worst Fitness Value 
+815.000000
+
+Iteration number: 21
+
+Parent 1 
+8	2	3	7	6	
+
+Parent 2 
+8	2	3	7	6	
+
+Children 
+8	2	3	7	6	
+8	2	3	7	6	
+8	2	3	7	6	
+8	2	3	7	6	
+
+
+Children Fitness Values 
+815	815	815	815	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	6	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+815	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	6	
+
+Second Worst Gene 
+8	2	3	7	6	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+815.000000
+
+Second Worst Fitness Value 
+815.000000
+
+Iteration number: 22
+
+Parent 1 
+8	2	3	7	6	
+
+Parent 2 
+8	2	3	7	6	
+
+Children 
+8	2	3	7	6	
+8	2	3	7	6	
+8	2	3	7	6	
+8	2	3	7	6	
+
+
+Children Fitness Values 
+815	815	815	815	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	6	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+815	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	6	
+
+Second Worst Gene 
+8	2	3	7	6	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+815.000000
+
+Second Worst Fitness Value 
+815.000000
+
+Iteration number: 23
+
+Parent 1 
+8	2	3	7	6	
+
+Parent 2 
+8	2	3	7	6	
+
+Children 
+8	2	3	7	6	
+8	2	3	7	6	
+8	2	3	7	6	
+8	2	3	7	6	
+
+
+Children Fitness Values 
+815	815	815	815	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	6	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+815	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	6	
+
+Second Worst Gene 
+8	2	3	7	6	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+815.000000
+
+Second Worst Fitness Value 
+815.000000
+
+Iteration number: 24
+
+Parent 1 
+8	2	3	7	6	
+
+Parent 2 
+8	2	3	7	6	
+
+Children 
+8	2	3	7	6	
+8	2	3	7	6	
+8	2	3	7	6	
+8	2	3	7	6	
+
+
+Children Fitness Values 
+815	815	815	815	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	6	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+815	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	6	
+
+Second Worst Gene 
+8	2	3	7	6	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+815.000000
+
+Second Worst Fitness Value 
+815.000000
+
+Iteration number: 25
+
+Parent 1 
+8	2	3	7	6	
+
+Parent 2 
+8	2	3	7	6	
+
+Children 
+8	2	3	7	6	
+8	2	3	7	6	
+8	2	3	7	6	
+8	2	3	7	6	
+
+
+Children Fitness Values 
+815	815	815	815	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	6	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+815	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	6	
+
+Second Worst Gene 
+8	2	3	7	6	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+815.000000
+
+Second Worst Fitness Value 
+815.000000
+
+Iteration number: 26
+
+Parent 1 
+8	2	3	7	6	
+
+Parent 2 
+8	2	3	7	6	
+
+Children 
+8	2	3	7	6	
+8	2	3	7	6	
+8	2	3	7	6	
+8	2	3	7	6	
+
+
+Children Fitness Values 
+815	815	815	815	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	6	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+815	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	6	
+
+Second Worst Gene 
+8	2	3	7	6	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+815.000000
+
+Second Worst Fitness Value 
+815.000000
+
+Iteration number: 27
+
+Parent 1 
+8	2	3	7	6	
+
+Parent 2 
+8	2	3	7	6	
+
+Children 
+8	2	3	7	6	
+8	2	3	7	6	
+8	2	3	7	6	
+8	2	3	7	6	
+
+
+Children Fitness Values 
+815	815	815	815	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	6	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+815	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	6	
+
+Second Worst Gene 
+8	2	3	7	6	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+815.000000
+
+Second Worst Fitness Value 
+815.000000
+
+Iteration number: 28
+
+Parent 1 
+8	2	3	7	6	
+
+Parent 2 
+8	2	3	7	6	
+
+Children 
+8	2	3	7	6	
+8	2	3	7	6	
+8	2	3	7	6	
+8	2	3	7	6	
+
+
+Children 
+8	2	3	7	5	
+1	2	3	7	6	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+1021	812	817	817	
+
+Optimal Indices 
+2, 4	2, 4	2, 4	2, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 29
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 30
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 31
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 32
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 33
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 34
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 35
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 36
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 37
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 38
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 39
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 40
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 41
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 42
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 43
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 44
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 45
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 46
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 47
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 48
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 49
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 50
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 51
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 52
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 53
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 54
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 55
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 56
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 57
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 58
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 59
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 60
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 61
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 62
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 63
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 64
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 65
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 66
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 67
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 68
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 69
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 70
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 71
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 72
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children Fitness Values 
+817	817	817	817	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	1	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+817	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	1	
+
+Second Worst Gene 
+8	2	3	7	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+817.000000
+
+Second Worst Fitness Value 
+817.000000
+
+Iteration number: 73
+
+Parent 1 
+8	2	3	7	1	
+
+Parent 2 
+8	2	3	7	1	
+
+Children 
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+8	2	3	7	1	
+
+
+Children 
+8	5	3	7	1	
+8	2	3	5	1	
+8	2	3	7	4	
+8	4	3	7	1	
+
+
+Children Fitness Values 
+1012	922	918	806	
+
+Optimal Indices 
+4, 3	4, 3	4, 3	4, 3	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+918	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	4	
+
+Second Worst Gene 
+8	2	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+918.000000
+
+Second Worst Fitness Value 
+918.000000
+
+Iteration number: 74
+
+Parent 1 
+8	2	3	7	4	
+
+Parent 2 
+8	2	3	7	4	
+
+Children 
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+
+
+Children Fitness Values 
+918	918	918	918	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+918	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	4	
+
+Second Worst Gene 
+8	2	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+918.000000
+
+Second Worst Fitness Value 
+918.000000
+
+Iteration number: 75
+
+Parent 1 
+8	2	3	7	4	
+
+Parent 2 
+8	2	3	7	4	
+
+Children 
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+
+
+Children Fitness Values 
+918	918	918	918	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+918	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	4	
+
+Second Worst Gene 
+8	2	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+918.000000
+
+Second Worst Fitness Value 
+918.000000
+
+Iteration number: 76
+
+Parent 1 
+8	2	3	7	4	
+
+Parent 2 
+8	2	3	7	4	
+
+Children 
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+
+
+Children Fitness Values 
+918	918	918	918	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+918	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	4	
+
+Second Worst Gene 
+8	2	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+918.000000
+
+Second Worst Fitness Value 
+918.000000
+
+Iteration number: 77
+
+Parent 1 
+8	2	3	7	4	
+
+Parent 2 
+8	2	3	7	4	
+
+Children 
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+
+
+Children Fitness Values 
+918	918	918	918	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+918	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	4	
+
+Second Worst Gene 
+8	2	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+918.000000
+
+Second Worst Fitness Value 
+918.000000
+
+Iteration number: 78
+
+Parent 1 
+8	2	3	7	4	
+
+Parent 2 
+8	2	3	7	4	
+
+Children 
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+
+
+Children Fitness Values 
+918	918	918	918	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+918	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	4	
+
+Second Worst Gene 
+8	2	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+918.000000
+
+Second Worst Fitness Value 
+918.000000
+
+Iteration number: 79
+
+Parent 1 
+8	2	3	7	4	
+
+Parent 2 
+8	2	3	7	4	
+
+Children 
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+
+
+Children Fitness Values 
+918	918	918	918	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+918	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	4	
+
+Second Worst Gene 
+8	2	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+918.000000
+
+Second Worst Fitness Value 
+918.000000
+
+Iteration number: 80
+
+Parent 1 
+8	2	3	7	4	
+
+Parent 2 
+8	2	3	7	4	
+
+Children 
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+
+
+Children Fitness Values 
+918	918	918	918	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+918	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	4	
+
+Second Worst Gene 
+8	2	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+918.000000
+
+Second Worst Fitness Value 
+918.000000
+
+Iteration number: 81
+
+Parent 1 
+8	2	3	7	4	
+
+Parent 2 
+8	2	3	7	4	
+
+Children 
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+
+
+Children Fitness Values 
+918	918	918	918	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+918	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	4	
+
+Second Worst Gene 
+8	2	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+918.000000
+
+Second Worst Fitness Value 
+918.000000
+
+Iteration number: 82
+
+Parent 1 
+8	2	3	7	4	
+
+Parent 2 
+8	2	3	7	4	
+
+Children 
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+
+
+Children Fitness Values 
+918	918	918	918	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+918	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	4	
+
+Second Worst Gene 
+8	2	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+918.000000
+
+Second Worst Fitness Value 
+918.000000
+
+Iteration number: 83
+
+Parent 1 
+8	2	3	7	4	
+
+Parent 2 
+8	2	3	7	4	
+
+Children 
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+
+
+Children Fitness Values 
+918	918	918	918	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+918	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	4	
+
+Second Worst Gene 
+8	2	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+918.000000
+
+Second Worst Fitness Value 
+918.000000
+
+Iteration number: 84
+
+Parent 1 
+8	2	3	7	4	
+
+Parent 2 
+8	2	3	7	4	
+
+Children 
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+
+
+Children Fitness Values 
+918	918	918	918	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+918	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	4	
+
+Second Worst Gene 
+8	2	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+918.000000
+
+Second Worst Fitness Value 
+918.000000
+
+Iteration number: 85
+
+Parent 1 
+8	2	3	7	4	
+
+Parent 2 
+8	2	3	7	4	
+
+Children 
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+
+
+Children Fitness Values 
+918	918	918	918	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+918	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	4	
+
+Second Worst Gene 
+8	2	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+918.000000
+
+Second Worst Fitness Value 
+918.000000
+
+Iteration number: 86
+
+Parent 1 
+8	2	3	7	4	
+
+Parent 2 
+8	2	3	7	4	
+
+Children 
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+
+
+Children Fitness Values 
+918	918	918	918	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+918	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	4	
+
+Second Worst Gene 
+8	2	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+918.000000
+
+Second Worst Fitness Value 
+918.000000
+
+Iteration number: 87
+
+Parent 1 
+8	2	3	7	4	
+
+Parent 2 
+8	2	3	7	4	
+
+Children 
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+
+
+Children Fitness Values 
+918	918	918	918	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+918	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	4	
+
+Second Worst Gene 
+8	2	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+918.000000
+
+Second Worst Fitness Value 
+918.000000
+
+Iteration number: 88
+
+Parent 1 
+8	2	3	7	4	
+
+Parent 2 
+8	2	3	7	4	
+
+Children 
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+
+
+Children Fitness Values 
+918	918	918	918	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	2	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+918	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	2	3	7	4	
+
+Second Worst Gene 
+8	2	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+918.000000
+
+Second Worst Fitness Value 
+918.000000
+
+Iteration number: 89
+
+Parent 1 
+8	2	3	7	4	
+
+Parent 2 
+8	2	3	7	4	
+
+Children 
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+8	2	3	7	4	
+
+
+Children 
+8	2	3	1	4	
+8	2	1	7	4	
+8	2	3	7	1	
+8	1	3	7	4	
+
+
+Children Fitness Values 
+817	713	817	907	
+
+Optimal Indices 
+2, 4	2, 4	2, 4	2, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	1	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+907	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	1	3	7	4	
+
+Second Worst Gene 
+8	1	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+907.000000
+
+Second Worst Fitness Value 
+907.000000
+
+Iteration number: 90
+
+Parent 1 
+8	1	3	7	4	
+
+Parent 2 
+8	1	3	7	4	
+
+Children 
+8	1	3	7	4	
+8	1	3	7	4	
+8	1	3	7	4	
+8	1	3	7	4	
+
+
+Children Fitness Values 
+907	907	907	907	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	1	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+907	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	1	3	7	4	
+
+Second Worst Gene 
+8	1	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+907.000000
+
+Second Worst Fitness Value 
+907.000000
+
+Iteration number: 91
+
+Parent 1 
+8	1	3	7	4	
+
+Parent 2 
+8	1	3	7	4	
+
+Children 
+8	1	3	7	4	
+8	1	3	7	4	
+8	1	3	7	4	
+8	1	3	7	4	
+
+
+Children Fitness Values 
+907	907	907	907	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	1	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+907	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	1	3	7	4	
+
+Second Worst Gene 
+8	1	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+907.000000
+
+Second Worst Fitness Value 
+907.000000
+
+Iteration number: 92
+
+Parent 1 
+8	1	3	7	4	
+
+Parent 2 
+8	1	3	7	4	
+
+Children 
+8	1	3	7	4	
+8	1	3	7	4	
+8	1	3	7	4	
+8	1	3	7	4	
+
+
+Children Fitness Values 
+907	907	907	907	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	1	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+907	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	1	3	7	4	
+
+Second Worst Gene 
+8	1	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+907.000000
+
+Second Worst Fitness Value 
+907.000000
+
+Iteration number: 93
+
+Parent 1 
+8	1	3	7	4	
+
+Parent 2 
+8	1	3	7	4	
+
+Children 
+8	1	3	7	4	
+8	1	3	7	4	
+8	1	3	7	4	
+8	1	3	7	4	
+
+
+Children Fitness Values 
+907	907	907	907	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	1	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+907	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	1	3	7	4	
+
+Second Worst Gene 
+8	1	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+907.000000
+
+Second Worst Fitness Value 
+907.000000
+
+Iteration number: 94
+
+Parent 1 
+8	1	3	7	4	
+
+Parent 2 
+8	1	3	7	4	
+
+Children 
+8	1	3	7	4	
+8	1	3	7	4	
+8	1	3	7	4	
+8	1	3	7	4	
+
+
+Children Fitness Values 
+907	907	907	907	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	1	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+907	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	1	3	7	4	
+
+Second Worst Gene 
+8	1	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+907.000000
+
+Second Worst Fitness Value 
+907.000000
+
+Iteration number: 95
+
+Parent 1 
+8	1	3	7	4	
+
+Parent 2 
+8	1	3	7	4	
+
+Children 
+8	1	3	7	4	
+8	1	3	7	4	
+8	1	3	7	4	
+8	1	3	7	4	
+
+
+Children Fitness Values 
+907	907	907	907	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	1	3	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+907	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+8	1	3	7	4	
+
+Second Worst Gene 
+8	1	3	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+907.000000
+
+Second Worst Fitness Value 
+907.000000
+
+Iteration number: 96
+
+Parent 1 
+8	1	3	7	4	
+
+Parent 2 
+8	1	3	7	4	
+
+Children 
+8	1	3	7	4	
+8	1	3	7	4	
+8	1	3	7	4	
+8	1	3	7	4	
+
+
+Children 
+8	1	6	7	4	
+8	2	3	7	4	
+8	6	3	7	4	
+8	1	3	7	6	
+
+
+Children Fitness Values 
+802	918	798	804	
+
+Optimal Indices 
+3, 1	3, 1	3, 1	3, 1	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+8	1	6	7	4	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+1	2	5	7	6	
+7	3	4	5	6	
+
+
+Fitness Values 
+802	697	657	493	705	452	604	567	813	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+1	2	5	7	6	
+
+Second Worst Gene 
+8	1	6	7	4	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+813.000000
+
+Second Worst Fitness Value 
+802.000000
+
+Iteration number: 97
+
+Parent 1 
+1	2	5	7	6	
+
+Parent 2 
+8	1	6	7	4	
+
+Children 
+1	2	5	6	7	
+8	1	7	6	4	
+1	8	4	6	7	
+2	1	7	6	5	
+
+
+Children Fitness Values 
+566	802	1008	507	
+
+Optimal Indices 
+4, 1	4, 1	4, 1	4, 1	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+1	2	5	6	7	
+7	6	3	5	1	
+7	6	3	5	2	
+7	6	3	4	5	
+1	3	4	7	8	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+2	1	7	6	5	
+7	3	4	5	6	
+
+
+Fitness Values 
+566	697	657	493	705	452	604	567	507	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+1	3	4	7	8	
+
+Second Worst Gene 
+7	6	3	5	1	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+705.000000
+
+Second Worst Fitness Value 
+697.000000
+
+Iteration number: 98
+
+Parent 1 
+1	3	4	7	8	
+
+Parent 2 
+7	6	3	5	1	
+
+Children 
+7	3	4	1	8	
+1	6	3	5	7	
+7	3	6	1	5	
+1	4	3	8	7	
+
+
+Children Fitness Values 
+701	907	796	701	
+
+Optimal Indices 
+4, 1	4, 1	4, 1	4, 1	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+1	2	5	6	7	
+7	3	4	1	8	
+7	6	3	5	2	
+7	6	3	4	5	
+1	4	3	8	7	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+2	1	7	6	5	
+7	3	4	5	6	
+
+
+Fitness Values 
+566	701	657	493	701	452	604	567	507	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+7	3	4	1	8	
+
+Second Worst Gene 
+1	4	3	8	7	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+701.000000
+
+Second Worst Fitness Value 
+701.000000
+
+Iteration number: 99
+
+Parent 1 
+7	3	4	1	8	
+
+Parent 2 
+1	4	3	8	7	
+
+Children 
+1	4	3	8	7	
+7	3	4	1	8	
+1	4	3	8	7	
+7	3	4	1	8	
+
+
+Children Fitness Values 
+701	701	701	701	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+1	2	5	6	7	
+7	3	4	1	8	
+7	6	3	5	2	
+7	6	3	4	5	
+1	4	3	8	7	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+2	1	7	6	5	
+7	3	4	5	6	
+
+
+Fitness Values 
+566	701	657	493	701	452	604	567	507	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+7	3	4	1	8	
+
+Second Worst Gene 
+1	4	3	8	7	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+701.000000
+
+Second Worst Fitness Value 
+701.000000
+
+Iteration number: 100
+
+Parent 1 
+7	3	4	1	8	
+
+Parent 2 
+1	4	3	8	7	
+
+Children 
+1	4	3	8	7	
+7	3	4	1	8	
+1	4	3	8	7	
+7	3	4	1	8	
+
+
+Children Fitness Values 
+701	701	701	701	
+
+Optimal Indices 
+4, 4	4, 4	4, 4	4, 4	
+
+
+
+chain 
+1	2	3	4	5	
+
+Population 
+1	2	5	6	7	
+7	3	4	1	8	
+7	6	3	5	2	
+7	6	3	4	5	
+1	4	3	8	7	
+7	6	5	4	3	
+5	1	2	7	6	
+7	2	1	6	5	
+2	1	7	6	5	
+7	3	4	5	6	
+
+
+Fitness Values 
+566	701	657	493	701	452	604	567	507	555	
+
+Best Gene 
+7	6	5	4	3	
+
+Worst Gene 
+7	3	4	1	8	
+
+Second Worst Gene 
+1	4	3	8	7	
+
+Best Fitness Value 
+452.000000
+
+Worst Fitness Value 
+701.000000
+
+Second Worst Fitness Value 
+701.000000
+
+
+
+452
+
+7	6	5	4	3	
+
