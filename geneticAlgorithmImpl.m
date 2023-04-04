@@ -104,7 +104,7 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
 		fprintf(logFileID,'\n\n');
 
    		% Crossover
-   		[vmChildren] = crossover(vmParent1, vmParent2, chainLength, C); % Perform crossover operation
+   		[vmChildren] = crossover(vmParent1, vmParent2, chainLength, C, VI); % Perform crossover operation
 		fprintf(logFileID,'%s\n','Children ');
 	    for i = 1 : C
 			for j = 1 : chainLength

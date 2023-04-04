@@ -167,17 +167,17 @@ if sfcStatus == 1 %Random SFC generation
     end
 elseif sfcStatus == 2 %Manual SFC input
 	% S = input('Enter the number of SFCs:\n');
-	fprintf('Enter the number of SFCs:2\n');
-    fprintf(logFileID,'%s\n%s\n','Enter the number of SFCs:','2');
+	fprintf('Enter the number of SFCs:3\n');
+    fprintf(logFileID,'%s\n%s\n','Enter the number of SFCs:','3');
     S = 2;
 	for i = 1 : S
         % chain = zeros(1,3);
         if i == 1
-            chain = [5 2 1];
+            chain = [5 1 4 3 2];
         elseif i == 2
-            chain = [5 3 2 4];
+            chain = [2 3 1 4 5];
         elseif i == 3
-            chain = [2 4 3];
+            chain = [3 1 2];
         end
 		%{
 if mod(i,10) == 1 && mod(i,100) ~= 11
@@ -561,7 +561,7 @@ gvText = gvText+linkData;
 gvText = gvText+newline+"splines=false";
 gvText = gvText+newline+"}";
 
-fileID = fopen('output/smallNet6/gv/graphPrint.gv','w+');
+fileID = fopen('output/sm6allNet/gv/graphPrint.gv','w+');
 commands = commands+"dot -Tpng gv/graphPrint.gv -o img/graph.png";
 fprintf(fileID,"%s",gvText);
 %}
@@ -724,13 +724,13 @@ for c = 1 : S
 	end
 	gvText = gvText+newline+"}";
 
-	fileID = fopen(sprintf('%s%d%s','output/smallNet6/gv/sfcAssgn',c,'.gv'),'w+');
+	fileID = fopen(sprintf('%s%d%s','output/sm6allNet/gv/sfcAssgn',c,'.gv'),'w+');
 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfcAssgn',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfcAssgn',c,'.png');
 	fprintf(fileID,"%s",gvText);
 end
 %}
 % 
-% fileID = fopen('output/smallNet6/commands.bat','w+');
+% fileID = fopen('output/sm6allNet/commands.bat','w+');
 % fprintf(fileID,"%s",commands);
 % fclose(fileID);
 
@@ -790,7 +790,7 @@ end
 % 	gvText = gvText+linkData;
 % 	gvText = gvText+newline+"}";
 
-% 	fileID = fopen(sprintf('%s%d%s','output/smallNet6/gv/sfc',c,'.gv'),'w+');
+% 	fileID = fopen(sprintf('%s%d%s','output/sm6allNet/gv/sfc',c,'.gv'),'w+');
 % 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfc',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfc',c,'.png');
 % 	fprintf(fileID,"%s",gvText);
 % end
@@ -922,12 +922,12 @@ end
 % 	gvText = gvText+linkData;
 % 	gvText = gvText+newline+"}";
 
-% 	fileID = fopen(sprintf('%s%d%s','output/smallNet6/gv/sfcAssgn',c,'.gv'),'w+');
+% 	fileID = fopen(sprintf('%s%d%s','output/sm6allNet/gv/sfcAssgn',c,'.gv'),'w+');
 % 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfcAssgn',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfcAssgn',c,'.png');
 % 	fprintf(fileID,"%s",gvText);
 % end
 
-% fileID = fopen('output/smallNet6/commands.bat','w+');
+% fileID = fopen('output/sm6allNet/commands.bat','w+');
 % fprintf(fileID,"%s",commands);
 % fclose(fileID);
 
@@ -964,7 +964,7 @@ end
 % 	gvText = gvText+linkData;
 % 	gvText = gvText+newline+"}";
 
-% 	fileID = fopen(sprintf('%s%d%s','output/smallNet6/gv/sfc',c,'.gv'),'w+');
+% 	fileID = fopen(sprintf('%s%d%s','output/sm6allNet/gv/sfc',c,'.gv'),'w+');
 % 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfc',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfc',c,'.png');
 % 	fprintf(fileID,"%s",gvText);
 % end
