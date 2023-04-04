@@ -1,0 +1,112 @@
+The scheduler has allocated the following nodes to this job:
+cn[015-016]
+"/apps/MATLAB/R2021a/bin/mw_mpiexec" -bind-to core:1 -l -v -print-all-exitcodes -n 12 "/apps/MATLAB/R2021a/bin/worker" -parallel
+host: cn015
+host: cn016
+
+==================================================================================================
+mpiexec options:
+----------------
+  Base path: /apps/MATLAB/R2021a/bin/glnxa64/
+  Launcher: (null)
+  Debug level: 1
+  Enable X: -1
+
+  Global environment:
+  -------------------
+    SLURM_JOB_NAME=Job5
+    XDG_SESSION_ID=c3
+    SLURM_TOPOLOGY_ADDR=cn015
+    SLURMD_NODENAME=cn015
+    SLURM_PRIO_PROCESS=0
+    SLURM_NODE_ALIASES=(null)
+    SHELL=/bin/bash
+    SLURM_EXPORT_ENV=PARALLEL_SERVER_DECODE_FUNCTION,PARALLEL_SERVER_STORAGE_CONSTRUCTOR,PARALLEL_SERVER_JOB_LOCATION,PARALLEL_SERVER_MATLAB_EXE,PARALLEL_SERVER_MATLAB_ARGS,PARALLEL_SERVER_DEBUG,MLM_WEB_LICENSE,PARALLEL_SERVER_STORAGE_LOCATION,PARALLEL_SERVER_CMR,PARALLEL_SERVER_TOTAL_TASKS,PARALLEL_SERVER_NUM_THREADS
+    HISTSIZE=1000
+    SLURM_JOB_QOS=iitg
+    SLURM_TOPOLOGY_ADDR_PATTERN=node
+    TMPDIR=/tmp
+    PARALLEL_SERVER_DEBUG=true
+    QTDIR=/usr/lib64/qt-3.3
+    QTINC=/usr/lib64/qt-3.3/include
+    QT_GRAPHICSSYSTEM_CHECKED=1
+    USER=ppriyadarshini
+    PARALLEL_SERVER_CMR=/apps/MATLAB/R2021a
+    PARALLEL_SERVER_MATLAB_ARGS=-parallel
+    SLURM_NTASKS=12
+    MLM_WEB_LICENSE=false
+    MAIL=/var/spool/mail/ppriyadarshini
+    PATH=/usr/lib64/qt-3.3/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/ibutils/bin:/home/stud/ppriyadarshini/.local/bin:/home/stud/ppriyadarshini/bin
+    PARALLEL_SERVER_NUM_THREADS=1
+    SLURM_WORKING_CLUSTER=param-ishan:master1:6817:8704:101
+    SLURM_JOB_ID=129115
+    PWD=/home/stud/ppriyadarshini
+    SLURM_JOB_USER=ppriyadarshini
+    LANG=en_US.UTF-8
+    MODULEPATH=/usr/share/Modules/modulefiles:/etc/modulefiles:/apps/modulefiles
+    LOADEDMODULES=
+    PARALLEL_SERVER_MATLAB_EXE=/apps/MATLAB/R2021a/bin/worker
+    SLURM_JOB_UID=2673
+    SLURM_SUBMIT_DIR=/home/stud/ppriyadarshini
+    PARALLEL_SERVER_DECODE_FUNCTION=parallel.cluster.generic.communicatingDecodeFcn
+    SLURM_TASK_PID=5896
+    PARALLEL_SERVER_STORAGE_CONSTRUCTOR=makeFileStorageObject
+    HISTCONTROL=ignoredups
+    ENVIRONMENT=BATCH
+    SLURM_JOB_NODELIST=cn[015-016]
+    SHLVL=2
+    HOME=/home/stud/ppriyadarshini
+    PARALLEL_SERVER_JOB_LOCATION=Job5
+    SLURM_GET_USER_ENV=1
+    SLURM_CLUSTER_NAME=param-ishan
+    SLURM_JOB_CPUS_PER_NODE=6(x2)
+    SLURM_JOB_GID=2673
+    PARALLEL_SERVER_TOTAL_TASKS=12
+    SLURM_SUBMIT_HOST=mic-login.param-ishan.iitg.ac.in
+    SLURM_GTIDS=0
+    SLURM_JOB_PARTITION=standard
+    LOGNAME=ppriyadarshini
+    QTLIB=/usr/lib64/qt-3.3/lib
+    SLURM_JOB_ACCOUNT=cse
+    MODULESHOME=/usr/share/Modules
+    SLURM_JOB_NUM_NODES=2
+    LESSOPEN=||/usr/bin/lesspipe.sh %s
+    PARALLEL_SERVER_STORAGE_LOCATION=/scratch/ppriyadarshini/matlab-mtp/ppriyadarshini/R2021a
+    XDG_RUNTIME_DIR=/run/user/2673
+    BASH_FUNC_module()=() {  eval `/usr/bin/modulecmd bash $*`
+}
+
+  Hydra internal environment:
+  ---------------------------
+    GFORTRAN_UNBUFFERED_PRECONNECTED=y
+
+  User set environment:
+  ---------------------
+    MDCE_FORCE_MPI_OPTION=nem3
+
+
+    Proxy information:
+    *********************
+      [1] proxy: cn015 (6 cores)
+      Exec list: /apps/MATLAB/R2021a/bin/worker (6 processes); 
+
+      [2] proxy: cn016 (6 cores)
+      Exec list: /apps/MATLAB/R2021a/bin/worker (6 processes); 
+
+
+==================================================================================================
+
+[mpiexec@cn015.param-ishan.iitg.ac.in] Timeout set to -1 (-1 means infinite)
+[mpiexec@cn015.param-ishan.iitg.ac.in] Got a control port string of cn015.param-ishan.iitg.ac.in:45261
+
+Proxy launch args: /apps/MATLAB/R2021a/bin/glnxa64/hydra_pmi_proxy --control-port cn015.param-ishan.iitg.ac.in:45261 --debug --rmk slurm --launcher slurm --demux poll --pgid 0 --retries 10 --usize -2 --proxy-id 
+
+Arguments being passed to proxy 0:
+--version 3.3.2 --iface-ip-env-name MPIR_CVAR_CH3_INTERFACE_HOSTNAME --hostname cn015 --global-core-map 0,6,12 --pmi-id-map 0,0 --global-process-count 12 --auto-cleanup 1 --pmi-kvsname kvs_5897_0_590734173_cn015.param-ishan.iitg.ac.in --pmi-process-mapping (vector,(0,2,6)) --binding core:1 --ckpoint-num -1 --global-inherited-env 60 'SLURM_JOB_NAME=Job5' 'XDG_SESSION_ID=c3' 'SLURM_TOPOLOGY_ADDR=cn015' 'SLURMD_NODENAME=cn015' 'SLURM_PRIO_PROCESS=0' 'SLURM_NODE_ALIASES=(null)' 'SHELL=/bin/bash' 'SLURM_EXPORT_ENV=PARALLEL_SERVER_DECODE_FUNCTION,PARALLEL_SERVER_STORAGE_CONSTRUCTOR,PARALLEL_SERVER_JOB_LOCATION,PARALLEL_SERVER_MATLAB_EXE,PARALLEL_SERVER_MATLAB_ARGS,PARALLEL_SERVER_DEBUG,MLM_WEB_LICENSE,PARALLEL_SERVER_STORAGE_LOCATION,PARALLEL_SERVER_CMR,PARALLEL_SERVER_TOTAL_TASKS,PARALLEL_SERVER_NUM_THREADS' 'HISTSIZE=1000' 'SLURM_JOB_QOS=iitg' 'SLURM_TOPOLOGY_ADDR_PATTERN=node' 'TMPDIR=/tmp' 'PARALLEL_SERVER_DEBUG=true' 'QTDIR=/usr/lib64/qt-3.3' 'QTINC=/usr/lib64/qt-3.3/include' 'QT_GRAPHICSSYSTEM_CHECKED=1' 'USER=ppriyadarshini' 'PARALLEL_SERVER_CMR=/apps/MATLAB/R2021a' 'PARALLEL_SERVER_MATLAB_ARGS=-parallel' 'SLURM_NTASKS=12' 'MLM_WEB_LICENSE=false' 'MAIL=/var/spool/mail/ppriyadarshini' 'PATH=/usr/lib64/qt-3.3/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/ibutils/bin:/home/stud/ppriyadarshini/.local/bin:/home/stud/ppriyadarshini/bin' 'PARALLEL_SERVER_NUM_THREADS=1' 'SLURM_WORKING_CLUSTER=param-ishan:master1:6817:8704:101' 'SLURM_JOB_ID=129115' 'PWD=/home/stud/ppriyadarshini' 'SLURM_JOB_USER=ppriyadarshini' 'LANG=en_US.UTF-8' 'MODULEPATH=/usr/share/Modules/modulefiles:/etc/modulefiles:/apps/modulefiles' 'LOADEDMODULES=' 'PARALLEL_SERVER_MATLAB_EXE=/apps/MATLAB/R2021a/bin/worker' 'SLURM_JOB_UID=2673' 'SLURM_SUBMIT_DIR=/home/stud/ppriyadarshini' 'PARALLEL_SERVER_DECODE_FUNCTION=parallel.cluster.generic.communicatingDecodeFcn' 'SLURM_TASK_PID=5896' 'PARALLEL_SERVER_STORAGE_CONSTRUCTOR=makeFileStorageObject' 'HISTCONTROL=ignoredups' 'ENVIRONMENT=BATCH' 'SLURM_JOB_NODELIST=cn[015-016]' 'SHLVL=2' 'HOME=/home/stud/ppriyadarshini' 'PARALLEL_SERVER_JOB_LOCATION=Job5' 'SLURM_GET_USER_ENV=1' 'SLURM_CLUSTER_NAME=param-ishan' 'SLURM_JOB_CPUS_PER_NODE=6(x2)' 'SLURM_JOB_GID=2673' 'PARALLEL_SERVER_TOTAL_TASKS=12' 'SLURM_SUBMIT_HOST=mic-login.param-ishan.iitg.ac.in' 'SLURM_GTIDS=0' 'SLURM_JOB_PARTITION=standard' 'LOGNAME=ppriyadarshini' 'QTLIB=/usr/lib64/qt-3.3/lib' 'SLURM_JOB_ACCOUNT=cse' 'MODULESHOME=/usr/share/Modules' 'SLURM_JOB_NUM_NODES=2' 'LESSOPEN=||/usr/bin/lesspipe.sh %s' 'PARALLEL_SERVER_STORAGE_LOCATION=/scratch/ppriyadarshini/matlab-mtp/ppriyadarshini/R2021a' 'XDG_RUNTIME_DIR=/run/user/2673' 'BASH_FUNC_module()=() {  eval `/usr/bin/modulecmd bash $*`
+}' --global-user-env 1 'MDCE_FORCE_MPI_OPTION=nem3' --global-system-env 1 'GFORTRAN_UNBUFFERED_PRECONNECTED=y' --proxy-core-count 6 --exec --exec-appnum 0 --exec-proc-count 6 --exec-local-env 0 --exec-wdir /home/stud/ppriyadarshini --exec-args 2 /apps/MATLAB/R2021a/bin/worker -parallel 
+
+Arguments being passed to proxy 1:
+--version 3.3.2 --iface-ip-env-name MPIR_CVAR_CH3_INTERFACE_HOSTNAME --hostname cn016 --global-core-map 0,6,12 --pmi-id-map 0,6 --global-process-count 12 --auto-cleanup 1 --pmi-kvsname kvs_5897_0_590734173_cn015.param-ishan.iitg.ac.in --pmi-process-mapping (vector,(0,2,6)) --binding core:1 --ckpoint-num -1 --global-inherited-env 60 'SLURM_JOB_NAME=Job5' 'XDG_SESSION_ID=c3' 'SLURM_TOPOLOGY_ADDR=cn015' 'SLURMD_NODENAME=cn015' 'SLURM_PRIO_PROCESS=0' 'SLURM_NODE_ALIASES=(null)' 'SHELL=/bin/bash' 'SLURM_EXPORT_ENV=PARALLEL_SERVER_DECODE_FUNCTION,PARALLEL_SERVER_STORAGE_CONSTRUCTOR,PARALLEL_SERVER_JOB_LOCATION,PARALLEL_SERVER_MATLAB_EXE,PARALLEL_SERVER_MATLAB_ARGS,PARALLEL_SERVER_DEBUG,MLM_WEB_LICENSE,PARALLEL_SERVER_STORAGE_LOCATION,PARALLEL_SERVER_CMR,PARALLEL_SERVER_TOTAL_TASKS,PARALLEL_SERVER_NUM_THREADS' 'HISTSIZE=1000' 'SLURM_JOB_QOS=iitg' 'SLURM_TOPOLOGY_ADDR_PATTERN=node' 'TMPDIR=/tmp' 'PARALLEL_SERVER_DEBUG=true' 'QTDIR=/usr/lib64/qt-3.3' 'QTINC=/usr/lib64/qt-3.3/include' 'QT_GRAPHICSSYSTEM_CHECKED=1' 'USER=ppriyadarshini' 'PARALLEL_SERVER_CMR=/apps/MATLAB/R2021a' 'PARALLEL_SERVER_MATLAB_ARGS=-parallel' 'SLURM_NTASKS=12' 'MLM_WEB_LICENSE=false' 'MAIL=/var/spool/mail/ppriyadarshini' 'PATH=/usr/lib64/qt-3.3/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/ibutils/bin:/home/stud/ppriyadarshini/.local/bin:/home/stud/ppriyadarshini/bin' 'PARALLEL_SERVER_NUM_THREADS=1' 'SLURM_WORKING_CLUSTER=param-ishan:master1:6817:8704:101' 'SLURM_JOB_ID=129115' 'PWD=/home/stud/ppriyadarshini' 'SLURM_JOB_USER=ppriyadarshini' 'LANG=en_US.UTF-8' 'MODULEPATH=/usr/share/Modules/modulefiles:/etc/modulefiles:/apps/modulefiles' 'LOADEDMODULES=' 'PARALLEL_SERVER_MATLAB_EXE=/apps/MATLAB/R2021a/bin/worker' 'SLURM_JOB_UID=2673' 'SLURM_SUBMIT_DIR=/home/stud/ppriyadarshini' 'PARALLEL_SERVER_DECODE_FUNCTION=parallel.cluster.generic.communicatingDecodeFcn' 'SLURM_TASK_PID=5896' 'PARALLEL_SERVER_STORAGE_CONSTRUCTOR=makeFileStorageObject' 'HISTCONTROL=ignoredups' 'ENVIRONMENT=BATCH' 'SLURM_JOB_NODELIST=cn[015-016]' 'SHLVL=2' 'HOME=/home/stud/ppriyadarshini' 'PARALLEL_SERVER_JOB_LOCATION=Job5' 'SLURM_GET_USER_ENV=1' 'SLURM_CLUSTER_NAME=param-ishan' 'SLURM_JOB_CPUS_PER_NODE=6(x2)' 'SLURM_JOB_GID=2673' 'PARALLEL_SERVER_TOTAL_TASKS=12' 'SLURM_SUBMIT_HOST=mic-login.param-ishan.iitg.ac.in' 'SLURM_GTIDS=0' 'SLURM_JOB_PARTITION=standard' 'LOGNAME=ppriyadarshini' 'QTLIB=/usr/lib64/qt-3.3/lib' 'SLURM_JOB_ACCOUNT=cse' 'MODULESHOME=/usr/share/Modules' 'SLURM_JOB_NUM_NODES=2' 'LESSOPEN=||/usr/bin/lesspipe.sh %s' 'PARALLEL_SERVER_STORAGE_LOCATION=/scratch/ppriyadarshini/matlab-mtp/ppriyadarshini/R2021a' 'XDG_RUNTIME_DIR=/run/user/2673' 'BASH_FUNC_module()=() {  eval `/usr/bin/modulecmd bash $*`
+}' --global-user-env 1 'MDCE_FORCE_MPI_OPTION=nem3' --global-system-env 1 'GFORTRAN_UNBUFFERED_PRECONNECTED=y' --proxy-core-count 6 --exec --exec-appnum 0 --exec-proc-count 6 --exec-local-env 0 --exec-wdir /home/stud/ppriyadarshini --exec-args 2 /apps/MATLAB/R2021a/bin/worker -parallel 
+
+[mpiexec@cn015.param-ishan.iitg.ac.in] Launch arguments: /bin/srun -N 2 -n 2 --input none /apps/MATLAB/R2021a/bin/glnxa64/hydra_pmi_proxy --control-port cn015.param-ishan.iitg.ac.in:45261 --debug --rmk slurm --launcher slurm --demux poll --pgid 0 --retries 10 --usize -2 --proxy-id -1 

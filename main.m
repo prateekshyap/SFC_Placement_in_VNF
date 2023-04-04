@@ -189,9 +189,9 @@ delta = zeros(S,F);
 mu = ones(1,F);
 
 %% Before starting the process, print the details of the entire input that is being considered
-% fprintf('=========================================================================================\n');
-% fprintf('                                   Observation %d\n',loop);
-% fprintf('=========================================================================================\n');
+fprintf('=========================================================================================\n');
+fprintf('                                   Observation %d\n',loop);
+fprintf('=========================================================================================\n');
 fprintf('\n');
 fprintf('----------------------------------Physical Network---------------------------------------\n');
 inputNetwork
@@ -338,6 +338,7 @@ y1+y2+y3
 
 end
 
+fprintf(logFileID,'bas chal gaya');
 fclose(logFileID);
 
 % preSumVnf = zeros(1,F);
