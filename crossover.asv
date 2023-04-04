@@ -1,4 +1,4 @@
-function [children] = crossover(gene1, gene2, len, C, VI)
+function [children] = crossover(gene1, gene2, len, C)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 %{
@@ -109,9 +109,7 @@ function [children] = crossover(gene1, gene2, len, C, VI)
         children(4,:) = gene2;
     end
 %}
-%{
-%   This is two point crossover
-    children = zeros(C,len);
+% This is two point crossover
     point1 = 0;
     point2 = 0;
     if len == 3
@@ -129,109 +127,7 @@ function [children] = crossover(gene1, gene2, len, C, VI)
             point2 = temp;
         end
     end
-    children(1,:) = gene1;
-    children(2,:) = gene2;
+    child1 = 
     for i = point1+1 : point2
-        temp = children(1,i);
-        children(1,i) = children(2,i);
-        children(2,i) = temp;
-    end
-    point1 = 0;
-    point2 = 0;
-    if len == 3
-        point1 = 1;
-        point2 = 2;
-    else
-        point1 = randi([1 len-1]);
-        point2 = point1;
-        while point2 == point1
-            point2 = randi([1 len-1]);
-        end
-        if point1 > point2
-            temp = point1;
-            point1 = point2;
-            point2 = temp;
-        end
-    end
-    children(3,:) = gene1;
-    children(4,:) = gene2;
-    for i = point1+1 : point2
-        temp = children(3,i);
-        children(3,i) = children(4,i);
-        children(4,i) = temp;
-    end
-%}
-%   This is hybrid two point crossover and generation
-    import java.util.TreeSet;
-    children = zeros(C,len);
-    point1 = 0;
-    point2 = 0;
-    if len == 3
-        point1 = 1;
-        point2 = 2;
-    else
-        point1 = randi([1 len-1]);
-        point2 = point1;
-        while point2 == point1
-            point2 = randi([1 len-1]);
-        end
-        if point1 > point2
-            temp = point1;
-            point1 = point2;
-            point2 = temp;
-        end
-    end
-    children(1,:) = gene1;
-    children(2,:) = gene2;
-    for i = point1+1 : point2
-        temp = children(1,i);
-        children(1,i) = children(2,i);
-        children(2,i) = temp;
-    end
-    children(3,:) = gene1;
-    children(4,:) = gene2;
-    parentUnion = TreeSet();
-    for i = 1 : len
-        parentUnion.add(gene1(i));
-        parentUnion.add(gene2(i));
-    end
-    remVal = VI-parentUnion.size();
-    remVMs = zeros(1,remVal);
-    remIndex = 1;
-    for v = 1 : VI
-        if ~parentUnion.contains(v)
-            remVMs(remIndex) = v;
-            remIndex = remIndex+1;
-        end
-    end
-    remIndex = 1;
-    for i = 1 : point1
-        if remIndex > remVal
-            break;
-        end
-        children(3,i) = remVMs(remIndex);
-        remIndex = remIndex+1;
-    end
-    for i = point2+1 : len
-        if remIndex > remVal
-            break;
-        end
-        children(3,i) = remVMs(remIndex);
-        remIndex = remIndex+1;
-    end
-    remIndex = 1;
-    for i = 1 : point1
-        if remIndex > remVal
-            break;
-        end
-        children(4,i) = remVMs(remIndex);
-        remIndex = remIndex+1;
-    end
-    for i = point2+1 : len
-        if remIndex > remVal
-            break;
-        end
-        children(4,i) = remVMs(remIndex);
-        remIndex = remIndex+1;
-    end
+        
 end

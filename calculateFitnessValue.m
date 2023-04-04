@@ -1,8 +1,10 @@
-function [cost] = calculateFitnessValue(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, nodeStatus, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, nodeCapacity, vmCapacity, vnfCapacity, preSumVnf, iterations, populationSize, sIndex, vmGene, nodeGene)
+function [cost, XfvTemp, XsfTemp, sfcClassData, vmCapacityTemp, vnfCapacityTemp] = calculateFitnessValue(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, vmGene)
 
 	XfvTemp = Xfv; % Create a copy of Xfv for modification
 	XsfTemp = Xsf; % Create a copy of Xsf for modification
 	XsfTemp(sIndex,:) = zeros(1,FI); % Add a new row
+	vmCapacityTemp = vmCapacity; % Create a copy of VM Capacity for modification
+	vnfCapacityTemp = vnfCapacity; % Create a copy of VNF Capacity for modification
 	chain = sfcClassData(sIndex).chain; % Get the current chain
 	chainLength = sfcClassData(sIndex).chainLength; % Get the current chain length
     usedLinks = zeros(1,chainLength); % To store the sequence of physical nodes
@@ -20,11 +22,12 @@ function [cost] = calculateFitnessValue(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, Xfv, 
 				break;
 			end
 		end
-		if indicator == 1 && vnfCapacity(chosenInstance) > 0 % If the chosen VM has an instance of the required VNF
-			XfvTemp(chosenInstance,chosenVM) = 1; % Deploy
+		if indicator == 1 && vnfCapacityTemp(chosenInstance) > 0 % If the chosen VM has an instance of the required VNF
+            XfvTemp(chosenInstance,chosenVM) = 1; % Deploy
 			XsfTemp(sIndex,chosenInstance) = 1; % Assign
+            usedLinks(pos) = vnMap.get(vmGene(pos)); % Store the physical node
             nodeMaps(pos) = chosenInstance; % Store the instance number
-			% Decrease the capacity
+			vnfCapacityTemp(chosenInstance) = vnfCapacityTemp(chosenInstance)-1; % Decrease the capacity
 		else % If the assignment couldn't be done, we need to find another instance and assignment
 			% Step 2 - Find an undeployed instance to deploy on that VM
 			freeVNF = 0;
@@ -44,33 +47,65 @@ function [cost] = calculateFitnessValue(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, Xfv, 
 				end
             end
 			if freeVNF ~= 0 % If we got an undeployed VNF instance
-				XfvTemp(freeVNF,chosenVM) = 1; % Deploy
-				XsfTemp(sIndex,freeVNF) = 1; % Assign
-                nodeMaps(pos) = freeVNF; % Store the instance number
-			else % If no such instance could be found
-				% Step 3 - Choose a random instance to assign
+				if vmCapacityTemp(chosenVM) > 0 % If the chosen VM has more capacity
+					XfvTemp(freeVNF,chosenVM) = 1; % Deploy
+					XsfTemp(sIndex,freeVNF) = 1; % Assign
+	                usedLinks(pos) = vnMap.get(vmGene(pos)); % Store the physical node
+                    nodeMaps(pos) = freeVNF; % Store the instance number
+	                vmCapacityTemp(chosenVM) = vmCapacityTemp(chosenVM)-1; % Decrease the capacity
+	                vnfCapacityTemp(freeVNF) = vnfCapacityTemp(freeVNF)-1; % Decrease the capacity
+	            else % If the VM is not free, choose another free VM to deploy that instance
+	            	% Step 3 - Choose a random free VM that is close to this VM to deploy this instance
+                    distances = zeros(1,VI);
+	            	minDistance = Inf; % This will store the the minimum distance
+                    minDistanceVM = 0; % This will store the VM with the minimum distance
+	            	for vin = 1 : VI % For each instance
+	            		distances(vin) = network(vnMap.get(chosenVM),vnMap.get(vin)); % Store the shortest distance from the chosen VM
+	            		if distances(vin) < minDistance && distances(vin) ~= 0
+	            			minDistanceVM = vin; % Update the new VM
+                            minDistance = distances(vin); % Update the new minimum distance
+	            		end
+	            	end
+	            	XfvTemp(freeVNF,minDistanceVM) = 1; % Deploy
+					XsfTemp(sIndex,freeVNF) = 1; % Assign
+					vmGene(pos) = minDistanceVM; % Modify the vm gene
+                    usedLinks(pos) = vnMap.get(vmGene(pos)); % Store the physical node
+                    nodeMaps(pos) = freeVNF; % Store the instance number
+	                vmCapacityTemp(minDistanceVM) = vmCapacityTemp(minDistanceVM)-1; % Decrease the capacity
+	                vnfCapacityTemp(freeVNF) = vnfCapacityTemp(freeVNF)-1; % Decrease the capacity
+	            end
+			else % If no such instance could be found i.e. all the corresponding instances are deployed
+				% Step 4 - Choose a random instance to assign
+                minDistanceInstance = 0;
+                minDistance = Inf;
 				for fin = fIndex : fIndex+vnfTypes(chain(pos))-1 % For each instance of the same function
-					if vnfCapacity(fin) > 0 % If it has more capacity
-						chosenVM = 0;
+                    if vnfCapacityTemp(fin) > 0 % If it has more capacity
+                        chosenVM = 0;
 						for vin = 1 : VI % For each VM
 							if XfvTemp(fin,vin) == 1 % If required VM is spotted
 								chosenVM = vin; % Store it
 								break;
 							end
 						end
-						XfvTemp(fin,chosenVM) = 1; % Deploy
-						XsfTemp(sIndex,freeVNF) = 1; % Assign
-                        nodeMaps(pos) = fin; % Store the instance number
-						vmGene(pos) = chosenVM; % Modify the vm gene
-						% nodeGene(pos) = vnMap.get(chosenVM); % Modify the node gene
-						break;
+                        distance = network(vnMap.get(chosenVM),vnMap.get(vmGene(pos)));
+                        if distance < minDistance
+                            minDistanceInstance = fin;
+                            minDistance = distance;
+                        end
 					end
-				end
+                end
+				XfvTemp(minDistanceInstance,chosenVM) = 1; % Deploy
+				XsfTemp(sIndex,minDistanceInstance) = 1; % Assign
+				vmGene(pos) = chosenVM; % Modify the vm gene
+                usedLinks(pos) = vnMap.get(vmGene(pos)); % Store the physical node
+                nodeMaps(pos) = minDistanceInstance; % Store the instance number
+                vnfCapacityTemp(minDistanceInstance) = vnfCapacityTemp(minDistanceInstance)-1; % Decrease the capacity
+				% break;
 			end
         end
     end
-    
-    % sfcClassData(sIndex).usedLinks = nodeGene;
+
+    sfcClassData(sIndex).usedLinks = usedLinks;
     sfcClassData(sIndex).nodeMaps = nodeMaps;
 	y1 = getY1(N, VI, FI, Cvn, Xvn, Cfv, XfvTemp, vmStatus, vnfStatus);
 	y2 = getY2(VI, F, FI, sIndex, lambda, delta, mu, XfvTemp, XsfTemp, vnfStatus);
