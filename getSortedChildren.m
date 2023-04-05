@@ -14,37 +14,37 @@ function [newValues, newChildren] = getSortedChildren(c, vmChildren, C, length)
         rank(1) = 4;
         c(4) = Inf;
     end
-	if c(1) <= c(2) && c(1) <= c(3) && c(1) <= c(4)
+	if c(1) ~= Inf && c(1) <= c(2) && c(1) <= c(3) && c(1) <= c(4)
         rank(2) = 1;
         c(1) = Inf;
-    elseif c(2) <= c(1) && c(2) <= c(3) && c(2) <= c(4)
+    elseif c(2) ~= Inf && c(2) <= c(1) && c(2) <= c(3) && c(2) <= c(4)
         rank(2) = 2;
         c(2) = Inf;
-    elseif c(3) <= c(1) && c(3) <= c(2) && c(3) <= c(4)
+    elseif c(3) ~= Inf && c(3) <= c(1) && c(3) <= c(2) && c(3) <= c(4)
         rank(2) = 3;
         c(3) = Inf;
     else
         rank(2) = 4;
         c(4) = Inf;
     end
-	if c(1) <= c(2) && c(1) <= c(3) && c(1) <= c(4)
+	if c(1) ~= Inf && c(1) <= c(2) && c(1) <= c(3) && c(1) <= c(4)
         rank(3) = 1;
         c(1) = Inf;
-    elseif c(2) <= c(1) && c(2) <= c(3) && c(2) <= c(4)
+    elseif c(2) ~= Inf && c(2) <= c(1) && c(2) <= c(3) && c(2) <= c(4)
         rank(3) = 2;
         c(2) = Inf;
-    elseif c(3) <= c(1) && c(3) <= c(2) && c(3) <= c(4)
+    elseif c(3) ~= Inf && c(3) <= c(1) && c(3) <= c(2) && c(3) <= c(4)
         rank(3) = 3;
         c(3) = Inf;
     else
         rank(3) = 4;
         c(4) = Inf;
     end
-    if c(1) <= c(2) && c(1) <= c(3) && c(1) <= c(4)
+    if c(1) ~= Inf && c(1) <= c(2) && c(1) <= c(3) && c(1) <= c(4)
         rank(4) = 1;
-    elseif c(2) <= c(1) && c(2) <= c(3) && c(2) <= c(4)
+    elseif c(2) ~= Inf && c(2) <= c(1) && c(2) <= c(3) && c(2) <= c(4)
         rank(4) = 2;
-    elseif c(3) <= c(1) && c(3) <= c(2) && c(3) <= c(4)
+    elseif c(3) ~= Inf && c(3) <= c(1) && c(3) <= c(2) && c(3) <= c(4)
         rank(4) = 3;
     else
         rank(4) = 4;

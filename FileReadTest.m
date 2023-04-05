@@ -276,4 +276,47 @@ network(1,5) = links(21); network(5,1) = links(21);
 % network(1,1) = 1; network(1,1) = 1;
 % G = graph(network);
 % plot(G);
-network
+% network
+
+
+inputNetwork = generateNetwork(97,126);
+
+for i = 1 : 97
+    for j = 1 : 97
+        if (inputNetwork(i,j) ~= 0)
+            inputNetwork(i,j) = 1;
+        end
+    end
+end
+
+degree(:) = sum(inputNetwork)
+nodeCount = 0;
+fprintf('Degree 8-10\n');
+for i = 1 : 97
+    if (degree(i) == 8 || degree(i) == 9 || degree(i) == 10 || degree(i) == 11)
+        fprintf('%d ',i);
+        nodeCount = nodeCount+1;
+    end
+end
+fprintf('\n');
+nodeCount
+fprintf('Degree 4-7\n');
+for i = 1 : 97
+    if (degree(i) == 4 || degree(i) == 5 || degree(i) == 6 || degree(i) == 7)
+        fprintf('%d ',i);
+        nodeCount = nodeCount+1;
+    end
+end
+fprintf('\n');
+nodeCount
+fprintf('Degree 1-3\n');
+for i = 1 : 97
+    if (degree(i) == 1 || degree(i) == 2 || degree(i) == 3)
+        fprintf('%d ',i);
+        nodeCount = nodeCount+1;
+    end
+end
+fprintf('\n');
+nodeCount
+
+sum(degree)

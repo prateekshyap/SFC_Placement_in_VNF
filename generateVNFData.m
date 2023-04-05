@@ -7,6 +7,7 @@ function [FI, vnfTypes, vnfFreq] = generateVNFData(V, F, S, vmTypes, vmCoreRequi
     for v = 1 : V %For each VM
         FI = FI+(vmTypes(v)*vmCoreRequirements(v)/vnfCoreRequirement); %
     end
+    % fprintf('Done till loop - 1');
 
     % Find out the total requirement of each VNF type
     vnfFreq = zeros(1,F);
@@ -17,14 +18,19 @@ function [FI, vnfTypes, vnfFreq] = generateVNFData(V, F, S, vmTypes, vmCoreRequi
             vnfFreq(chain(c)) = vnfFreq(chain(c))+1; % Increment the frequency of the corresponding VNF
         end
     end
+    % fprintf('Done till loop - 2');
     
     
     %% Random Increment with floor function
     % Find out the minimum number of instances required for each VNF type
+    % FI
+    % vnfFreq
     ratio = FI/sum(vnfFreq); % This ratio indicates the ratio of possible instances to required instances
     for f = 1 : F % For each VNF type
         vnfTypes(f) = floor(vnfFreq(f)*ratio); % Multiply the ratio and take the floor value
     end
+    % fprintf('Done till loop - 3');
+    % vnfTypes
     
     % Now that we have found out the minimum number of instances possible
     % for each VNF
@@ -38,6 +44,7 @@ function [FI, vnfTypes, vnfFreq] = generateVNFData(V, F, S, vmTypes, vmCoreRequi
     for i = 1 : remInstances % For each remaining instance
         vnfTypes(extraVNFs(i)) = vnfTypes(extraVNFs(i))+1; % Increment the instance count for the corresponding VNF
     end
+    % fprintf('Done till loop - 4');
     
     % This part of the code will increase the instance count for such VNFs
     % whose current instance count is 1
@@ -53,8 +60,11 @@ function [FI, vnfTypes, vnfFreq] = generateVNFData(V, F, S, vmTypes, vmCoreRequi
                     break;
                 end
             end
+            % f
+            % vnfTypes
         end
     end
+    % fprintf('Done till loop - 5');
 
     % Now vnfTypes is guaranteed to have a good combination of instance
     % counts which considers the frequency of the VNFs as well as the

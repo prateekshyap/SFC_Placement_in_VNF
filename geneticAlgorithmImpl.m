@@ -1,4 +1,4 @@
-function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, sIndex, logFileID)
+function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, sIndex, logFileID, onePercent, totalIterations)
 
 	global mutationProbability;
     global mutationCount;
@@ -20,7 +20,7 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
    	% Fill random combinations in the population matrix, find out the initial vmPopulations, their fitness values, the best and the worst candidates
    	for p = 1 : populationSize % For each member
    		vmPopulations(p,:) = randperm(VI,chainLength); % Generate a random permutation of the VMs
-   		[fitnessValues(p),t1,t2,t3,t4,t5] = calculateFitnessValue(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, vmPopulations(p,:)); % Find out the fitness value and store it
+   		[fitnessValues(p),vmPopulations(p,:),t1,t2,t3,t4,t5] = calculateFitnessValue(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, vmPopulations(p,:)); % Find out the fitness value and store it
    		if p > 1 % If we have more than one fitness value
    			if fitnessValues(p) < fitnessValues(bestIndex) % If the newly calculated fitness value is less than the best fitness value
    				bestIndex = p; % Update the best fitness index
@@ -136,7 +136,7 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
                     end
                 end
             end
-            % vmChildren
+            % vmChildren            
 			fprintf(logFileID,'%s\n','Children ');
 		    for i = 1 : C
 				for j = 1 : chainLength
@@ -162,8 +162,17 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
 
         childrenFitnessValues = zeros(1,C);
         for cin = 1 : C % For each children
-            [childrenFitnessValues(cin),t1,t2,t3,t4,t5] = calculateFitnessValue(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, vmChildren(cin,:)); % Find out the fitness value and store it
+            [childrenFitnessValues(cin),vmChildren(cin,:),t1,t2,t3,t4,t5] = calculateFitnessValue(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, vmChildren(cin,:)); % Find out the fitness value and store it
         end
+
+		fprintf(logFileID,'%s\n','Children ');
+	    for i = 1 : C
+			for j = 1 : chainLength
+				fprintf(logFileID,'%d\t',vmChildren(i,j));
+			end
+			fprintf(logFileID,'\n');
+		end
+		fprintf(logFileID,'\n\n');
 
         % childrenFitnessValues
 		fprintf(logFileID,'%s\n','Children Fitness Values ');
@@ -300,6 +309,27 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
 	    % fitnessValues(secondWorstIndex)
 		fprintf(logFileID,'%s\n','Second Worst Fitness Value ');
 		fprintf(logFileID,'%f\n\n',fitnessValues(secondWorstIndex));
+
+		if mod(it,onePercent) == 0
+			percent = ((sIndex-1)*iterations+it)/onePercent;
+			for back = 1 : 104
+				fprintf('\b');
+			end
+			for fwd = 1 : percent
+				fprintf('|');
+			end
+			for fwd = percent+1 : 100
+				fprintf(' ');
+			end
+			fprintf(']');
+			if percent < 10
+				fprintf('  %d',percent);
+			elseif percent < 100
+				fprintf(' %d',percent);
+			else
+				fprintf('%d\n',percent);
+			end
+		end
    	end
     
    	optCost = fitnessValues(bestIndex); % Store the best fitness value
