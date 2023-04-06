@@ -166,7 +166,7 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
 	    %}
 
         childrenFitnessValues = zeros(1,C);
-        for cin = 1 : C % For each children
+        for cin = 1 : C % For each child
             [childrenFitnessValues(cin),vmChildren(cin,:),t1,t2,t3,t4,t5] = calculateFitnessValue(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, vmChildren(cin,:)); % Find out the fitness value and store it
         end
 
@@ -186,7 +186,7 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
 		end
 		fprintf(logFileID,'\n\n');
 
-        [childrenFitnessValues, vmChildren] = getSortedChildren(childrenFitnessValues, vmChildren, C, chainLength);
+        [childrenFitnessValues, vmChildren] = getSortedChildren(childrenFitnessValues, vmChildren, C, chainLength); % Sort the children in ascending order of their fitness values
         fprintf(logFileID,'%s\n\n','After sorting ');
 	    fprintf(logFileID,'%s\n','Children ');
 	    for i = 1 : C
@@ -203,7 +203,7 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
 		fprintf(logFileID,'\n\n');
 
    		% Check for uniqueness of the child genes
-   		uniqueChildren = ones(1,C);
+   		uniqueChildren = ones(1,C); % By default each child is unique
    		indicator = 0;
    		for cin = 1 : C % For each child
 	   		for p = 1 : populationSize % For each member in population matrix
@@ -215,7 +215,7 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
 	   				end
 	   			end
 	   			if indicator == 0 % If no mismatch is found i.e. the child is already present in the population matrix
-	   				uniqueChildren(cin) = 0; % Mark it
+	   				uniqueChildren(cin) = 0; % Mark it as non-unique
 	   				break;
 	   			end
 	   		end
@@ -235,6 +235,12 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
    		while uniqueIndex2 <= 4 && uniqueChildren(uniqueIndex2) == 0 % Until we find the second unique child
    			uniqueIndex2 = uniqueIndex2+1; % Increment the index
         end
+        % The logic here is, if we want to replace both the parents, then the child with higher fitness value must be
+        % smaller than the worst parent and the child with the lower fitness value must be smaller than the second
+        % worst parent
+        % Trivially the best child would be anyways better than the worst parent, so we shall take the other case,
+        % and if it satisfies then we shall replace both the parents
+        % If this does not satisfy, then we shall check for the worst parent and the best child
    		if uniqueIndex2 <= 4 && fitnessValues(worstIndex) > childrenFitnessValues(uniqueIndex2) && uniqueIndex1 <= 4 && fitnessValues(worstIndex) > childrenFitnessValues(uniqueIndex1)
    			vmPopulations(worstIndex,:) = vmChildren(uniqueIndex2,:);
 			fitnessValues(worstIndex) = childrenFitnessValues(uniqueIndex2);
@@ -262,36 +268,40 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
 				secondWorstIndex = p; % Update the second worst index
 			end
         end
-
-        if (fitnessValues(worstIndex) == previousWorstFitnessValue)
-        	worstConstantCount = worstConstantCount+1;
-        	if worstConstantCount >= 10
+        %{
+        if (fitnessValues(worstIndex) == previousWorstFitnessValue) % If the current worst fitness value is same as the previous
+        	worstConstantCount = worstConstantCount+1; % Increment the count
+        	if worstConstantCount >= 10 % If the count reaches 10 i.e. the worst value has not changed for the last 10 iterations, perform mutagenesis
         		% Mutagenesis
-        		bestGene = vmPopulations(bestIndex);
-        		mutagenesisSize = ceil(chainLength*mutationProbability/100);
-        		indices = randperm(chainLength,mutagenesisSize);
-        		mutaGene1 = vmPopulations(worstIndex,:);
-        		mutaGene2 = vmPopulations(secondWorstIndex,:);
-        		for ind = 1 : mutagenesisSize
-        			mutaGene1(indices(ind)) = vmPopulations(bestIndex,indices(ind));
-        			mutaGene2(indices(ind)) = vmPopulations(bestIndex,indices(ind));
+        		bestGene = vmPopulations(bestIndex); % Get the best chromosome from the population
+        		mutagenesisSize = ceil(chainLength*mutationProbability/100); % Get the number of positions to be inherited
+        		indices = randperm(chainLength,mutagenesisSize); % Generate a random permutation of indices
+        		mutaGene1 = vmPopulations(worstIndex,:); % Copy the worst chromosome
+        		mutaGene2 = vmPopulations(secondWorstIndex,:); % Copy the second one
+        		for ind = 1 : mutagenesisSize % For each position
+        			mutaGene1(indices(ind)) = vmPopulations(bestIndex,indices(ind)); % Copy from the best child
+        			mutaGene2(indices(ind)) = vmPopulations(bestIndex,indices(ind)); % Copy from the best child
         		end
+        		% Find out the fitness values
         		fitnessValue1 = calculateFitnessValue(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, mutaGene1); % Find out the fitness value and store it
         		fitnessValue2 = calculateFitnessValue(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, mutaGene2); % Find out the fitness value and store it
+        		% Update the worst chromosomes if the fitness values are improved after mutagenesis
         		if fitnessValue1 < fitnessValues(worstIndex)
         			vmPopulations(worstIndex,:) = mutaGene1;
         			fitnessValues(worstIndex) = fitnessValue1;
+        			% worstConstantCount = 0; % Reset the count
         		end
         		if fitnessValue2 < fitnessValues(secondWorstIndex)
         			vmPopulations(secondWorstIndex,:) = mutaGene2;
         			fitnessValues(secondWorstIndex) = fitnessValue2;
+        			% worstConstantCount = 0; % Reset the count
         		end
         	end
         else
         	previousWorstFitnessValue = fitnessValues(worstIndex);
         	worstConstantCount = 0;
         end
-
+		
         % Find out the best fitness value and worst fitness value again
    		if (fitnessValues(worstIndex) < fitnessValues(bestIndex)) % If the newly calculated fitness value is less than the best fitness value
 			bestIndex = worstIndex; % Update the best fitness index
@@ -318,7 +328,7 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
         % 	previousWorstFitnessValue = fitnessValues(worstIndex);
         % 	worstConstantCount = 0;
         % end
-
+		%}
 		fprintf(logFileID,'\n\n');
         % sfcClassData(sIndex).chain
 	    fprintf(logFileID,'%s\n','chain ');

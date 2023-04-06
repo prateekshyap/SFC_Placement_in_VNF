@@ -14,7 +14,7 @@ function [cost, vmGene, XfvTemp, XsfTemp, sfcClassData, vmCapacityTemp, vnfCapac
 		fIndex = preSumVnf(chain(pos))+1; % Get the first instance
 		indicator = 0;
 		chosenInstance = 0;
-		% Step 1 - Find if an instance is already deployed on that VM
+		%% Step 1 - Find if an instance is already deployed on that VM
 		for fin = fIndex : fIndex+vnfTypes(chain(pos))-1 % For each instance of the same function
 			if XfvTemp(fin,chosenVM) == 1 % If the current instance is already hosted on the chosen VM
 				indicator = 1; % Mark it
@@ -29,7 +29,7 @@ function [cost, vmGene, XfvTemp, XsfTemp, sfcClassData, vmCapacityTemp, vnfCapac
             nodeMaps(pos) = chosenInstance; % Store the instance number
 			vnfCapacityTemp(chosenInstance) = vnfCapacityTemp(chosenInstance)-1; % Decrease the capacity
 		else % If the assignment couldn't be done, we need to find another instance and assignment
-			% Step 2 - Find an undeployed instance to deploy on that VM
+			%% Step 2 - Find an undeployed instance to deploy on that VM
 			freeVNF = 0;
 			for fin = fIndex : fIndex+vnfTypes(chain(pos))-1 % For each instance of the same function
 				indicator = 0;
@@ -55,7 +55,10 @@ function [cost, vmGene, XfvTemp, XsfTemp, sfcClassData, vmCapacityTemp, vnfCapac
 	                vmCapacityTemp(chosenVM) = vmCapacityTemp(chosenVM)-1; % Decrease the capacity
 	                vnfCapacityTemp(freeVNF) = vnfCapacityTemp(freeVNF)-1; % Decrease the capacity
 	            else % If the VM is not free, choose another free VM to deploy that instance
-	            	% Step 3 - Choose a random free VM that is close to this VM to deploy this instance
+	            	%% Step 3 - Choose the closest free VM to deploy this instance
+	            	% Please note that the capacity of the VM is calculated according to the total number of
+	            	% VNF instances present, if you are changing the strategy to calculate the capacity, then
+	            	% this step might break, change the logic accordingly
                     distances = zeros(1,VI);
 	            	minDistance = Inf; % This will store the the minimum distance
                     minDistanceVM = 0; % This will store the VM with the minimum distance
@@ -75,7 +78,7 @@ function [cost, vmGene, XfvTemp, XsfTemp, sfcClassData, vmCapacityTemp, vnfCapac
 	                vnfCapacityTemp(freeVNF) = vnfCapacityTemp(freeVNF)-1; % Decrease the capacity
 	            end
 			else % If no such instance could be found i.e. all the corresponding instances are deployed
-				% Step 4 - Choose a random instance to assign
+				%% Step 4 - Choose the closest instance to assign
                 minDistanceInstance = 0;
                 minDistance = Inf;
 				for fin = fIndex : fIndex+vnfTypes(chain(pos))-1 % For each instance of the same function
@@ -105,8 +108,8 @@ function [cost, vmGene, XfvTemp, XsfTemp, sfcClassData, vmCapacityTemp, vnfCapac
         end
     end
 
-    sfcClassData(sIndex).usedLinks = usedLinks;
-    sfcClassData(sIndex).nodeMaps = nodeMaps;
+    sfcClassData(sIndex).usedLinks = usedLinks; % Store the physical nodes
+    sfcClassData(sIndex).nodeMaps = nodeMaps; % Store the instance indices
 	y1 = getY1(N, VI, FI, Cvn, Xvn, Cfv, XfvTemp, vmStatus, vnfStatus);
 	y2 = getY2(VI, F, FI, sIndex, lambda, delta, mu, XfvTemp, XsfTemp, vnfStatus);
 	y3 = getY3(L, sIndex, medium, network, bandwidths, nextHop, sfcClassData);

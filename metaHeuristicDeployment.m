@@ -8,22 +8,22 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDepl
     import java.util.TreeSet;
     import java.util.ArrayList;
 
-%     logFileID = fopen('log.txt','at');
-    
     Xfv = zeros(FI,VI); %FIxVI matrix to indicate whether a vnf instance f is deployed on the VM v or not
 	fvMap = TreeMap(); %Map version of Xfv
 	vnfStatus = zeros(1,FI); %This will indicate which instance is of which type
 
     % Store the status of VNFs according to their instance counts
     statusIndex = 1;
-    for f = 1 : F
-        for i = 1 : vnfTypes(f)
-            vnfStatus(statusIndex) = f;
-            statusIndex = statusIndex+1;
+    for f = 1 : F % For each VNF
+        for i = 1 : vnfTypes(f) % For each instance of VNF f
+            vnfStatus(statusIndex) = f; % Store f in its status
+            statusIndex = statusIndex+1; % Increment the index
         end
     end
 
     % Find out the prefix sum
+    % This will indicate for f, how many instances are there before f
+    % Note that this does NOT include the number of instances of f
     preSumVnf = zeros(1,F);
     for f = 2 : F
         preSumVnf(f) = vnfTypes(f-1)+preSumVnf(f-1);
@@ -34,10 +34,10 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDepl
     vmCapacity = zeros(1,VI); % This will store the empty slots for the VNFs on the VMs
     vnfCapacity = ones(1,FI); % This will store the capacity of the VNFs in terms of how many SFCs they can serve
     for n = 1 : N % For each node
-        nodeCapacity(n) = nodeStatus(n)/vnfCoreRequirement;
+        nodeCapacity(n) = nodeStatus(n)/vnfCoreRequirement; % Number of cores present in the node divided by the number of cores required by a VNF
     end
     for v = 1 : VI % For each VM instance
-        vmCapacity(v) = vmCoreRequirements(vmStatus(v))/vnfCoreRequirement;
+        vmCapacity(v) = vmCoreRequirements(vmStatus(v))/vnfCoreRequirement; % Number of cores acquired by a VM divided by the numner of cores required by a VNF
     end
     for f = 1 : FI
         vnfCapacity(f) = ceil(vnfFreq(vnfStatus(f))/vnfTypes(vnfStatus(f))); % Get the ratio which indicates the capacity
@@ -78,22 +78,22 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDepl
         fprintf(logFileID,'\n\n');
     end
 
-    iterations = parameters(2); % total number of GA iterations
-    populationSize = parameters(3); % population size
+    iterations = parameters(2); % Total number of GA iterations
+    populationSize = parameters(3); % Population size
 
     Xfv = zeros(FI,VI); % FIxVI matrix to indicate whether a vnf instance f is deployed on the VM v or not
     Xsf = zeros(1,FI); % SxFI matrix to indicate whether an SFC uses the f instance of VNFs or not
     
-    totalIterations = S*iterations;
-    onePercent = totalIterations/100;
+    totalIterations = S*iterations; % Find out the total number of iterations
+    onePercent = totalIterations/100; % Find out the number of iterations for one percent work
     for fwd = 1 : 104
         fprintf(' ');
     end
 
-    for s = 1 : S % For each SFC
+    for s = 1 : S % For each SFC s
         [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, s, logFileID, onePercent, totalIterations); % Call GA
-        chainLength = sfcClassData(s).chainLength;
-        chain = sfcClassData(s).chain;
+        chainLength = sfcClassData(s).chainLength; % Get the length of s
+        chain = sfcClassData(s).chain; % Get s
         fprintf(logFileID,'\n\n');
         fprintf(logFileID,'%d',optCost);
         fprintf(logFileID,'\n\n');
@@ -150,7 +150,7 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDepl
         % fprintf(logFileID,'\n\n');
         % waitbar(s/S);
         fprintf(logFileID,'\n\n%d%s\n\n',s,' SFCs done****************************************************************************************************');
-        fvMap = TreeMap();    
+        fvMap = TreeMap(); % Reinitialize map
         for f = 1 : F % For each VNF type
             fvMap.put(f,ArrayList()); % Add the VNF along with an empty arraylist
         end

@@ -170,10 +170,10 @@ function [children] = crossover(gene1, gene2, len, C, VI)
     children = zeros(C,len);
     point1 = 0;
     point2 = 0;
-    if len == 3
+    if len == 3 % If the chain length is 3, the two points will be mandatorily 1 and 2
         point1 = 1;
         point2 = 2;
-    else
+    else % Otherwise generate random unique indices and ensure that point1 is smaller than point2
         point1 = randi([1 len-1]);
         point2 = point1;
         while point2 == point1
@@ -185,20 +185,30 @@ function [children] = crossover(gene1, gene2, len, C, VI)
             point2 = temp;
         end
     end
+    % If the length is 8 and point1 and point2 are 4 and 6 respectively
+    % then the sections are like the following
+    % 1 2 3 4 | 5 6 | 7 8
+    % Copy the two chromosomes
     children(1,:) = gene1;
     children(2,:) = gene2;
+    %% Standard two point crossover
+    % Swap the middle section
     for i = point1+1 : point2
         temp = children(1,i);
         children(1,i) = children(2,i);
         children(2,i) = temp;
     end
+    % Copy the two chromosomes again
     children(3,:) = gene1;
     children(4,:) = gene2;
+    %% Formation operation (replacement of mutation)
+    % Take union of both the chromosomes
     parentUnion = TreeSet();
     for i = 1 : len
         parentUnion.add(gene1(i));
         parentUnion.add(gene2(i));
     end
+    % Find out the VMs which are not present in the union
     remVal = VI-parentUnion.size();
     remVMs = zeros(1,remVal);
     remIndex = 1;
@@ -209,7 +219,8 @@ function [children] = crossover(gene1, gene2, len, C, VI)
         end
     end
     remIndex = 1;
-    mutationSize = ceil(len*mutationProbability/100);
+    mutationSize = ceil(len*mutationProbability/100); % Get the number of indices to be mutated
+    % In both section-1 and section-3, alter mutationSize number of indices
     for i = 1 : min(point1,mutationSize)
         if remIndex > remVal
             break;

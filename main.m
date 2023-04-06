@@ -35,9 +35,9 @@ logFileID = fopen('log.txt','wt');
 tenCosts = zeros(1,100);
 tweCosts = zeros(1,100);
 % parfor loop = 1 : 100
-sVal = [10 20];
-for loop = 1 : 200
-
+% sVal = [10 20];
+for loop = 1 : 100
+% loop
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 fileID = fopen('input/sevenReliabilityOne/constants.txt','r');
@@ -169,12 +169,12 @@ if sfcStatus == 1 %Random SFC generation
 %     S = input('Enter the number of SFCs:\n');
     fprintf('Enter the number of SFCs:\n5\n');
     fprintf(logFileID,'%s\n%s\n','Enter the number of SFCs:','5');
-    S = 0;
-    if loop <= 100
-        S = sVal(1);
-    else
-        S = sVal(2);
-    end
+    S = 10;
+%     if loop <= 100
+%         S = sVal(1);
+%     else
+%         S = sVal(2);
+%     end
 %     lengthStatus = input('Choose one option for the length of SFC:\n    1. Random Length Generation\n    2. Custom Input\nEnter your choice:\n');
     fprintf('Choose one option for the length of SFC:\n    1. Random Length Generation\n    2. Custom Input\nEnter your choice:\n1\n');
     fprintf(logFileID,'%s\n%s\n%s\n%s\n%s\n','Choose one option for the length of SFC:','    1. Random Length Generation','    2. Custom Input','Enter your choice:','1');
@@ -186,7 +186,7 @@ if sfcStatus == 1 %Random SFC generation
     end
     for i = 1 : S
         chain = randperm(F,lengths(i)); % Generate a random permutation as an SFC
-        sfcClassData(1,i) = SFC(lengths(i),chain,zeros(1,2),zeros(1,2));
+        sfcClassData(1,i) = SFC(lengths(i),chain,zeros(1,2),zeros(1,2)); % Store the chain and its length
 		sfcGraph(:,:,i) = zeros(F,F);
 		for node = 1 : lengths(i)-1
 			sfcGraph(chain(1,node),chain(1,node+1),i) = 1;
@@ -413,11 +413,12 @@ timer = toc
 fprintf(logFileID,'%f',timer); %This will print the time automatically
 
 optCost
-if loop <= 100
-    tenCosts(loop) = optCost;
-else
-    tweCosts(loop-100) = optCost;
-end
+tenCosts(loop) = optCost;
+% if loop <= 100
+%     tenCosts(loop) = optCost;
+% else
+%     tweCosts(loop-100) = optCost;
+% end
 
 %% After Deployment and Assignment, print the generated data
 fprintf(logFileID,'\n\n');
