@@ -32,9 +32,11 @@ import java.util.LinkedList;
 logFileID = fopen('log.txt','wt');
 
 %% Constants and Variables
-
+tenCosts = zeros(1,100);
+tweCosts = zeros(1,100);
 % parfor loop = 1 : 100
-% for loop = 1 : 10
+sVal = [10 20];
+for loop = 1 : 200
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -167,7 +169,12 @@ if sfcStatus == 1 %Random SFC generation
 %     S = input('Enter the number of SFCs:\n');
     fprintf('Enter the number of SFCs:\n5\n');
     fprintf(logFileID,'%s\n%s\n','Enter the number of SFCs:','5');
-    S = 10;
+    S = 0;
+    if loop <= 100
+        S = sVal(1);
+    else
+        S = sVal(2);
+    end
 %     lengthStatus = input('Choose one option for the length of SFC:\n    1. Random Length Generation\n    2. Custom Input\nEnter your choice:\n');
     fprintf('Choose one option for the length of SFC:\n    1. Random Length Generation\n    2. Custom Input\nEnter your choice:\n1\n');
     fprintf(logFileID,'%s\n%s\n%s\n%s\n%s\n','Choose one option for the length of SFC:','    1. Random Length Generation','    2. Custom Input','Enter your choice:','1');
@@ -406,6 +413,11 @@ timer = toc
 fprintf(logFileID,'%f',timer); %This will print the time automatically
 
 optCost
+if loop <= 100
+    tenCosts(loop) = optCost;
+else
+    tweCosts(loop-100) = optCost;
+end
 
 %% After Deployment and Assignment, print the generated data
 fprintf(logFileID,'\n\n');
@@ -756,9 +768,10 @@ fileID = fopen('output/sevenReliabilityOne/commands.bat','w+');
 fprintf(fileID,"%s",commands);
 fclose(fileID);
 
+end
 
-
-
+tenCosts
+tweCosts
 
 
 

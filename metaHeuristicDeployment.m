@@ -45,8 +45,6 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDepl
     for f = 1 : F % For each VNF type
         fvMap.put(f,ArrayList()); % Add the VNF along with an empty arraylist
     end
-%     fprintf(logFileID,'\n\n');
-%     fprintf('%s','ukay');
     fprintf(logFileID,'%s\n\n','------------------------------------------VM Capacity---------------------------------------');
     for i = 1 : VI
         fprintf(logFileID,'%d\t',vmCapacity(i));
@@ -150,7 +148,7 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDepl
             fprintf(logFileID,'\n');
         end
         % fprintf(logFileID,'\n\n');
-        % waitbar(s);
+        % waitbar(s/S);
         fprintf(logFileID,'\n\n%d%s\n\n',s,' SFCs done****************************************************************************************************');
         fvMap = TreeMap();    
         for f = 1 : F % For each VNF type
