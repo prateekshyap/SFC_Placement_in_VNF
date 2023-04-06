@@ -1,4 +1,7 @@
 function [children] = crossover(gene1, gene2, len, C, VI)
+
+    global mutationProbability;
+    
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 %{
@@ -161,6 +164,7 @@ function [children] = crossover(gene1, gene2, len, C, VI)
         children(4,i) = temp;
     end
 %}
+
 %   This is hybrid two point crossover and generation
     import java.util.TreeSet;
     children = zeros(C,len);
@@ -205,14 +209,15 @@ function [children] = crossover(gene1, gene2, len, C, VI)
         end
     end
     remIndex = 1;
-    for i = 1 : point1
+    mutationSize = ceil(len*mutationProbability/100);
+    for i = 1 : min(point1,mutationSize)
         if remIndex > remVal
             break;
         end
         children(3,i) = remVMs(remIndex);
         remIndex = remIndex+1;
     end
-    for i = point2+1 : len
+    for i = point2+1 : min(len,point2+1+mutationSize)
         if remIndex > remVal
             break;
         end
@@ -220,18 +225,19 @@ function [children] = crossover(gene1, gene2, len, C, VI)
         remIndex = remIndex+1;
     end
     remIndex = 1;
-    for i = 1 : point1
+    for i = 1 : min(point1,mutationSize)
         if remIndex > remVal
             break;
         end
         children(4,i) = remVMs(remIndex);
         remIndex = remIndex+1;
     end
-    for i = point2+1 : len
+    for i = point2+1 : min(len,point2+1+mutationSize)
         if remIndex > remVal
             break;
         end
         children(4,i) = remVMs(remIndex);
         remIndex = remIndex+1;
     end
+    
 end

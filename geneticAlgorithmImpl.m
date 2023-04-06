@@ -34,6 +34,9 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
 		end
     end
 
+    worstConstantCount = 0;
+    previousWorstFitnessValue = fitnessValues(worstIndex);
+
     % sfcClassData(sIndex).chain
     fprintf(logFileID,'%s\n','chain ');
     for i = 1 : sfcClassData(sIndex).chainLength
@@ -103,7 +106,7 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
 		end
 		fprintf(logFileID,'\n\n');
 
-   		% Crossover
+   		% Hybrid Offspring Formation
    		[vmChildren] = crossover(vmParent1, vmParent2, chainLength, C, VI); % Perform crossover operation
 		fprintf(logFileID,'%s\n','Children ');
 	    for i = 1 : C
@@ -115,6 +118,7 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
 		fprintf(logFileID,'\n\n');
 
    		% Mutation
+   		%{
    		mutationCount = mutationCount+1; % Increment the mutation count
    		if (randomMutationIterations.contains(mutationCount)) % If the current iteration is present in the set
    			% Perform mutation
@@ -159,6 +163,7 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
 	        end
 	        fprintf(logFileID,'\n\n');
 	    end
+	    %}
 
         childrenFitnessValues = zeros(1,C);
         for cin = 1 : C % For each children
@@ -257,6 +262,63 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
 				secondWorstIndex = p; % Update the second worst index
 			end
         end
+
+        if (fitnessValues(worstIndex) == previousWorstFitnessValue)
+        	worstConstantCount = worstConstantCount+1;
+        	if worstConstantCount >= 10
+        		% Mutagenesis
+        		bestGene = vmPopulations(bestIndex);
+        		mutagenesisSize = ceil(chainLength*mutationProbability/100);
+        		indices = randperm(chainLength,mutagenesisSize);
+        		mutaGene1 = vmPopulations(worstIndex,:);
+        		mutaGene2 = vmPopulations(secondWorstIndex,:);
+        		for ind = 1 : mutagenesisSize
+        			mutaGene1(indices(ind)) = vmPopulations(bestIndex,indices(ind));
+        			mutaGene2(indices(ind)) = vmPopulations(bestIndex,indices(ind));
+        		end
+        		fitnessValue1 = calculateFitnessValue(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, mutaGene1); % Find out the fitness value and store it
+        		fitnessValue2 = calculateFitnessValue(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, mutaGene2); % Find out the fitness value and store it
+        		if fitnessValue1 < fitnessValues(worstIndex)
+        			vmPopulations(worstIndex,:) = mutaGene1;
+        			fitnessValues(worstIndex) = fitnessValue1;
+        		end
+        		if fitnessValue2 < fitnessValues(secondWorstIndex)
+        			vmPopulations(secondWorstIndex,:) = mutaGene2;
+        			fitnessValues(secondWorstIndex) = fitnessValue2;
+        		end
+        	end
+        else
+        	previousWorstFitnessValue = fitnessValues(worstIndex);
+        	worstConstantCount = 0;
+        end
+
+        % Find out the best fitness value and worst fitness value again
+   		if (fitnessValues(worstIndex) < fitnessValues(bestIndex)) % If the newly calculated fitness value is less than the best fitness value
+			bestIndex = worstIndex; % Update the best fitness index
+		end
+		if (fitnessValues(secondWorstIndex) < fitnessValues(bestIndex))
+			bestIndex = secondWorstIndex; % Update the best fitness index
+		end
+		worstIndex = 0;
+		secondWorstIndex = 0;
+		for p = 1 : populationSize
+			if worstIndex == 0 || fitnessValues(p) > fitnessValues(worstIndex) % If the newly calculated fitness value is greater than the worst fitness value
+				secondWorstIndex = worstIndex; % Store the current worst index in the second worst index
+				worstIndex = p; % Update the worst index
+			elseif secondWorstIndex == 0 || fitnessValues(p) > fitnessValues(secondWorstIndex) % If the newly calculated fitness value is greater than the second worst fitness value
+				secondWorstIndex = p; % Update the second worst index
+			end
+        end
+
+        % if (fitnessValues(worstIndex) == previousWorstFitnessValue)
+        % 	if worstConstantCount >= 30
+        % 		break;
+        % 	end
+        % else
+        % 	previousWorstFitnessValue = fitnessValues(worstIndex);
+        % 	worstConstantCount = 0;
+        % end
+
 		fprintf(logFileID,'\n\n');
         % sfcClassData(sIndex).chain
 	    fprintf(logFileID,'%s\n','chain ');
