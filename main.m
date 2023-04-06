@@ -38,7 +38,7 @@ logFileID = fopen('log.txt','wt');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-fileID = fopen('input/sevenReliabilityTwo/constants.txt','r');
+fileID = fopen('input/sevenReliabilityOne/constants.txt','r');
 formatSpecifier = '%f';
 dimension = [1,9];
 
@@ -64,63 +64,63 @@ L = constants(9); %Packet size
 maximumCores = 64; %Maximum allowed cores on a physical node
 
 %% Reading Network Data
-% fileID = fopen('input/sevenReliabilityTwo/network.txt','r');
-% formatSpecifier = '%f';
-% dimension = [N,N];
+fileID = fopen('input/sevenReliabilityOne/network.txt','r');
+formatSpecifier = '%f';
+dimension = [N,N];
 
-% inputNetwork = fscanf(fileID,formatSpecifier,dimension); %Physical network
-% fclose(fileID);
+inputNetwork = fscanf(fileID,formatSpecifier,dimension); %Physical network
+fclose(fileID);
 
 %% Generating Network Data
-[inputNetwork] = generateNetwork(N,126);
+% [inputNetwork] = generateNetwork(N,126);
 
 
-for i = 1 : N
-    for j = 1 : N
-        if inputNetwork(i,j) ~= inputNetwork(j,i)
-            fprintf('Incorrect Network at %d,%d',i,j);
-        end
-    end
-end
+% for i = 1 : N
+%     for j = 1 : N
+%         if inputNetwork(i,j) ~= inputNetwork(j,i)
+%             fprintf('Incorrect Network at %d,%d',i,j);
+%         end
+%     end
+% end
 
 [network,nextHop] = allPairShortestPath(N,inputNetwork); %Floyd-Warshall
 
 %% Reading Network Data
-% fileID = fopen('input/sevenReliabilityTwo/bandwidth.txt','r');
-% formatSpecifier = '%f';
-% dimension = [N,N];
-% bandwidths = fscanf(fileID,formatSpecifier,dimension); %Bandwidths of physical links
-% fclose(fileID);
+fileID = fopen('input/sevenReliabilityOne/bandwidth.txt','r');
+formatSpecifier = '%f';
+dimension = [N,N];
+bandwidths = fscanf(fileID,formatSpecifier,dimension); %Bandwidths of physical links
+fclose(fileID);
 
 %% Generating Network Data
-[bandwidths] = generateBandwidth(inputNetwork,N);
+% [bandwidths] = generateBandwidth(inputNetwork,N);
 
 %% Reading Node Types
-% fileID = fopen('input/sevenReliabilityTwo/nodeTypes.txt','r');
-% formatSpecifier = '%d';
-% dimension = [1,N];
-% nodeStatus = fscanf(fileID,formatSpecifier,dimension); %Type of nodes indicating the number of cores
-% fclose(fileID);
+fileID = fopen('input/sevenReliabilityOne/nodeTypes.txt','r');
+formatSpecifier = '%d';
+dimension = [1,N];
+nodeStatus = fscanf(fileID,formatSpecifier,dimension); %Type of nodes indicating the number of cores
+fclose(fileID);
 
 %% Generating Node Types
-networkCopy = inputNetwork;
-for i = 1 : N
-    for j = 1 : N
-        if (networkCopy(i,j) ~= 0)
-            networkCopy(i,j) = 1;
-        end
-    end
-end
-nodeStatus(:) = sum(networkCopy);
-for n = 1 : N % For each node
-	if nodeStatus(n) >= 8 % If the degree exceeds 8
-		nodeStatus(n) = 6; % It will have 6 free cores
-	else
-		nodeStatus(n) = 2; % It will have 2 free cores
-	end
-end
+% networkCopy = inputNetwork;
+% for i = 1 : N
+%     for j = 1 : N
+%         if (networkCopy(i,j) ~= 0)
+%             networkCopy(i,j) = 1;
+%         end
+%     end
+% end
+% nodeStatus(:) = sum(networkCopy);
+% for n = 1 : N % For each node
+% 	if nodeStatus(n) >= 8 % If the degree exceeds 8
+% 		nodeStatus(n) = 6; % It will have 6 free cores
+% 	else
+% 		nodeStatus(n) = 2; % It will have 2 free cores
+% 	end
+% end
 
-fileID = fopen('input/sevenReliabilityTwo/vmTypes.txt','r');
+fileID = fopen('input/sevenReliabilityOne/vmTypes.txt','r');
 formatSpecifier = '%d';
 dimension = [V,2];
 temp = fscanf(fileID,formatSpecifier,dimension); %Type of VMs and their requirements
@@ -129,21 +129,21 @@ vmTypes = temp(1:V,1)';
 vmCoreRequirements = temp(1:V,2)';
 VI = sum(vmTypes);
 
-fileID = fopen('input/sevenReliabilityTwo/vnfTypes.txt','r');
+fileID = fopen('input/sevenReliabilityOne/vnfTypes.txt','r');
 formatSpecifier = '%d';
 dimension = [1,F];
 vnfTypes = fscanf(fileID,formatSpecifier,dimension); %Type of VNFs and their requirements
 fclose(fileID);
 FI = sum(vnfTypes);
 
-fileID = fopen('input/sevenReliabilityTwo/costVN.txt','r');
+fileID = fopen('input/sevenReliabilityOne/costVN.txt','r');
 formatSpecifier = '%f';
 dimension = [1,V];
 Cvn = fscanf(fileID,formatSpecifier,dimension); %Cost of hosting VMs on Nodes
 fclose(fileID);
 
 % Cost of deploying VNFs on VMs
-fileID = fopen('input/sevenReliabilityTwo/costFV.txt','r');
+fileID = fopen('input/sevenReliabilityOne/costFV.txt','r');
 formatSpecifier = '%f';
 dimension = [1,F];
 Cfv = fscanf(fileID,formatSpecifier,dimension); %Cost of deploying VNFs on VMs
@@ -584,7 +584,7 @@ gvText = gvText+linkData;
 gvText = gvText+newline+"splines=false";
 gvText = gvText+newline+"}";
 
-fileID = fopen('output/sevenReliabilityTwo/gv/graphPrint.gv','w+');
+fileID = fopen('output/sevenReliabilityOne/gv/graphPrint.gv','w+');
 commands = commands+"dot -Tpng gv/graphPrint.gv -o img/graph.png";
 fprintf(fileID,"%s",gvText);
 
@@ -746,13 +746,13 @@ for c = 1 : S
 	end
 	gvText = gvText+newline+"}";
 
-	fileID = fopen(sprintf('%s%d%s','output/sevenReliabilityTwo/gv/sfcAssgn',c,'.gv'),'w+');
+	fileID = fopen(sprintf('%s%d%s','output/sevenReliabilityOne/gv/sfcAssgn',c,'.gv'),'w+');
 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfcAssgn',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfcAssgn',c,'.png');
 	fprintf(fileID,"%s",gvText);
 end
 
 
-fileID = fopen('output/sevenReliabilityTwo/commands.bat','w+');
+fileID = fopen('output/sevenReliabilityOne/commands.bat','w+');
 fprintf(fileID,"%s",commands);
 fclose(fileID);
 
@@ -812,7 +812,7 @@ fclose(fileID);
 % 	gvText = gvText+linkData;
 % 	gvText = gvText+newline+"}";
 
-% 	fileID = fopen(sprintf('%s%d%s','output/sevenReliabilityTwo/gv/sfc',c,'.gv'),'w+');
+% 	fileID = fopen(sprintf('%s%d%s','output/sevenReliabilityOne/gv/sfc',c,'.gv'),'w+');
 % 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfc',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfc',c,'.png');
 % 	fprintf(fileID,"%s",gvText);
 % end
@@ -944,12 +944,12 @@ fclose(fileID);
 % 	gvText = gvText+linkData;
 % 	gvText = gvText+newline+"}";
 
-% 	fileID = fopen(sprintf('%s%d%s','output/sevenReliabilityTwo/gv/sfcAssgn',c,'.gv'),'w+');
+% 	fileID = fopen(sprintf('%s%d%s','output/sevenReliabilityOne/gv/sfcAssgn',c,'.gv'),'w+');
 % 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfcAssgn',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfcAssgn',c,'.png');
 % 	fprintf(fileID,"%s",gvText);
 % end
 
-% fileID = fopen('output/sevenReliabilityTwo/commands.bat','w+');
+% fileID = fopen('output/sevenReliabilityOne/commands.bat','w+');
 % fprintf(fileID,"%s",commands);
 % fclose(fileID);
 
@@ -986,7 +986,7 @@ fclose(fileID);
 % 	gvText = gvText+linkData;
 % 	gvText = gvText+newline+"}";
 
-% 	fileID = fopen(sprintf('%s%d%s','output/sevenReliabilityTwo/gv/sfc',c,'.gv'),'w+');
+% 	fileID = fopen(sprintf('%s%d%s','output/sevenReliabilityOne/gv/sfc',c,'.gv'),'w+');
 % 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfc',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfc',c,'.png');
 % 	fprintf(fileID,"%s",gvText);
 % end

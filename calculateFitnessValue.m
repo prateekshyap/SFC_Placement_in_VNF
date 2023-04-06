@@ -61,12 +61,11 @@ function [cost, vmGene, XfvTemp, XsfTemp, sfcClassData, vmCapacityTemp, vnfCapac
                     minDistanceVM = 0; % This will store the VM with the minimum distance
 	            	for vin = 1 : VI % For each instance
 	            		distances(vin) = network(vnMap.get(chosenVM),vnMap.get(vin)); % Store the shortest distance from the chosen VM
-	            		if distances(vin) < minDistance && distances(vin) ~= 0 && vmCapacityTemp(vin) > 0
+	            		if distances(vin) < minDistance && vin ~= chosenVM && vmCapacityTemp(vin) > 0
 	            			minDistanceVM = vin; % Update the new VM
                             minDistance = distances(vin); % Update the new minimum distance
 	            		end
                     end
-%                     vmCapacityTemp
 	            	XfvTemp(freeVNF,minDistanceVM) = 1; % Deploy
 					XsfTemp(sIndex,freeVNF) = 1; % Assign
 					vmGene(pos) = minDistanceVM; % Modify the vm gene

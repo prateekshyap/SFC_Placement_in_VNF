@@ -9,13 +9,3 @@ dot -Tpng gv/sfcAssgn7.gv -o img/sfcAssgn7.png
 dot -Tpng gv/sfcAssgn8.gv -o img/sfcAssgn8.png
 dot -Tpng gv/sfcAssgn9.gv -o img/sfcAssgn9.png
 dot -Tpng gv/sfcAssgn10.gv -o img/sfcAssgn10.png
-dot -Tpng gv/sfcAssgn11.gv -o img/sfcAssgn11.png
-dot -Tpng gv/sfcAssgn12.gv -o img/sfcAssgn12.png
-dot -Tpng gv/sfcAssgn13.gv -o img/sfcAssgn13.png
-dot -Tpng gv/sfcAssgn14.gv -o img/sfcAssgn14.png
-dot -Tpng gv/sfcAssgn15.gv -o img/sfcAssgn15.png
-dot -Tpng gv/sfcAssgn16.gv -o img/sfcAssgn16.png
-dot -Tpng gv/sfcAssgn17.gv -o img/sfcAssgn17.png
-dot -Tpng gv/sfcAssgn18.gv -o img/sfcAssgn18.png
-dot -Tpng gv/sfcAssgn19.gv -o img/sfcAssgn19.png
-dot -Tpng gv/sfcAssgn20.gv -o img/sfcAssgn20.png
