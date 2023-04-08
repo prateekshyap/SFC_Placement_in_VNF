@@ -32,11 +32,12 @@ import java.util.LinkedList;
 logFileID = fopen('log.txt','wt');
 
 %% Constants and Variables
-tenCosts = zeros(1,100);
-tweCosts = zeros(1,100);
+
+cyclic = zeros(1,100);
+
 % parfor loop = 1 : 100
 % sVal = [10 20];
-for loop = 1 : 100
+parfor loop = 1 : 100
 % loop
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -413,7 +414,7 @@ timer = toc
 fprintf(logFileID,'%f',timer); %This will print the time automatically
 
 optCost
-tenCosts(loop) = optCost;
+cyclic(loop) = optCost;
 % if loop <= 100
 %     tenCosts(loop) = optCost;
 % else
@@ -503,6 +504,7 @@ end
 
 fclose(logFileID);
 
+%{
 preSumVnf = zeros(1,F);
 for i = 2 : F
 	preSumVnf(1,i) = vnfTypes(1,i-1)+preSumVnf(1,i-1);
@@ -764,15 +766,16 @@ for c = 1 : S
 	fprintf(fileID,"%s",gvText);
 end
 
+fclose(fileID)
 
 fileID = fopen('output/sevenReliabilityOne/commands.bat','w+');
 fprintf(fileID,"%s",commands);
 fclose(fileID);
+%}
 
 end
 
-tenCosts
-tweCosts
+cyclic
 
 
 
