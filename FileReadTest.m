@@ -279,44 +279,64 @@ network(1,5) = links(21); network(5,1) = links(21);
 % network
 
 
-inputNetwork = generateNetwork(97,126);
+% inputNetwork = generateNetwork(97,126);
+% 
+% for i = 1 : 97
+%     for j = 1 : 97
+%         if (inputNetwork(i,j) ~= 0)
+%             inputNetwork(i,j) = 1;
+%         end
+%     end
+% end
+% 
+% degree(:) = sum(inputNetwork)
+% nodeCount = 0;
+% fprintf('Degree 8-10\n');
+% for i = 1 : 97
+%     if (degree(i) == 8 || degree(i) == 9 || degree(i) == 10 || degree(i) == 11)
+%         fprintf('%d ',i);
+%         nodeCount = nodeCount+1;
+%     end
+% end
+% fprintf('\n');
+% nodeCount
+% fprintf('Degree 4-7\n');
+% for i = 1 : 97
+%     if (degree(i) == 4 || degree(i) == 5 || degree(i) == 6 || degree(i) == 7)
+%         fprintf('%d ',i);
+%         nodeCount = nodeCount+1;
+%     end
+% end
+% fprintf('\n');
+% nodeCount
+% fprintf('Degree 1-3\n');
+% for i = 1 : 97
+%     if (degree(i) == 1 || degree(i) == 2 || degree(i) == 3)
+%         fprintf('%d ',i);
+%         nodeCount = nodeCount+1;
+%     end
+% end
+% fprintf('\n');
+% nodeCount
+% 
+% sum(degree)
 
-for i = 1 : 97
-    for j = 1 : 97
-        if (inputNetwork(i,j) ~= 0)
-            inputNetwork(i,j) = 1;
-        end
-    end
-end
 
-degree(:) = sum(inputNetwork)
-nodeCount = 0;
-fprintf('Degree 8-10\n');
-for i = 1 : 97
-    if (degree(i) == 8 || degree(i) == 9 || degree(i) == 10 || degree(i) == 11)
-        fprintf('%d ',i);
-        nodeCount = nodeCount+1;
-    end
-end
-fprintf('\n');
-nodeCount
-fprintf('Degree 4-7\n');
-for i = 1 : 97
-    if (degree(i) == 4 || degree(i) == 5 || degree(i) == 6 || degree(i) == 7)
-        fprintf('%d ',i);
-        nodeCount = nodeCount+1;
-    end
-end
-fprintf('\n');
-nodeCount
-fprintf('Degree 1-3\n');
-for i = 1 : 97
-    if (degree(i) == 1 || degree(i) == 2 || degree(i) == 3)
-        fprintf('%d ',i);
-        nodeCount = nodeCount+1;
-    end
-end
-fprintf('\n');
-nodeCount
 
-sum(degree)
+% mat = zeros(5,4);
+% for i = 2 : 3
+%     mat(:,:,i) = zeros(5,4);
+% end
+% mat
+% mat(:,:,1) = ones(5,4);
+% mat
+% mat(2,:,:) = [1 2 3 4; 5 6 7 8; 9 10 11 12]';
+% mat
+
+fileID = fopen('input/sevenReliabilityOne/network.txt','r');
+formatSpecifier = '%f';
+dimension = [16,16];
+
+inputNetwork = fscanf(fileID,formatSpecifier,dimension); %Physical network
+fclose(fileID);
+bridgeStatus = findBridges(16,inputNetwork)

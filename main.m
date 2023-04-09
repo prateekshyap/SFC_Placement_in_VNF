@@ -22,6 +22,11 @@ global assignCount;
 global mutationProbability;
 global mutationCount;
 global randomMutationIterations;
+global discovery;
+global low;
+global visited;
+global isBridge;
+global time;
 
 import java.util.TreeMap;
 import java.util.HashSet;
@@ -33,11 +38,9 @@ logFileID = fopen('log.txt','wt');
 
 %% Constants and Variables
 
-cyclic = zeros(1,100);
-
 % parfor loop = 1 : 100
 % sVal = [10 20];
-parfor loop = 1 : 100
+% parfor loop = 1 : 100
 % loop
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -87,6 +90,7 @@ fclose(fileID);
 % end
 
 [network,nextHop] = allPairShortestPath(N,inputNetwork); %Floyd-Warshall
+[bridgeStatus] = findBridges(N,inputNetwork); % Find bridge status for all edges in the network
 
 %% Reading Network Data
 fileID = fopen('input/sevenReliabilityOne/bandwidth.txt','r');
@@ -170,7 +174,7 @@ if sfcStatus == 1 %Random SFC generation
 %     S = input('Enter the number of SFCs:\n');
     fprintf('Enter the number of SFCs:\n5\n');
     fprintf(logFileID,'%s\n%s\n','Enter the number of SFCs:','5');
-    S = 10;
+    S = 1;
 %     if loop <= 100
 %         S = sVal(1);
 %     else
@@ -181,12 +185,13 @@ if sfcStatus == 1 %Random SFC generation
     fprintf(logFileID,'%s\n%s\n%s\n%s\n%s\n','Choose one option for the length of SFC:','    1. Random Length Generation','    2. Custom Input','Enter your choice:','1');
     lengthStatus = 1;
     if lengthStatus == 1
-        lengths = randi(F*0.6,[1,S])+2;
+        lengths = randi(ceil(F*0.6),[1,S])+2;
     elseif lengthStatus == 2
         lengths = input('Enter the lengths as an array:\n');
     end
     for i = 1 : S
         chain = randperm(F,lengths(i)); % Generate a random permutation as an SFC
+        chain
         sfcClassData(1,i) = SFC(lengths(i),chain,zeros(1,2),zeros(1,2)); % Store the chain and its length
 		sfcGraph(:,:,i) = zeros(F,F);
 		for node = 1 : lengths(i)-1
@@ -389,7 +394,7 @@ end
 % [Xfv, fvMap, vnfStatus] = greedyDeployment(N, VI, F, FI, inputNetwork, vnMap, vmStatus, vmCoreRequirements, vnfTypes) %Greedy algorithm when SFCs are not known
 
 [FI, vnfTypes, vnfFreq] = generateVNFData(V, F, S, vmTypes, vmCoreRequirements, vnfCoreRequirement, sfcClassData);
-
+vnfTypes
 %% After VNF Instance Counting, print the generated data
 fprintf(logFileID,'\n');
 fprintf(logFileID,'%s\n\n','-------------------------------------------FI--------------------------------------------');
@@ -409,17 +414,12 @@ fprintf(logFileID,'\n\n');
 tic;
 
 % [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = bruteForceDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement);
-[Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID);
+% [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID);
+[Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = reliableMetaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, bridgeStatus, nextHop, nodeClassData, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID);
 timer = toc
 fprintf(logFileID,'%f',timer); %This will print the time automatically
 
 optCost
-cyclic(loop) = optCost;
-% if loop <= 100
-%     tenCosts(loop) = optCost;
-% else
-%     tweCosts(loop-100) = optCost;
-% end
 
 %% After Deployment and Assignment, print the generated data
 fprintf(logFileID,'\n\n');
@@ -773,9 +773,9 @@ fprintf(fileID,"%s",commands);
 fclose(fileID);
 %}
 
-end
+% end
 
-cyclic
+
 
 
 
