@@ -1,10 +1,10 @@
-function [children] = crossover(gene1, gene2, len, C, VI)
+function [children] = crossover(gene1, gene2, len, C, VI, type)
 
     global mutationProbability;
     
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-%{
+if type == 1
 %   This is a modified cyclic crossover hybrid drafting
     import java.util.TreeSet;
 
@@ -46,16 +46,20 @@ function [children] = crossover(gene1, gene2, len, C, VI)
     else
         order1 = zeros(1,common.size());
         order2 = zeros(1,common.size());
+        visited1 = TreeSet();
+        visited2 = TreeSet();
     
         orderIndex1 = 1;
         orderIndex2 = 1;
         for i = 1 : len
-            if (common.contains(gene1(i)))
+            if common.contains(gene1(i)) && ~visited1.contains(gene1(i))
                 order1(orderIndex1) = gene1(i);
+                visited1.add(gene1(i));
                 orderIndex1 = orderIndex1+1;
             end
-            if (common.contains(gene2(i)))
+            if common.contains(gene2(i)) && ~visited2.contains(gene2(i))
                 order2(orderIndex2) = gene2(i);
+                visited2.add(gene2(i));
                 orderIndex2 = orderIndex2+1;
             end
         end
@@ -64,11 +68,11 @@ function [children] = crossover(gene1, gene2, len, C, VI)
         orderIndex2 = 1;
         
         for i = 1 : len
-            if (common.contains(gene1(i)))
+            if (common.contains(gene1(i)) && orderIndex2 <= common.size())
                 gene1(i) = order2(orderIndex2);
                 orderIndex2 = orderIndex2+1;
             end
-            if (common.contains(gene2(i)))
+            if (common.contains(gene2(i)) && orderIndex1 <= common.size())
                 gene2(i) = order1(orderIndex1);
                 orderIndex1 = orderIndex1+1;
             end
@@ -76,7 +80,7 @@ function [children] = crossover(gene1, gene2, len, C, VI)
     
         children(1,:) = gene1;
         children(2,:) = gene2;
-    
+
         order1 = zeros(1,len-common.size());
         order2 = zeros(1,len-common.size());
     
@@ -93,16 +97,17 @@ function [children] = crossover(gene1, gene2, len, C, VI)
                 orderIndex2 = orderIndex2+1;
             end
         end
-    
+        maxO1 = orderIndex1-1;
+        maxO2 = orderIndex2-1;
         orderIndex1 = 1;
         orderIndex2 = 1;
         
         for i = 1 : len
-            if (~common.contains(gene1(i)))
+            if (~common.contains(gene1(i)) && orderIndex2 <= maxO2)
                 gene1(i) = order2(orderIndex2);
                 orderIndex2 = orderIndex2+1;
             end
-            if (~common.contains(gene2(i)))
+            if (~common.contains(gene2(i)) && orderIndex1 <= maxO1)
                 gene2(i) = order1(orderIndex1);
                 orderIndex1 = orderIndex1+1;
             end
@@ -111,8 +116,13 @@ function [children] = crossover(gene1, gene2, len, C, VI)
         children(3,:) = gene1;
         children(4,:) = gene2;
     end
-%}
-%{
+
+
+
+
+
+
+else if type == 2
 %   This is two point crossover
     children = zeros(C,len);
     point1 = 0;
@@ -163,8 +173,13 @@ function [children] = crossover(gene1, gene2, len, C, VI)
         children(3,i) = children(4,i);
         children(4,i) = temp;
     end
-%}
 
+
+
+
+
+
+else
 %   This is hybrid two point crossover and generation
     import java.util.TreeSet;
     children = zeros(C,len);
@@ -239,5 +254,5 @@ function [children] = crossover(gene1, gene2, len, C, VI)
         children(4,i) = remVMs(remIndex);
         remIndex = remIndex+1;
     end
-    
+end
 end
