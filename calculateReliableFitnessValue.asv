@@ -137,8 +137,8 @@ function [cost, vmGene, XfviTemp, XsfiTemp, sfcClassData, vmCapacityTemp, vnfCap
     sfcClassData(sIndex).usedLinks = usedLinks; % Store the physical nodes
     sfcClassData(sIndex).nodeMaps = nodeMaps; % Store the instance indices
     for e = 1 : chainLength-1 % For each edge in the SFC
-    	startNode = nodeGene(e,1); % Get the source
-    	finalNode = nodeGene(e+1,1); % Get the destination
+    	startNode = usedLinks(1,e); % Get the source
+    	finalNode = usedLinks(1,e+1); % Get the destination
         while startNode ~= finalNode % Till we reach the destination
         	uNode = startNode; % Current node
         	vNode = nextHop(startNode,finalNode); % Next hop node
@@ -150,7 +150,6 @@ function [cost, vmGene, XfviTemp, XsfiTemp, sfcClassData, vmCapacityTemp, vnfCap
 
     %% Failure
     for iota = 2 : r % For the next levels of reliability
-    	nodeMaps = zeros(1,chainLength); % To store the sequence of function instances
     	for pos = 1 : chainLength % For each chain position
     		failedNodes = TreeSet(); % This will store the nodes that are already used in previous levels
     		for l = 1 : iota-1 % For each previous level
@@ -171,12 +170,7 @@ function [cost, vmGene, XfviTemp, XsfiTemp, sfcClassData, vmCapacityTemp, vnfCap
                     % case. We deploy all the instances and then only the
                     % failures occur. Hence, at any point if we want to
                     % check if an instance is deployed or not, we have to
-                    % check for the NO FAILURE i.e. iota = 1. Because, an
-                    % instance which is a backup for some SFC will deifnitely
-                    % work as a primary assignment for some other SFC.
-                    % Other iota matrices will remain unfilled and they'll
-                    % only be filled when we reach the actual fitness value
-                    % calculation stage
+                    % check for the NO FAILURE i.e. iota = 1.
             		if XfviTemp(fin,vmList(vin),1) == 1 % If the current instance is already deployed on the current VM
             			indicator = 1; % Mark it
             			chosenInstance = fin; % Store the index of the chosen instance
@@ -186,15 +180,13 @@ function [cost, vmGene, XfviTemp, XsfiTemp, sfcClassData, vmCapacityTemp, vnfCap
             	end
             end
             if indicator == 1 && ~failedNodes.contains(chosenNode) % If the chosen VM has an instance of the required VNF and the chosen node is not already present in the previous reliability levels
-            	XsfiTemp(sIndex,chosenInstance,iota) = 1; % This indicates that the chosen instance is going to be assigned as a backup at level iota
             	vmGene(pos,iota) = chosenVM; % Modify the vm gene
             	nodeGene(pos,iota) = vnMap.get(vmGene(pos,iota)); % Store the physical node
-            	nodeMaps(pos) = chosenInstance; % Store the instance
             else % If the node couldn't be chosen, we need to find another instance
             	%% Step 2 - Find an undeployed instance to deploy on any VM on the chosen node
             	freeVNF = 0;
             	isDeployed = 0;
-            	for fin = fIndex : fIndex+vnfTypes(chain(pos))-1 % For each instance of the same function
+            	for fin = fIndex : fIndex+vnfTypes(chain(pos))-1; % For each instance of the same function
             		indicator = 0;
             		vIndex = 0;
             		for vin = 1 : VI % For each VM instance
@@ -221,10 +213,8 @@ function [cost, vmGene, XfviTemp, XsfiTemp, sfcClassData, vmCapacityTemp, vnfCap
             		if indicator == 1 && ~failedNodes.contains(chosenNode) % If there exists a VM with such conditions and the chosen node is not already present in the previous reliability levels
             			isDeployed = 1; % Mark that the new instance is deployed
             			XfviTemp(freeVNF,chosenVM,1) = 1; % Deploy
-            			XsfiTemp(sIndex,freeVNF,iota) = 1; % This indicates that the chosen instance is going to be assigned as a backup at level iota
             			vmGene(pos,iota) = chosenVM; % Modify the vm gene
             			nodeGene(pos,iota) = vnMap.get(vmGene(pos,iota)); % Store the physical node
-            			nodeMaps(pos) = freeVNF; % Store the instance
             			vmCapacityTemp(chosenVM) = vmCapacityTemp(chosenVM)-1; % Decrease the capacity by 1
             		else % If no such VM is found or the node is used in previous levels
             			%% Step 3 - Choose the closest free VM to deploy this instance
@@ -240,10 +230,8 @@ function [cost, vmGene, XfviTemp, XsfiTemp, sfcClassData, vmCapacityTemp, vnfCap
             			if minDistanceVM ~= 0 % If we found such a VM
             				isDeployed = 1; % Mark that the new instance is deployed
             				XfviTemp(freeVNF,minDistanceVM,1) = 1; % Deploy
-            				XsfiTemp(sIndex,freeVNF,iota) = 1; % This indicates that the chosen instance is going to be assigned as a backup at level iota
             				vmGene(pos,iota) = minDistanceVM; % Modify the vm gene
             				nodeGene(pos,iota) = vnMap.get(vmGene(pos,iota)); % Store the physical node
-            				nodeMaps(pos) = freeVNF; % Store the instance
             				vmCapacityTemp(minDistanceVM) = vmCapacityTemp(minDistanceVM)-1; % Decrease the capacity by 1
             			end
             		end
@@ -268,29 +256,11 @@ function [cost, vmGene, XfviTemp, XsfiTemp, sfcClassData, vmCapacityTemp, vnfCap
 	            			end
 	            		end
             		end
-        			XsfiTemp(sIndex,minDistanceInstance,iota) = 1; % This indicates that the chosen instance is going to be assigned as a backup at level iota
             		vmGene(pos,iota) = chosenVM; % Modify the vm gene
             		nodeGene(pos,iota) = vnMap.get(vmGene(pos,iota)); % Store the physical node
-            		nodeMaps(pos) = minDistanceInstance; % Store the instance
             	end
             end
     	end
-    	sfcClassData(sIndex).nodeMaps(:,iota) = nodeMaps;
-    	for e = 1 : chainLength-1 % For each edge in the SFC
-    		startNode = 0;
-    		finalNode = nodeGene(e,iota);
-    		for l = 1 : iota % For each level
-    			startNode = finalNode; % It will start from the previous final node
-    			finalNode = nodeGene(e+1,l) % Next final node will be the node that was the l level node
-    			while startNode ~= finalNode % Till we reach the destination
-    				unode = startNode; % Current node
-    				vNode = nextHop(startNode,finalNode); % Next hop node
-    				XllviTemp(sIndex,nodeMaps(e),nodeMaps(e+1),uNode,vNode,iota) = 1;
-    				XllviTemp(sIndex,nodeMaps(e),nodeMaps(e+1),vNode,uNode,iota) = 1;
-    				startNode = nextHop(startNode,finalNode); % Update the start node
-    			end
-    		end
-	    end
     end
 
 
@@ -298,9 +268,7 @@ function [cost, vmGene, XfviTemp, XsfiTemp, sfcClassData, vmCapacityTemp, vnfCap
 	y2 = getY2(VI, F, FI, sIndex, lambda, delta, mu, XfviTemp, XsfiTemp, vnfStatus);
 	y3 = getY3(L, sIndex, medium, network, bandwidths, nextHop, sfcClassData)
 
-	y1 = y1Rel(N, VI, FI, Cvn, Xvn, Cfv, XfviTemp, vmStatus, vnfStatus);
-	y2 = y2Rel(VI, F, FI, sIndex, lambda, delta, mu, XfviTemp, XsfiTemp, vnfStatus);
-	y3 = y3Rel(L, sIndex, medium, network, bandwidths, nextHop, sfcClassData, XfviTemp, XllviTemp, vnMap)
+	y3Orig = y3Rel(L, sIndex, medium, network, bandwidths, nextHop, sfcClassData, XfviTemp, XllviTemp, vnMap)
 
 	cost = y1+y2+y3;
    

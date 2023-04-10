@@ -1,7 +1,8 @@
 function[nodePop, vmPop] = generatePopulation(N, VI, chainLength, r, nodeClassData)
-	% These two matrices will store the population for each level of reliability
+    
     import java.util.TreeSet;
 
+	% These two matrices will store the population for each level of reliability
 	nodePop = zeros(chainLength,r);
 	vmPop = zeros(chainLength,r);
 

@@ -96,6 +96,7 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = reliableMetaHeuri
     for iota = 2 : r % For each reliabiliy level
         Xfvi(:,:,iota) = zeros(FI,VI); % Create a new indicator matrix with the same dimension
         Xski(:,:,iota) = zeros(1,FI); % Create a new indicator matrix with the same dimension
+        Xllvi(:,:,:,:,:,iota) = repmat(0,[1,FI,FI,N,N]); % Create a new indicator matrix with the same dimension
     end
 
     for s = 1 : S % For each SFC s
