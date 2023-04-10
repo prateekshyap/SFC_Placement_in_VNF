@@ -1,4 +1,4 @@
-function [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmImpl(N, VI, F, FI, L, r, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, sIndex, logFileID, onePercent, totalIterations, rhoNode, rhoVm, rhoVnf)
+function [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmImpl(N, VI, F, FI, L, r, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, network, bandwidths, bridgeStatus, nextHop, nodeClassData, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, sIndex, logFileID, onePercent, totalIterations, rhoNode, rhoVm, rhoVnf)
 
 	global mutationProbability;
     global mutationCount;
@@ -26,7 +26,7 @@ function [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmI
         nodePop(:,:) = nodePopulations(p,:,:);
         vmPop = zeros(chainLength,r);
         vmPop(:,:) = vmPopulations(p,:,:);
-   		[fitnessValues(p),nodePopulations(p,:,:),vmPopulations(p,:,:),t1,t2,t3,t4,t5,t6] = calculateReliableFitnessValue(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, nodePop, vmPop, r, nodeClassData, rhoNode, rhoVm, rhoVnf); % Find out the fitness value and store it
+   		[fitnessValues(p),nodePopulations(p,:,:),vmPopulations(p,:,:),t1,t2,t3,t4,t5,t6] = calculateReliableFitnessValue(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, nodePop, vmPop, r, nodeClassData, rhoNode, rhoVm, rhoVnf); % Find out the fitness value and store it
    		if p > 1 % If we have more than one fitness value
    			if fitnessValues(p) < fitnessValues(bestIndex) % If the newly calculated fitness value is less than the best fitness value
    				bestIndex = p; % Update the best fitness index
@@ -185,7 +185,7 @@ function [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmI
             nodePop(:,:) = nodeChildren(cin,:,:);
             vmPop = zeros(chainLength,r);
             vmPop(:,:) = vmChildren(cin,:,:);
-            [childrenFitnessValues(cin),nodeChildren(cin,:,:),vmChildren(cin,:,:),t1,t2,t3,t4,t5,t6] = calculateReliableFitnessValue(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, nodePop, vmPop, r, nodeClassData, rhoNode, rhoVm, rhoVnf); % Find out the fitness value and store it
+            [childrenFitnessValues(cin),nodeChildren(cin,:,:),vmChildren(cin,:,:),t1,t2,t3,t4,t5,t6] = calculateReliableFitnessValue(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, nodeChildren(cin,:,:), vmChildren(cin,:,:), r, nodeClassData, rhoNode, rhoVm, rhoVnf); % Find out the fitness value and store it
         end
 
 		% fprintf(logFileID,'%s\n','Children ');
@@ -428,8 +428,6 @@ function [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmI
    	end
     
    	optCost = fitnessValues(bestIndex); % Store the best fitness value
-    optVMPlacement = zeros(chainLength,r);
-   	optVMPlacement(:,:) = vmPopulations(bestIndex,:,:); % Store the corresponding placement of VMs
-    optNodePlacement = zeros(chainLength,r);
-   	optNodePlacement(:,:) = nodePopulations(bestIndex,:,:); % Store the corresponding placement of nodes
+   	optVMPlacement = vmPopulations(bestIndex,:,:); % Store the corresponding placement of VMs
+   	optNodePlacement = nodePopulations(bestIndex,:,:); % Store the corresponding placement of nodes
 end

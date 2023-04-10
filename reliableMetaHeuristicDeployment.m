@@ -1,4 +1,4 @@
-function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = reliableMetaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, bridgeStatus, nextHop, nodeClassData, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID)
+function [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost] = reliableMetaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID, rhoNode, rhoVm, rhoVnf)
     
     global mutationProbability;
     global mutationCount;
@@ -79,8 +79,8 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = reliableMetaHeuri
     end
 
     iterations = parameters(2); % Total number of GA iterations
-    % populationSize = parameters(3); % Population size
-    populationSize = 5; % Population size
+    populationSize = parameters(3); % Population size
+    % populationSize = 5; % Population size
 
     Xfvi = zeros(FI,VI); % FIxVI matrix to indicate whether a vnf instance f is deployed on the VM v or not
     Xsfi = zeros(1,FI); % SxFI matrix to indicate whether an SFC uses the f instance of VNFs or not
@@ -95,14 +95,14 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = reliableMetaHeuri
     r = min(vnfTypes); % Maximum reliability levels possible
     for iota = 2 : r % For each reliabiliy level
         Xfvi(:,:,iota) = zeros(FI,VI); % Create a new indicator matrix with the same dimension
-        Xski(:,:,iota) = zeros(1,FI); % Create a new indicator matrix with the same dimension
+        Xsfi(:,:,iota) = zeros(1,FI); % Create a new indicator matrix with the same dimension
         Xllvi(:,:,:,:,:,iota) = repmat(0,[1,FI,FI,N,N]); % Create a new indicator matrix with the same dimension
     end
 
     for s = 1 : S % For each SFC s
-        [optCost, optPlacement] = reliableGeneticAlgorithmImpl(N, VI, F, FI, L, r, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, network, bandwidths, bridgeStatus, nextHop, nodeClassData, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, s, logFileID, onePercent, totalIterations); % Call GA
-        % chainLength = sfcClassData(s).chainLength; % Get the length of s
-        % chain = sfcClassData(s).chain; % Get s
+        [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmImpl(N, VI, F, FI, L, r, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, s, logFileID, onePercent, totalIterations, rhoNode, rhoVm, rhoVnf); % Call GA
+        chainLength = sfcClassData(s).chainLength; % Get the length of s
+        chain = sfcClassData(s).chain; % Get s
         % fprintf(logFileID,'\n\n');
         % fprintf(logFileID,'%d',optCost);
         % fprintf(logFileID,'\n\n');
@@ -119,7 +119,7 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = reliableMetaHeuri
         % for i = 1 : FI
         %     fprintf(logFileID,'%d\t',vnfCapacity(i));
         % end
-        % [optCost, optPlacement, Xfv, Xsf, sfcClassData, vmCapacity, vnfCapacity] = calculateFitnessValue(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, s, optPlacement); % Find out the fitness value and store it
+        [optCost, optNodePlacement, optVMPlacement, Xfvi, Xsfi, Xllvi, sfcClassData, vmCapacity, vnfCapacity] = calculateReliableFitnessValue(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, s, optNodePlacement, optVMPlacement, r, nodeClassData, rhoNode, rhoVm, rhoVnf); % Find out the fitness value and store it
         % fprintf(logFileID,'%s\n\n','VM Capacity');
         % for i = 1 : VI
         %     fprintf(logFileID,'%d\t',vmCapacity(i));
@@ -156,22 +156,20 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = reliableMetaHeuri
         %     end
         %     fprintf(logFileID,'\n');
         % end
-        % % fprintf(logFileID,'\n\n');
-        % % waitbar(s/S);
         % fprintf(logFileID,'\n\n%d%s\n\n',s,' SFCs done****************************************************************************************************');
-        % fvMap = TreeMap(); % Reinitialize map
-        % for f = 1 : F % For each VNF type
-        %     fvMap.put(f,ArrayList()); % Add the VNF along with an empty arraylist
-        % end
-        % for fin = 1 : FI % For each function instance
-        %     vin = 0;
-        %     for vin = 1 : VI % For each VM instance
-        %         if Xfv(fin,vin) == 1 % If fin is deployed on in
-        %             fvMap.get(vnfStatus(fin)).add([fvMap.get(vnfStatus(fin)).size()+1 vin]);
-        %             break;
-        %         end
-        %     end
-        % end
+        fvMap = TreeMap(); % Reinitialize map
+        for f = 1 : F % For each VNF type
+            fvMap.put(f,ArrayList()); % Add the VNF along with an empty arraylist
+        end
+        for fin = 1 : FI % For each function instance
+            vin = 0;
+            for vin = 1 : VI % For each VM instance
+                if Xfv(fin,vin) == 1 % If fin is deployed on in
+                    fvMap.get(vnfStatus(fin)).add([fvMap.get(vnfStatus(fin)).size()+1 vin]);
+                    break;
+                end
+            end
+        end
     end
 
 %     fclose(logFileID);

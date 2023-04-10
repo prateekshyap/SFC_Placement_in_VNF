@@ -1,0 +1,269 @@
+function [nodeChildren, vmChildren] = crossoverRel(nodeGene1, nodeGene2, vmGene1, vmGene2, vnMap, len, C, VI, r)
+
+    global mutationProbability;
+    
+%UNTITLED Summary of this function goes here
+%   Detailed explanation goes here
+%{
+%   This is a modified cyclic crossover hybrid drafting
+    import java.util.TreeSet;
+
+    vmChildren = zeros(C,len);
+
+    set1 = TreeSet();
+    common = TreeSet();
+
+    for i = 1 : len
+        set1.add(vmGene1(i));
+    end
+
+    for i = 1 : len
+        if set1.contains(vmGene2(i))
+            common.add(vmGene2(i));
+        end
+    end
+
+    if common.size() == 0
+        draft = zeros(1,len*2);
+        draftIndex = 1;
+        for i = 1 : len
+            draft(draftIndex) = vmGene1(i);
+            draftIndex = draftIndex+1;
+        end
+        for i = 1 : len
+            draft(draftIndex) = vmGene2(i);
+            draftIndex = draftIndex+1;
+        end
+        indices = zeros(C,len);
+        for in = 1 : C
+            indices(in,:) = randperm(2*len,len);
+        end
+        for cin = 1 : C
+            for din = 1 : len
+                vmChildren(cin,din) = draft(indices(cin,din));
+            end
+        end
+    else
+        order1 = zeros(1,common.size());
+        order2 = zeros(1,common.size());
+    
+        orderIndex1 = 1;
+        orderIndex2 = 1;
+        for i = 1 : len
+            if (common.contains(vmGene1(i)))
+                order1(orderIndex1) = vmGene1(i);
+                orderIndex1 = orderIndex1+1;
+            end
+            if (common.contains(vmGene2(i)))
+                order2(orderIndex2) = vmGene2(i);
+                orderIndex2 = orderIndex2+1;
+            end
+        end
+    
+        orderIndex1 = 1;
+        orderIndex2 = 1;
+        
+        for i = 1 : len
+            if (common.contains(vmGene1(i)))
+                vmGene1(i) = order2(orderIndex2);
+                orderIndex2 = orderIndex2+1;
+            end
+            if (common.contains(vmGene2(i)))
+                vmGene2(i) = order1(orderIndex1);
+                orderIndex1 = orderIndex1+1;
+            end
+        end
+    
+        vmChildren(1,:) = vmGene1;
+        vmChildren(2,:) = vmGene2;
+    
+        order1 = zeros(1,len-common.size());
+        order2 = zeros(1,len-common.size());
+    
+        orderIndex1 = 1;
+        orderIndex2 = 1;
+    
+        for i = 1 : len
+            if (~common.contains(vmGene1(i)))
+                order1(orderIndex1) = vmGene1(i);
+                orderIndex1 = orderIndex1+1;
+            end
+            if (~common.contains(vmGene2(i)))
+                order2(orderIndex2) = vmGene2(i);
+                orderIndex2 = orderIndex2+1;
+            end
+        end
+    
+        orderIndex1 = 1;
+        orderIndex2 = 1;
+        
+        for i = 1 : len
+            if (~common.contains(vmGene1(i)))
+                vmGene1(i) = order2(orderIndex2);
+                orderIndex2 = orderIndex2+1;
+            end
+            if (~common.contains(vmGene2(i)))
+                vmGene2(i) = order1(orderIndex1);
+                orderIndex1 = orderIndex1+1;
+            end
+        end
+        
+        vmChildren(3,:) = vmGene1;
+        vmChildren(4,:) = vmGene2;
+    end
+%}
+%{
+%   This is two point crossover
+    vmChildren = zeros(C,len);
+    point1 = 0;
+    point2 = 0;
+    if len == 3
+        point1 = 1;
+        point2 = 2;
+    else
+        point1 = randi([1 len-1]);
+        point2 = point1;
+        while point2 == point1
+            point2 = randi([1 len-1]);
+        end
+        if point1 > point2
+            temp = point1;
+            point1 = point2;
+            point2 = temp;
+        end
+    end
+    vmChildren(1,:) = vmGene1;
+    vmChildren(2,:) = vmGene2;
+    for i = point1+1 : point2
+        temp = vmChildren(1,i);
+        vmChildren(1,i) = vmChildren(2,i);
+        vmChildren(2,i) = temp;
+    end
+    point1 = 0;
+    point2 = 0;
+    if len == 3
+        point1 = 1;
+        point2 = 2;
+    else
+        point1 = randi([1 len-1]);
+        point2 = point1;
+        while point2 == point1
+            point2 = randi([1 len-1]);
+        end
+        if point1 > point2
+            temp = point1;
+            point1 = point2;
+            point2 = temp;
+        end
+    end
+    vmChildren(3,:) = vmGene1;
+    vmChildren(4,:) = vmGene2;
+    for i = point1+1 : point2
+        temp = vmChildren(3,i);
+        vmChildren(3,i) = vmChildren(4,i);
+        vmChildren(4,i) = temp;
+    end
+%}
+
+%   This is hybrid two point crossover and generation
+    import java.util.TreeSet;
+    nodeChildren = zeros(C,len,r);
+    vmChildren = zeros(C,len,r);
+    point1 = 0;
+    point2 = 0;
+    if len == 3 % If the chain length is 3, the two points will be mandatorily 1 and 2
+        point1 = 1;
+        point2 = 2;
+    else % Otherwise generate random unique indices and ensure that point1 is smaller than point2
+        point1 = randi([1 len-1]);
+        point2 = point1;
+        while point2 == point1
+            point2 = randi([1 len-1]);
+        end
+        if point1 > point2
+            temp = point1;
+            point1 = point2;
+            point2 = temp;
+        end
+    end
+    % If the length is 8 and point1 and point2 are 4 and 6 respectively
+    % then the sections are like the following
+    % 1 2 3 4 | 5 6 | 7 8
+    % Copy the two chromosomes
+    nodeChildren(1,:,:) = nodeGene1;
+    nodeChildren(2,:,:) = nodeGene2;
+    vmChildren(1,:,:) = vmGene1;
+    vmChildren(2,:,:) = vmGene2;
+    %% Standard two point crossover
+    % Swap the middle section
+    for iota = 1 : r
+        for i = point1+1 : point2
+            temp = nodeChildren(1,i,iota);
+            nodeChildren(1,i,iota) = nodeChildren(2,i,iota);
+            nodeChildren(2,i,iota) = temp;
+            temp = vmChildren(1,i,iota);
+            vmChildren(1,i,iota) = vmChildren(2,i,iota);
+            vmChildren(2,i,iota) = temp;
+        end
+    end
+    % Copy the two chromosomes again
+    nodeChildren(3,:,:) = nodeGene1;
+    nodeChildren(4,:,:) = nodeGene2;
+    vmChildren(3,:,:) = vmGene1;
+    vmChildren(4,:,:) = vmGene2;
+    %% Formation operation (replacement of mutation)
+    % Take union of both the chromosomes
+    for iota = 1 : r
+        parentUnion = TreeSet();
+        for i = 1 : len
+            parentUnion.add(vmGene1(i,iota));
+            parentUnion.add(vmGene2(i,iota));
+        end
+        % Find out the VMs which are not present in the union
+        remVal = VI-parentUnion.size();
+        remVMs = zeros(1,remVal);
+        remIndex = 1;
+        for v = 1 : VI
+            if ~parentUnion.contains(v)
+                remVMs(remIndex) = v;
+                remIndex = remIndex+1;
+            end
+        end
+        remIndex = 1;
+        mutationSize = ceil(len*mutationProbability/100); % Get the number of indices to be mutated
+        % In both section-1 and section-3, alter mutationSize number of indices
+        for i = 1 : min(point1,mutationSize)
+            if remIndex > remVal
+                break;
+            end
+            vmChildren(3,i,iota) = remVMs(remIndex);
+            remIndex = remIndex+1;
+        end
+        for i = point2+1 : min(len,point2+1+mutationSize)
+            if remIndex > remVal
+                break;
+            end
+            vmChildren(3,i,iota) = remVMs(remIndex);
+            remIndex = remIndex+1;
+        end
+        remIndex = 1;
+        for i = 1 : min(point1,mutationSize)
+            if remIndex > remVal
+                break;
+            end
+            vmChildren(4,i,iota) = remVMs(remIndex);
+            remIndex = remIndex+1;
+        end
+        for i = point2+1 : min(len,point2+1+mutationSize)
+            if remIndex > remVal
+                break;
+            end
+            vmChildren(4,i,iota) = remVMs(remIndex);
+            remIndex = remIndex+1;
+        end
+        for i = 1 : len
+            nodeChildren(3,i,iota) = vnMap.get(vmChildren(3,i,iota));
+            nodeChildren(4,i,iota) = vnMap.get(vmChildren(4,i,iota));
+        end
+    end
+end

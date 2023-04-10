@@ -420,7 +420,6 @@ timer = toc
 fprintf(logFileID,'%f',timer); %This will print the time automatically
 
 optCost
-vnfStatus
 Xsfi
 
 %% After Deployment and Assignment, print the generated data
