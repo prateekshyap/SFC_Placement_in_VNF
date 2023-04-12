@@ -2,11 +2,6 @@ clear all
 close all
 clc
 
-%{
-%	VNFDeploy deploys the VNFs in ascending order of availability
-%	greedyDeployment follows a greedy approach to deploy the VNFs
-%}
-
 global VMCombination;
 global VMCost;
 global VNFDeployment;
@@ -46,7 +41,7 @@ logFileID = fopen('log.txt','wt');
 
 fileID = fopen('input/sevenReliabilityOne/constants.txt','r');
 formatSpecifier = '%f';
-dimension = [1,9];
+dimension = [1,10];
 
 constants = fscanf(fileID,formatSpecifier,dimension);
 fclose(fileID);
@@ -60,13 +55,16 @@ S = 0; %Total number of SFCs
 vnfCoreRequirement = constants(4); %Required number of cores for each function
 medium = constants(5); %Inverted Velocity depending on the transmission medium
 
+% Weighing factor
+alpha = constants(6);
+
 % Failure Probabilities
-rhoNode = constants(6); %Failure probability of nodes
-rhoVm = constants(7); %Failure probability of VMs
-rhoVnf = constants(8); %Failure probability of VNFs
+rhoNode = constants(7); %Failure probability of nodes
+rhoVm = constants(8); %Failure probability of VMs
+rhoVnf = constants(9); %Failure probability of VNFs
 
 % Other constants
-L = constants(9); %Packet size
+L = constants(10); %Packet size
 maximumCores = 64; %Maximum allowed cores on a physical node
 
 %% Reading Network Data
@@ -88,6 +86,10 @@ fclose(fileID);
 %         end
 %     end
 % end
+
+fileID = fopen('input/newyork_16_49/newyork.graphml');
+[topology,latlong,nodenames,mat,P] = importGraphML('input/newyork_16_49/newyork.graphml')
+fclose(fileID);
 
 [network,nextHop] = allPairShortestPath(N,inputNetwork); %Floyd-Warshall
 [bridgeStatus] = findBridges(N,inputNetwork); % Find bridge status for all edges in the network
@@ -152,7 +154,7 @@ fclose(fileID);
 % Cost of deploying VNFs on VMs
 fileID = fopen('input/sevenReliabilityOne/costFV.txt','r');
 formatSpecifier = '%f';
-dimension = [1,F];
+dimension = [V,F];
 Cfv = fscanf(fileID,formatSpecifier,dimension); %Cost of deploying VNFs on VMs
 fclose(fileID);
 
@@ -164,72 +166,26 @@ X = 0;
 
 %% Array to store all SFC objects
 sfcClassData = SFC(1,S,zeros(1,2),zeros(1,2));
-sfcGraph = zeros(F,F);
 lengths = 0;
-% sfcStatus = input('Choose one option for SFC:\n    1. Random SFC Generation\n    2. Custom Input\nEnter your choice:\n');
-fprintf('Choose one option for SFC:\n    1. Random SFC Generation\n    2. Custom Input\nEnter your choice:\n1\n');
-fprintf(logFileID,'%s\n%s\n%s\n%s\n%s\n','Choose one option for SFC:','    1. Random SFC Generation','    2. Custom Input','Enter your choice:','1');
-sfcStatus = 1;
+sfcStatus = 1; % Set this for random generation or manual input
 if sfcStatus == 1 %Random SFC generation
-%     S = input('Enter the number of SFCs:\n');
-    fprintf('Enter the number of SFCs:\n5\n');
-    fprintf(logFileID,'%s\n%s\n','Enter the number of SFCs:','5');
-    S = 10;
-%     if loop <= 100
-%         S = sVal(1);
-%     else
-%         S = sVal(2);
-%     end
-%     lengthStatus = input('Choose one option for the length of SFC:\n    1. Random Length Generation\n    2. Custom Input\nEnter your choice:\n');
-    fprintf('Choose one option for the length of SFC:\n    1. Random Length Generation\n    2. Custom Input\nEnter your choice:\n1\n');
-    fprintf(logFileID,'%s\n%s\n%s\n%s\n%s\n','Choose one option for the length of SFC:','    1. Random Length Generation','    2. Custom Input','Enter your choice:','1');
-    lengthStatus = 1;
+    S = 5;
+	lengthStatus = 1;
     if lengthStatus == 1
         lengths = randi(ceil(F*0.6),[1,S])+2;
     elseif lengthStatus == 2
         lengths = input('Enter the lengths as an array:\n');
     end
     for i = 1 : S
-        chain = randperm(F,lengths(i)); % Generate a random permutation as an SFC
-        chain
+        chain = randperm(F,lengths(i)) % Generate a random permutation as an SFC
         sfcClassData(1,i) = SFC(lengths(i),chain,zeros(1,2),zeros(1,2)); % Store the chain and its length
-		sfcGraph(:,:,i) = zeros(F,F);
-		for node = 1 : lengths(i)-1
-			sfcGraph(chain(1,node),chain(1,node+1),i) = 1;
-		end
     end
 elseif sfcStatus == 2 %Manual SFC input
-	% S = input('Enter the number of SFCs:\n');
-	fprintf('Enter the number of SFCs:3\n');
-    fprintf(logFileID,'%s\n%s\n','Enter the number of SFCs:','3');
     S = 2;
 	for i = 1 : S
-        % chain = zeros(1,3);
-        if i == 1
-            chain = [5 1 4 3 2];
-        elseif i == 2
-            chain = [2 3 1 4 5];
-        elseif i == 3
-            chain = [3 1 2];
-        end
-		%{
-if mod(i,10) == 1 && mod(i,100) ~= 11
-			chain = input(sprintf('Enter %dst chain:\n',i));
-		elseif mod(i,10) == 2 && mod(i,100) ~= 12
-			chain = input(sprintf('Enter %dnd chain:\n',i));
-		elseif mod(i,10) == 3 && mod(i,100) ~= 13
-			chain = input(sprintf('Enter %drd chain:\n',i));
-		else
-			chain = input(sprintf('Enter %dth chain:\n',i));
-        end
-%}
-
+        chain = input('Enter the SFCs as arrays');
 		chainLength = size(chain)-1;
         sfcClassData(1,i) = SFC(chainLength(1,2)+1,chain,zeros(1,2),zeros(1,2));
-		sfcGraph(:,:,i) = zeros(F,F);
-		for node = 1 : chainLength(1,2)
-			sfcGraph(chain(1,node),chain(1,node+1),i) = 1;
-		end
 	end
 end
 
@@ -242,136 +198,12 @@ for s = 1 : S
 		lambda(s,chain(c)) = round(rand(1,1)*9+1);
 	end
 end
-% lambda
 delta = zeros(S,F);
 mu = ones(1,F);
 
-%% Before starting the process, print the details of the entire input that is being considered
-% fprintf(logFileID,'%s\n','=========================================================================================');
-% fprintf(logFileID,'%s%d\n','                                   Observation ',loop);
-% fprintf(logFileID,'%s\n','=========================================================================================');
-% fprintf(logFileID,'\n');
-% fprintf(logFileID,'%s\n\n','----------------------------------Physical Network---------------------------------------');
-% for i = 1 : N
-% 	for j = 1 : N
-% 		fprintf(logFileID,'%d\t',inputNetwork(i,j));
-% 	end
-% 	fprintf(logFileID,'\n');
-% end
-% fprintf(logFileID,'\n');
-% fprintf(logFileID,'%s\n\n','----------------------------------Network Bandwidth--------------------------------------');
-% for i = 1 : N
-% 	for j = 1 : N
-% 		fprintf(logFileID,'%d\t',bandwidths(i,j));
-% 	end
-% 	fprintf(logFileID,'\n');
-% end
-% fprintf(logFileID,'\n');
-% fprintf(logFileID,'%s\n\n','--------------------------------------Node Types-----------------------------------------');
-% for i = 1 : N
-% 	fprintf(logFileID,'%d\t',nodeStatus(i));
-% end
-% fprintf(logFileID,'\n\n');
-% fprintf(logFileID,'%s\n\n','---------------------------------------VM Cores------------------------------------------');
-% for i = 1 : V
-% 	fprintf(logFileID,'%d\t',vmCoreRequirements(i));
-% end
-% fprintf(logFileID,'\n\n');
-% fprintf(logFileID,'%s\n\n','---------------------------------------VNF Types-----------------------------------------');
-% fprintf(logFileID,'%s%d\n','F: ',F);
-% fprintf(logFileID,'%s%d\n','VNF Cores: ',vnfCoreRequirement);
-% fprintf(logFileID,'\n\n');
-% fprintf(logFileID,'%s\n\n','----------------------------------Transmission medium------------------------------------');
-% fprintf(logFileID,'%d\n\n',medium);
-% fprintf(logFileID,'%s\n\n','--------------------------------------Packet size----------------------------------------');
-% fprintf(logFileID,'%d\n\n',L);
-% fprintf(logFileID,'%s\n\n','----------------------Data Generated from Floyd-Warshall Algorithm-----------------------');
-% fprintf(logFileID,'%s\n\n','Shortest Paths');
-% for i = 1 : N
-% 	for j = 1 : N
-% 		fprintf(logFileID,'%d\t',network(i,j));
-% 	end
-% 	fprintf(logFileID,'\n');
-% end
-% fprintf(logFileID,'\n\n%s\n\n','Next Hops');
-% for i = 1 : N
-% 	for j = 1 : N
-% 		fprintf(logFileID,'%d\t',nextHop(i,j));
-% 	end
-% 	fprintf(logFileID,'\n');
-% end
-% fprintf(logFileID,'\n');
-% fprintf(logFileID,'%s\n\n','-------------------------------------------Cvn-------------------------------------------');
-% for i = 1 : V
-% 	fprintf(logFileID,'%d\t',Cvn(i));
-% end
-% fprintf(logFileID,'\n\n');
-% fprintf(logFileID,'%s\n\n','-------------------------------------------Cfv-------------------------------------------');
-% for i = 1 : F
-% 	fprintf(logFileID,'%d\t',Cfv(i));
-% end
-% fprintf(logFileID,'\n\n');
-% fprintf(logFileID,'%s\n\n','--------------------------------------Arrival Rate---------------------------------------');
-% for i = 1 : S
-% 	for j = 1 : F
-% 		fprintf(logFileID,'%d\t',lambda(i,j));
-% 	end
-% 	fprintf(logFileID,'\n');
-% end
-% fprintf(logFileID,'\n\n');
-% fprintf(logFileID,'%s\n\n','----------------------------------------Drop Rate----------------------------------------');
-% for i = 1 : S
-% 	for j = 1 : F
-% 		fprintf(logFileID,'%d\t',delta(i,j));
-% 	end
-% 	fprintf(logFileID,'\n');
-% end
-% fprintf(logFileID,'\n\n');
-% fprintf(logFileID,'%s\n\n','--------------------------------------Service Rate---------------------------------------');
-% for i = 1 : F
-% 	fprintf(logFileID,'%d\t',mu(i));
-% end
-% fprintf(logFileID,'\n\n');
-
-
-
 %% VM hosting on the network
 % [Xvn, vnMap, vmStatus, hostingStatus] = VMHost(N, V, VI, nodeStatus, vmTypes, vmCoreRequirements); %Sequential hosting
-% if hostingStatus == 0 return; end
 [VI, Xvn, vnMap, vmStatus, vmTypes] = greedyHosting(N, V, nodeStatus, vmCoreRequirements, Cvn); %greedy VM hosting
-
-%% After VM Hosting, print the generated data
-% fprintf(logFileID,'\n');
-% fprintf(logFileID,'%s\n\n','-------------------------------------------VI--------------------------------------------');
-% fprintf(logFileID,'%d\n',VI);
-% fprintf(logFileID,'\n');
-% fprintf(logFileID,'%s\n\n','------------------------------------------Xvn--------------------------------------------');
-% for i = 1 : VI
-% 	for j = 1 : N
-% 		fprintf(logFileID,'%d\t',Xvn(i,j));
-% 	end
-% 	fprintf(logFileID,'\n');
-% end
-% fprintf(logFileID,'\n\n');
-% fprintf(logFileID,'%s\n\n','-----------------------------------------VN Map------------------------------------------');
-% for i = 1 : VI
-% 	fprintf(logFileID,'%d -> %d\n',i,vnMap.get(i));
-% end
-% fprintf(logFileID,'\n');
-% fprintf(logFileID,'%s\n\n','----------------------------------------VM Counts----------------------------------------');
-% for i = 1 : V
-% 	fprintf(logFileID,'%d\t',vmTypes(i));
-% end
-% fprintf(logFileID,'\n\n');
-% fprintf(logFileID,'%s\n\n','------------------------------------------SFCs-------------------------------------------');
-% for s = 1 : S
-%     fprintf(logFileID,'%s%d\n','length: ',sfcClassData(s).chainLength);
-%     fprintf(logFileID,'%s\n','chain ');
-%     for i = 1 : sfcClassData(s).chainLength
-% 		fprintf(logFileID,'%d\t',sfcClassData(s).chain(i));
-% 	end
-% 	fprintf(logFileID,'\n\n');
-% end
 
 %% Array to store all node objects
 nodeClassData = Node(1,zeros(1,2)); %to store the node status
@@ -390,87 +222,60 @@ end
 
 %% Function deployment on the network
 % [Xfv, fvMap, vnfStatus] = VNFDeploy(VI, F, FI, vmStatus, vmCoreRequirements, vnfTypes, vnfCoreRequirement); %Sequential deployment
-
 % [Xfv, fvMap, vnfStatus] = greedyDeployment(N, VI, F, FI, inputNetwork, vnMap, vmStatus, vmCoreRequirements, vnfTypes) %Greedy algorithm when SFCs are not known
 
 [FI, vnfTypes, vnfFreq] = generateVNFData(V, F, S, vmTypes, vmCoreRequirements, vnfCoreRequirement, sfcClassData);
 vnfTypes
-%% After VNF Instance Counting, print the generated data
-% fprintf(logFileID,'\n');
-% fprintf(logFileID,'%s\n\n','-------------------------------------------FI--------------------------------------------');
-% fprintf(logFileID,'%d\n',FI);
-% fprintf(logFileID,'\n');
-% fprintf(logFileID,'%s\n\n','----------------------------------------VNF Freqs----------------------------------------');
-% for i = 1 : F
-% 	fprintf(logFileID,'%d\t',vnfFreq(i));
-% end
-% fprintf(logFileID,'\n\n');
-% fprintf(logFileID,'%s\n\n','----------------------------------------VNF Counts---------------------------------------');
-% for i = 1 : F
-% 	fprintf(logFileID,'%d\t',vnfTypes(i));
-% end
-% fprintf(logFileID,'\n\n');
+
+% tic; % Starts the timer
+% 
+% % [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = bruteForceDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement);
+% % [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID);
+% [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost, r] = reliableMetaHeuristicDeployment(N, VI, F, FI, S, L, alpha, Cvn, Xvn, Cfv, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID, rhoNode, rhoVm, rhoVnf);
+% timer = toc % Stops the timer
+% 
+% optCost
+% vnfStatus
+% Xsfi
+
+
+lengths = TreeMap();
+for s = 1 : S
+    chainLength = sfcClassData(s).chainLength;
+    if ~lengths.containsKey(chainLength)
+        lengths.put(chainLength,ArrayList());
+    end
+    lengths.get(chainLength).add(s);
+end
+
+sortedSfcClassData = SFC(1,S,zeros(1,2),zeros(1,2));
+index = 1;
+length = lengths.lastKey();
+while size(length) > 0
+    indices = lengths.get(length);
+    if indices.size() == 0
+        break;
+    end
+    length = lengths.lowerKey(length);
+    listSize = indices.size();
+    for i = 1 : listSize
+        sortedSfcClassData(index) = sfcClassData(indices.get(i-1));
+        index = index+1;
+    end
+end
+sfcClassData = sortedSfcClassData;
 
 tic;
 
 % [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = bruteForceDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement);
 % [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID);
-[Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost] = reliableMetaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID, rhoNode, rhoVm, rhoVnf);
+[Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost, r] = reliableMetaHeuristicDeployment(N, VI, F, FI, S, L, alpha, Cvn, Xvn, Cfv, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID, rhoNode, rhoVm, rhoVnf);
 timer = toc
 fprintf(logFileID,'%f',timer); %This will print the time automatically
 
 optCost
 vnfStatus
 Xsfi
-
-%% After Deployment and Assignment, print the generated data
-% fprintf(logFileID,'\n\n');
-% fprintf(logFileID,'%s\n\n','-------------------------------------------Xfv-------------------------------------------');
-% for i = 1 : FI
-%     for j = 1 : VI
-%         fprintf(logFileID,'%d\t',Xfv(i,j));
-%     end
-%     fprintf(logFileID,'\n');
-% end
-% fprintf(logFileID,'\n\n');
-% fprintf(logFileID,'%s\n\n','-----------------------------------------FV Map------------------------------------------');
-% for i = 1 : F
-% 	fprintf(logFileID,'%s%d\n','f',i);
-% 	instanceVMList = fvMap.get(i);
-% 	vnfCount = instanceVMList.size();
-% 	for j = 1 : vnfCount
-%         instanceDetails = instanceVMList.get(j-1);
-% 		fprintf(logFileID,'\t%s%d%s%d\n','Instance: ',instanceDetails(1),' -> ',instanceDetails(2));
-% 	end
-% end
-% fprintf(logFileID,'\n\n');
-% fprintf(logFileID,'%s\n\n','-------------------------------------------Xsf-------------------------------------------');
-% for i = 1 : S
-%     for j = 1 : FI
-%         fprintf(logFileID,'%d\t',Xsf(i,j));
-%     end
-%     fprintf(logFileID,'\n');
-% end
-% fprintf(logFileID,'\n\n');
-% fprintf(logFileID,'%s\n\n','---------------------------------------SFC Details---------------------------------------');
-% for s = 1 : S
-%     fprintf(logFileID,'%s%d\n','length: ',sfcClassData(s).chainLength);
-%     fprintf(logFileID,'%s\n','chain ');
-%     for i = 1 : sfcClassData(s).chainLength
-%         fprintf(logFileID,'%d\t',sfcClassData(s).chain(i));
-%     end
-%     fprintf(logFileID,'\n\n');
-%     fprintf(logFileID,'%s\n','Used Links ');
-%     for i = 1 : sfcClassData(s).chainLength
-%         fprintf(logFileID,'%d\t',sfcClassData(s).usedLinks(i));
-%     end
-%     fprintf(logFileID,'\n\n');
-%     fprintf(logFileID,'%s\n','Used Function Instances ');
-%     for i = 1 : sfcClassData(s).chainLength
-%         fprintf(logFileID,'%d\t',sfcClassData(s).nodeMaps(i));
-%     end
-%     fprintf(logFileID,'\n\n');
-% end
 
 %% Arary to store all VM objects
 vmClassData = VM(1,zeros(1,2)); %to store the VM status
@@ -505,8 +310,6 @@ end
 % end
 
 fclose(logFileID);
-
-
 preSumVnf = zeros(1,F);
 for i = 2 : F
 	preSumVnf(1,i) = vnfTypes(1,i-1)+preSumVnf(1,i-1);
@@ -515,8 +318,8 @@ end
 %% Graph image generations
 % dot commands
 commands = "";
-% vnfStatus = [1 1 1 2 2 3 3 3 4 4 4 4 5 5 5 6 6 6 7 7 8 8];
 vmColor = ["lightblue","lightgreen","pink","lightgoldenrod","ivory2"];
+vnfColor = ["slategray2","tan","lightcoral","palegreen","cyan3"];
 
 %% Nodes to be used
 nodeNames = strings(1,N);
@@ -605,7 +408,6 @@ fileID = fopen('output/sevenReliabilityOne/gv/graphPrint.gv','w+');
 commands = commands+"dot -Tpng gv/graphPrint.gv -o img/graph.png";
 fprintf(fileID,"%s",gvText);
 
-%{
 %% SFC and SFC assignment print
 for c = 1 : S
 	gvText = "digraph G";
@@ -623,12 +425,16 @@ for c = 1 : S
 	chainLength = sfcClassData(1,c).chainLength;
 	chain = sfcClassData(1,c).chain;
 	usedLinks = sfcClassData(1,c).usedLinks;
-	nodeMaps = sfcClassData(1,c).nodeMaps;
-	nodeMapSet = HashSet();
-	for i = 1 : chainLength
-		nodeMapSet.add(nodeMaps(i));
-	end
+	usedInstances = sfcClassData(1,c).usedInstances;
+	usedInstancesMap = TreeMap();
+    for iota = 1 : r
+        usedInstancesMap.put(iota,HashSet());
+        for i = 1 : chainLength
+		    usedInstancesMap.get(iota).add(usedInstances(i,iota));
+        end
+    end
 
+    % For the SFC
 	for node = 1 : chainLength-1
 		rankData = rankData+newline+"{rank = same; ";
 		rankData = sprintf("%s%s%d; ",rankData,'f',chain(1,node));
@@ -637,6 +443,7 @@ for c = 1 : S
 		linkData = linkData+newline+sprintf("%s%d",'f',chain(1,node))+" -> "+sprintf("%s%d",'f',chain(1,node+1));
 	end
 
+	% For the network graph
 	rankData = rankData+newline+"{rank = same; ";
 	rankData = sprintf("%s%s%d; ",rankData,'f',chain(1,chainLength));
 	rankData = rankData+"};";
@@ -660,6 +467,7 @@ for c = 1 : S
 	q.add(1);
 	visited(1,1) = 1;
 	
+	% BFS for node ranking
 	while q.size() ~= 0
 	    qLen = q.size();
 	    rankData = rankData+newline+"{rank = same; ";
@@ -676,7 +484,7 @@ for c = 1 : S
 	    rankData = rankData+"};";
 	end
 
-	nodeNames = strings(1,N);
+	nodeNames = strings(1,N); % This will contain the node definitions
 	for node = 1 : N %for each node
 	    nodeName = "";
 	    nodeName = nodeName+sprintf("%d",node)+"[style=filled"+newline;
@@ -695,9 +503,14 @@ for c = 1 : S
 	    	nodeName = nodeName+"<TABLE BORDER=""0"" BGCOLOR=""darkgray"">"+newline;
 
 	    	for f = 1 : currVmVnfCount %for each VNF on the current VM
-	    		if nodeMapSet.contains(currVmVnfs(1,f))
-	   				nodeName = nodeName+"<TR><TD PORT=""f"+sprintf("%d",currVmVnfs(1,f))+""" BGCOLOR=""slategray2"">f<SUB>"+sprintf("%d",vnfStatus(1,currVmVnfs(1,f)))+"</SUB></TD></TR>"+newline;
-	   			else	
+	    		isColored = 0;
+	    		for iota = 1 : r
+	    			if usedInstancesMap.get(iota).contains(currVmVnfs(1,f))
+	    				isColored = 1;
+	   					nodeName = nodeName+"<TR><TD PORT=""f"+sprintf("%d",currVmVnfs(1,f))+""" BGCOLOR="""+vnfColor(iota)+""">f<SUB>"+sprintf("%d",vnfStatus(1,currVmVnfs(1,f)))+"</SUB></TD></TR>"+newline;
+	   				end
+	   			end
+	   			if isColored == 0	
 	   				nodeName = nodeName+"<TR><TD PORT=""f"+sprintf("%d",currVmVnfs(1,f))+""" BGCOLOR=""darkgray"">f<SUB>"+sprintf("%d",vnfStatus(1,currVmVnfs(1,f)))+"</SUB></TD></TR>"+newline;
 	    		end
 	    	end
@@ -715,8 +528,8 @@ for c = 1 : S
 	visitedEdge = zeros(N,N);
 	visitedNode = zeros(1,N);
     for link = 1 : chainLength-1 %for each link in the usedlinks
-		currSrc = usedLinks(link); %get the source
-		currDest = usedLinks(link+1); %get the destination
+		currSrc = usedLinks(link,1); %get the source
+		currDest = usedLinks(link+1,1); %get the destination
 		startNode = currSrc; %mark source as starting node
 		nodeData = nodeData+newline+nodeNames(1,currSrc); %add into node data with black color
 		visitedNode(1,currSrc) = 1; %mark source as visited
@@ -767,10 +580,8 @@ for c = 1 : S
 	fileID = fopen(sprintf('%s%d%s','output/sevenReliabilityOne/gv/sfcAssgn',c,'.gv'),'w+');
 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfcAssgn',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfcAssgn',c,'.png');
 	fprintf(fileID,"%s",gvText);
+	fclose(fileID);
 end
-
-fclose(fileID)
-%}
 
 fileID = fopen('output/sevenReliabilityOne/commands.bat','w+');
 fprintf(fileID,"%s",commands);
@@ -778,239 +589,3 @@ fclose(fileID);
 
 
 % end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-%{
-
-% %% SFC print
-% for c = 1 : S
-% 	gvText = "digraph G";
-% 	gvText = gvText+newline+"{";
-% 	gvText = gvText+newline+"ranksep = ""equally""";
-% 	gvText = gvText+newline+"rankdir = LR";
-% 	gvText = gvText+newline+"node [shape=circle]";
-
-% 	rankData = "";
-% 	nodeData = "";
-% 	linkData = "";
-
-% 	chainLength = sfcClassData(1,c).chainLength;
-% 	chain = sfcClassData(1,c).chain;
-
-% 	for node = 1 : chainLength-1
-% 		rankData = rankData+newline+"{rank = same; ";
-% 		rankData = sprintf("%s%s%d; ",rankData,'f',chain(1,node));
-% 		rankData = rankData+"};";
-% 		nodeData = nodeData+newline+sprintf("%s%d",'f',chain(1,node))+"[style=filled label=<f<SUB>"+chain(1,node)+"</SUB>> color=""bisque""]";
-% 		linkData = linkData+newline+sprintf("%s%d",'f',chain(1,node))+" -> "+sprintf("%s%d",'f',chain(1,node+1));
-% 	end
-
-% 	rankData = rankData+newline+"{rank = same; ";
-% 	rankData = sprintf("%s%s%d; ",rankData,'f',chain(1,chainLength));
-% 	rankData = rankData+"};";
-% 	nodeData = nodeData+newline+sprintf("%s%d",'f',chain(1,chainLength))+"[style=filled label=<f<SUB>"+chain(1,chainLength)+"</SUB>> color=""bisque""]";
-% 	gvText = gvText+rankData;
-% 	gvText = gvText+nodeData;
-% 	gvText = gvText+linkData;
-% 	gvText = gvText+newline+"}";
-
-% 	fileID = fopen(sprintf('%s%d%s','output/sevenReliabilityOne/gv/sfc',c,'.gv'),'w+');
-% 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfc',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfc',c,'.png');
-% 	fprintf(fileID,"%s",gvText);
-% end
-
-% %% SFC assignment print
-% for c = 1 : S
-% 	chainLength = sfcClassData(1,c).chainLength;
-% 	chain = sfcClassData(1,c).chain;
-% 	usedLinks = sfcClassData(1,c).usedLinks;
-% 	nodeMaps = sfcClassData(1,c).nodeMaps;
-% 	nodeMapSet = HashSet();
-% 	for i = 1 : chainLength
-% 		nodeMapSet.add(nodeMaps(i));
-% 	end
-	
-% 	nodeNames = strings(1,N);
-% 	for node = 1 : N %for each node
-% 	    nodeName = "";
-% 	    nodeName = nodeName+sprintf("%d",node)+"[style=filled"+newline;
-% 	    nodeName = nodeName+"label=<"+newline;
-% 	    nodeName = nodeName+"<TABLE BORDER=""0"" BGCOLOR=""gray"">"+newline;
-% 	    nodeName = nodeName+"<TR>"+newline;
-
-% 	    currNodeVmCount = nodeClassData(1,node).vmCount;
-% 	    currNodeVms = nodeClassData(1,node).vms;
-
-% 	    for v = 1 : currNodeVmCount %for each VM on the current node
-% 	    	currVmVnfCount = vmClassData(1,currNodeVms(1,v)).vnfCount;
-% 	    	currVmVnfs = vmClassData(1,currNodeVms(1,v)).vnfs;
-
-% 	    	nodeName = nodeName+"<TD>"+newline;
-% 	    	nodeName = nodeName+"<TABLE BORDER=""0"" BGCOLOR=""darkgray"">"+newline;
-
-% 	    	for f = 1 : currVmVnfCount %for each VNF on the current VM
-% 	    		if nodeMapSet.contains(currVmVnfs(1,f))
-% 	   				nodeName = nodeName+"<TR><TD PORT=""f"+sprintf("%d",currVmVnfs(1,f))+""" BGCOLOR=""bisque"">f<SUB>"+sprintf("%d",vnfStatus(1,currVmVnfs(1,f)))+"</SUB></TD></TR>"+newline;
-% 	   			else	
-% 	   				nodeName = nodeName+"<TR><TD PORT=""f"+sprintf("%d",currVmVnfs(1,f))+""" BGCOLOR=""darkgray"">f<SUB>"+sprintf("%d",vnfStatus(1,currVmVnfs(1,f)))+"</SUB></TD></TR>"+newline;
-% 	    		end
-% 	    	end
-	    	
-% 	    	nodeName = nodeName+"</TABLE>"+newline;
-% 	    	nodeName = nodeName+"</TD>"+newline;
-% 	    end
-
-% 	    nodeName = nodeName+"</TR>"+newline;
-% 	    nodeName = nodeName+"</TABLE>>]"+newline;
-
-% 	    nodeNames(1,node) = nodeName;
-% 	end
-
-% 	gvText = "digraph G";
-% 	gvText = gvText+newline+"{";
-% 	gvText = gvText+newline+"ranksep = ""equally""";
-% 	gvText = gvText+newline+"rankdir = LR";
-% 	gvText = gvText+newline+"node [shape=none]";
-
-% 	rankData = "";
-% 	nodeData = "";
-% 	linkData = "";
-
-% 	import java.util.LinkedList;
-
-% 	visited = zeros(1,N);
-% 	q = LinkedList();
-% 	q.add(1);
-% 	visited(1,1) = 1;
-	
-% 	while q.size() ~= 0
-% 	    qLen = q.size();
-% 	    rankData = rankData+newline+"{rank = same; ";
-% 	    for i = 1 : qLen
-% 	        node = q.remove();
-% 	        rankData = sprintf("%s%d; ",rankData,node);
-% 	        for adj = 1 : N
-% 	            if inputNetwork(node,adj) ~= 0 && visited(1,adj) == 0 %if the link is connected in the original graph and not visited
-% 	                q.add(adj); %add to queue
-% 	                visited(1,adj) = 1; %mark as visited
-% 	            end
-% 	        end
-% 	    end
-% 	    rankData = rankData+"};";
-% 	end
-
-% 	visitedEdge = zeros(N,N);
-% 	visitedNode = zeros(1,N);
-%     for link = 1 : chainLength-1 %for each link in the usedlinks
-% 		currSrc = usedLinks(link); %get the source
-% 		currDest = usedLinks(link+1); %get the destination
-% 		startNode = currSrc; %mark source as starting node
-% 		nodeData = nodeData+newline+nodeNames(1,currSrc); %add into node data with black color
-% 		visitedNode(1,currSrc) = 1; %mark source as visited
-%         while (startNode ~= currDest) %till starting node becomes equal to the destination
-% 			uNode = startNode; %get the current node
-% 			vNode = nextHop(startNode,currDest); %get the next hop node
-% 			linkData = linkData+newline+sprintf("%d",uNode)+" -> "+sprintf("%d",vNode)+"[label="""+sprintf("%d",inputNetwork(uNode,vNode))+""" color=""black"" penwidth=2]"; %include the link data with black color
-% 			visitedEdge(startNode,nextHop(startNode,currDest)) = 1; %mark edge as visited
-% 			visitedEdge(nextHop(startNode,currDest),startNode) = 1; %mark edge as visited
-% 			startNode = nextHop(startNode,currDest); %update the current node
-%         end
-%         if (visitedNode(1,currDest) ~= 1) %if the destination is not already visited
-%             visitedNode(1,currDest) = 1; %mark destination node as visited
-% 	        nodeData = nodeData+newline+nodeNames(1,currDest); %include destination node in black color
-%         end
-%     end
-	
-% 	for i = 1 : N
-% 		for j = i+1 : N
-% 			if (inputNetwork(i,j) ~= 0) %if the edge exists in the original network
-% 				if (visitedNode(1,i) ~= 1) %if ith node is not already visited
-% 					nodeData = nodeData+newline+nodeNames(1,i); %include in gray color
-% 					visitedNode(1,i) = 1; %mark as visited
-% 				end
-% 				if (visitedNode(1,j) ~= 1) %if ith node is not already visited
-% 					nodeData = nodeData+newline+nodeNames(1,j); %include in gray color
-% 					visitedNode(1,j) = 1; %mark as visited
-% 				end
-% 				if (visitedEdge(i,j) ~= 1) %if the edge between them is not visited
-% 					linkData = linkData+newline+sprintf("%d",i)+" -> "+sprintf("%d",j)+"[label="""+sprintf("%d",inputNetwork(i,j))+""" color=""gray"" fontcolor=""gray"" dir = none]"; %include in gray color
-% 					visitedEdge(i,j) = 1; %mark as visited
-% 					visitedEdge(j,i) = 1; %mark as visited
-% 				end
-% 			end
-% 		end
-% 	end
-
-% 	gvText = gvText+rankData;
-% 	gvText = gvText+nodeData;
-% 	gvText = gvText+linkData;
-% 	gvText = gvText+newline+"}";
-
-% 	fileID = fopen(sprintf('%s%d%s','output/sevenReliabilityOne/gv/sfcAssgn',c,'.gv'),'w+');
-% 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfcAssgn',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfcAssgn',c,'.png');
-% 	fprintf(fileID,"%s",gvText);
-% end
-
-% fileID = fopen('output/sevenReliabilityOne/commands.bat','w+');
-% fprintf(fileID,"%s",commands);
-% fclose(fileID);
-
-
-% % SFC print
-% for c = 1 : S
-% 	gvText = "digraph G";
-% 	gvText = gvText+newline+"{";
-% 	gvText = gvText+newline+"ranksep = ""equally""";
-% 	gvText = gvText+newline+"rankdir = LR";
-% 	gvText = gvText+newline+"node [shape=circle]";
-
-% 	rankData = "";
-% 	nodeData = "";
-% 	linkData = "";
-
-% 	chainLength = sfcClassData(1,c).chainLength;
-% 	chain = sfcClassData(1,c).chain;
-
-% 	for node = 1 : chainLength-1
-% 		rankData = rankData+newline+"{rank = same; ";
-% 		rankData = sprintf("%s%s%d; ",rankData,'f',chain(1,node));
-% 		rankData = rankData+"};";
-% 		nodeData = nodeData+newline+sprintf("%s%d",'f',chain(1,node))+"[style=filled label=<f<SUB>"+chain(1,node)+"</SUB>> color=""bisque""]";
-% 		linkData = linkData+newline+sprintf("%s%d",'f',chain(1,node))+" -> "+sprintf("%s%d",'f',chain(1,node+1));
-% 	end
-
-% 	rankData = rankData+newline+"{rank = same; ";
-% 	rankData = sprintf("%s%s%d; ",rankData,'f',chain(1,chainLength));
-% 	rankData = rankData+"};";
-% 	nodeData = nodeData+newline+sprintf("%s%d",'f',chain(1,chainLength))+"[style=filled label=<f<SUB>"+chain(1,chainLength)+"</SUB>> color=""bisque""]";
-% 	gvText = gvText+rankData;
-% 	gvText = gvText+nodeData;
-% 	gvText = gvText+linkData;
-% 	gvText = gvText+newline+"}";
-
-% 	fileID = fopen(sprintf('%s%d%s','output/sevenReliabilityOne/gv/sfc',c,'.gv'),'w+');
-% 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfc',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfc',c,'.png');
-% 	fprintf(fileID,"%s",gvText);
-% end
-
-
-%}

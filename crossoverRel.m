@@ -165,6 +165,30 @@ function [nodeChildren, vmChildren] = crossoverRel(nodeGene1, nodeGene2, vmGene1
     end
 %}
 
+    % This is uniform crossover
+    nodeChildren = zeros(C,len,r);
+    vmChildren = zeros(C,len,r);
+    nodeChildren(1,:,:) = nodeGene1;
+    nodeChildren(2,:,:) = nodeGene2;
+    nodeChildren(3,:,:) = nodeGene1;
+    nodeChildren(4,:,:) = nodeGene2;
+    vmChildren(1,:,:) = vmGene1;
+    vmChildren(2,:,:) = vmGene2;
+    vmChildren(3,:,:) = vmGene1;
+    vmChildren(4,:,:) = vmGene2;
+    for c = 1 : len % For each position
+        toBeSwapped = randi(2);
+        if toBeSwapped == 1 % If the random number is 1
+            temp = nodeChildren(1,c,:);
+            nodeChildren(1,c,:) = nodeChildren(2,c,:);
+            nodeChildren(2,c,:) = temp;
+            temp = vmChildren(1,c,:);
+            vmChildren(1,c,:) = vmChildren(2,c,:);
+            vmChildren(2,c,:) = temp;
+        end
+    end
+
+%{
 %   This is hybrid two point crossover and generation
     import java.util.TreeSet;
     nodeChildren = zeros(C,len,r);
@@ -266,4 +290,5 @@ function [nodeChildren, vmChildren] = crossoverRel(nodeGene1, nodeGene2, vmGene1
             nodeChildren(4,i,iota) = vnMap.get(vmChildren(4,i,iota));
         end
     end
+    %}
 end

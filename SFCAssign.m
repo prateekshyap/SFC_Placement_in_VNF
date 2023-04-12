@@ -8,7 +8,7 @@ function [Xsf, sfcClassData] = SFCAssign(F, FI, S, vnfTypes, sfcClassData, fvMap
 		chainLength = sfcClassData(s).chainLength; % Get the chain length
 		chain = sfcClassData(s).chain; % Get the chain
 		usedLinks = zeros(1,chainLength); % To store the sequence of physical nodes
-		nodeMaps = zeros(1,chainLength); % To store the sequence of function instances
+		usedInstances = zeros(1,chainLength); % To store the sequence of function instances
 		for c = 1 : chainLength % For each node
 			f = chain(c); % Get the required function
 			availableVMs = fvMap.get(f); % Get the available VMs
@@ -18,9 +18,9 @@ function [Xsf, sfcClassData] = SFCAssign(F, FI, S, vnfTypes, sfcClassData, fvMap
 			availableVMs.add(chosenVM); % Add it to the end
 			chosenNode = vnMap.get(chosenVM(2)); % Get the physical node
 			usedLinks(c) = chosenNode; % Store to the array
-			nodeMaps(c) = preSumVnf(f)+chosenVM(1); % Store the corresponding function instance
+			usedInstances(c) = preSumVnf(f)+chosenVM(1); % Store the corresponding function instance
 		end
 		sfcClassData(s).usedLinks = usedLinks; % Store to the class
-		sfcClassData(s).nodeMaps = nodeMaps; % Store to the class
+		sfcClassData(s).usedInstances = usedInstances; % Store to the class
 	end
 end

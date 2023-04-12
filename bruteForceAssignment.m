@@ -14,7 +14,7 @@ function [currCost, Xsf, sfcClassData] = bruteForceAssignment(N, VI, F, FI, S, L
     % Initialize sfcClassData objects
     for s = 1 : S
         sfcClassData(s).usedLinks = zeros(1,sfcClassData(s).chainLength);
-        sfcClassData(s).nodeMaps = zeros(1,sfcClassData(s).chainLength);
+        sfcClassData(s).usedInstances = zeros(1,sfcClassData(s).chainLength);
     end
     
     % Backtracking solution to assign the SFCs
@@ -66,7 +66,7 @@ function [] = recurAssign(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, Xfv, Xfvi, lambda, 
             chosenVM = fvMap.get(currVnf).get(i-1); % Get the corresponding VM
             chosenNode = vnMap.get(chosenVM(2)); % Get the corresponding Node
             sfcClassData(sIndex).usedLinks(cIndex) = chosenNode; % Store the physical node to the array
-            sfcClassData(sIndex).nodeMaps(cIndex) = preSumVnf(currVnf)+chosenVM(1); % Store the corresponding function instance
+            sfcClassData(sIndex).usedInstances(cIndex) = preSumVnf(currVnf)+chosenVM(1); % Store the corresponding function instance
 %             cIndex
 %             chainLength
             if (cIndex == chainLength) % If the current chain is over, reset cIndex to 1 and increment sIndex by 1
@@ -76,7 +76,7 @@ function [] = recurAssign(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, Xfv, Xfvi, lambda, 
 %                 fprintf('Calling else recur assign\n');
                 recurAssign(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, Xfv, Xfvi, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnMap, vnfStatus, vnfTypes, fvMap, preSumVnf, vnfCapacity, sfcClassData, sIndex, cIndex+1, Xsf);
             end
-            sfcClassData(sIndex).nodeMaps(cIndex) = 0; % Reset function instance
+            sfcClassData(sIndex).usedInstances(cIndex) = 0; % Reset function instance
             sfcClassData(sIndex).usedLinks(cIndex) = 0; % Reset physical node
             vnfCapacity(preSumVnf(currVnf)+i) = 0; % Reset VNF capacity
             Xsf(sIndex,preSumVnf(currVnf)+i) = 0; % Remove s from f

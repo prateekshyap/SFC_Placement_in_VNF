@@ -5,12 +5,12 @@ function [y2] = y2Rel(VI, FI, r, S, lambda, delta, mu, Xfvi, Xsfi, vnfStatus, sf
 	lambdaSF = zeros(FI,r);
 	deltaSF = zeros(FI,r);
 	for s = 1 : S
-		nodeMaps = sfcClassData(s).nodeMaps;
+		usedInstances = sfcClassData(s).usedInstances;
 		chainLength = sfcClassData(s).chainLength;
 		for iota = 1 : r
 			for c = 1 : chainLength
-				lambdaSF(nodeMaps(c),iota) = lambdaSF(nodeMaps(c),iota)+lambda(s,vnfStatus(nodeMaps(c)));
-				deltaSF(nodeMaps(c),iota) = deltaSF(nodeMaps(c),iota)+delta(s,vnfStatus(nodeMaps(c)));
+				lambdaSF(usedInstances(c),iota) = lambdaSF(usedInstances(c),iota)+lambda(s,vnfStatus(usedInstances(c)));
+				deltaSF(usedInstances(c),iota) = deltaSF(usedInstances(c),iota)+delta(s,vnfStatus(usedInstances(c)));
 			end
 		end
 	end

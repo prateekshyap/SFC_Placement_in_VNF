@@ -1,4 +1,4 @@
-function [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost] = reliableMetaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID, rhoNode, rhoVm, rhoVnf)
+function [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost, r] = reliableMetaHeuristicDeployment(N, VI, F, FI, S, L, alpha, Cvn, Xvn, Cfv, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID, rhoNode, rhoVm, rhoVnf)
     
     global mutationProbability;
     global mutationCount;
@@ -8,9 +8,9 @@ function [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost] = reliable
     import java.util.TreeSet;
     import java.util.ArrayList;
 
-    Xfv = zeros(FI,VI); %FIxVI matrix to indicate whether a vnf instance f is deployed on the VM v or not
-	fvMap = TreeMap(); %Map version of Xfv
-	vnfStatus = zeros(1,FI); %This will indicate which instance is of which type
+    Xfv = zeros(FI,VI); % FIxVI matrix to indicate whether a vnf instance f is deployed on the VM v or not
+	fvMap = TreeMap(); % Map version of Xfv
+	vnfStatus = zeros(1,FI); % This will indicate which instance is of which type
 
     % Store the status of VNFs according to their instance counts
     statusIndex = 1;
@@ -45,16 +45,6 @@ function [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost] = reliable
     for f = 1 : F % For each VNF type
         fvMap.put(f,ArrayList()); % Add the VNF along with an empty arraylist
     end
-    fprintf(logFileID,'%s\n\n','------------------------------------------VM Capacity---------------------------------------');
-    for i = 1 : VI
-        fprintf(logFileID,'%d\t',vmCapacity(i));
-    end
-    fprintf(logFileID,'\n\n');
-    fprintf(logFileID,'%s\n\n','------------------------------------------VNF Capacity--------------------------------------');
-    for i = 1 : FI
-        fprintf(logFileID,'%d\t',vnfCapacity(i));
-    end
-    fprintf(logFileID,'\n\n');
 
     % Setting GA parameters
     fileID = fopen('input/smallNet11/GAPar.txt','r');
@@ -63,100 +53,32 @@ function [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost] = reliable
 
     parameters = fscanf(fileID,formatSpecifier,dimension);
     fclose(fileID);
-    mutationCount = 0;
     mutationProbability = parameters(1); % probability of mutation
-    if (mutationCount == 0) % If the count is 0
-        mutationIterations = randperm(100,mutationProbability*100); % Then generate probability number of random iterations in which mutation will be performed
-        randomMutationIterations = TreeSet(); % Set version of the above permutation
-        for in = 1 : mutationProbability*100 % For each index
-            randomMutationIterations.add(mutationIterations(in)); % Add the index to treeset
-        end
-        fprintf(logFileID,'\n%s\n\n','Mutation iterations');
-        for i = 1 : mutationProbability*100
-            fprintf(logFileID,'%d\t',mutationIterations(i));
-        end
-        fprintf(logFileID,'\n\n');
-    end
 
     iterations = parameters(2); % Total number of GA iterations
     populationSize = parameters(3); % Population size
-    % populationSize = 5; % Population size
 
-    Xfvi = zeros(FI,VI); % FIxVI matrix to indicate whether a vnf instance f is deployed on the VM v or not
-    Xsfi = zeros(1,FI); % SxFI matrix to indicate whether an SFC uses the f instance of VNFs or not
-    Xllvi = repmat(0,[1,FI,FI,N,N]); % 4-D matrix to indicate whether a virtual link uses a physical link or not
+    r = min(vnfTypes); % Maximum reliability levels possible
+    Xfvi = zeros(FI,VI,r); % FIxVI matrix to indicate whether a vnf instance f is deployed on the VM v or not
+    Xsfi = zeros(1,FI,r); % SxFI matrix to indicate whether an SFC uses the f instance of VNFs or not
+    Xllvi = zeros(1,FI,FI,N,N,r); % 4-D matrix to indicate whether a virtual link uses a physical link or not
     
+    %% Manual progress bar
     totalIterations = S*iterations; % Find out the total number of iterations
     onePercent = totalIterations/100; % Find out the number of iterations for one percent work
     for fwd = 1 : 104
         fprintf(' ');
     end
 
-    r = min(vnfTypes); % Maximum reliability levels possible
-    for iota = 2 : r % For each reliabiliy level
-        Xfvi(:,:,iota) = zeros(FI,VI); % Create a new indicator matrix with the same dimension
-        Xsfi(:,:,iota) = zeros(1,FI); % Create a new indicator matrix with the same dimension
-        Xllvi(:,:,:,:,:,iota) = repmat(0,[1,FI,FI,N,N]); % Create a new indicator matrix with the same dimension
-    end
-
     for s = 1 : S % For each SFC s
-        [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmImpl(N, VI, F, FI, L, r, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, s, logFileID, onePercent, totalIterations, rhoNode, rhoVm, rhoVnf); % Call GA
+        [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmImpl(N, VI, F, FI, L, alpha, r, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, s, logFileID, onePercent, totalIterations, rhoNode, rhoVm, rhoVnf); % Call GA
+        if mod(s,10) == 0 && iterations > 50 % If 10 SFCs are done and number of iterations are more than 50
+            iterations = iterations - 50; % Reduce the number of iterations by 50
+        end
         chainLength = sfcClassData(s).chainLength; % Get the length of s
         chain = sfcClassData(s).chain; % Get s
-        % fprintf(logFileID,'\n\n');
-        % fprintf(logFileID,'%d',optCost);
-        % fprintf(logFileID,'\n\n');
-        % for i = 1 : chainLength
-        %     fprintf(logFileID,'%d\t',optPlacement(i));
-        % end
-        % fprintf(logFileID,'\n\n');
-        % fprintf(logFileID,'%s\n\n','VM Capacity');
-        % for i = 1 : VI
-        %     fprintf(logFileID,'%d\t',vmCapacity(i));
-        % end
-        % fprintf(logFileID,'\n\n');
-        % fprintf(logFileID,'%s\n\n','VNF Capacity');
-        % for i = 1 : FI
-        %     fprintf(logFileID,'%d\t',vnfCapacity(i));
-        % end
-        [optCost, optNodePlacement, optVMPlacement, Xfvi, Xsfi, Xllvi, sfcClassData, vmCapacity, vnfCapacity] = calculateReliableFitnessValue(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, s, optNodePlacement, optVMPlacement, r, nodeClassData, rhoNode, rhoVm, rhoVnf); % Find out the fitness value and store it
-        % fprintf(logFileID,'%s\n\n','VM Capacity');
-        % for i = 1 : VI
-        %     fprintf(logFileID,'%d\t',vmCapacity(i));
-        % end
-        % fprintf(logFileID,'\n\n');
-        % fprintf(logFileID,'%s\n\n','VNF Capacity');
-        % for i = 1 : FI
-        %     fprintf(logFileID,'%d\t',vnfCapacity(i));
-        % end
-        % fprintf(logFileID,'\n\n');
-        % fprintf(logFileID,'%s\n\n','-------------------------------------------Xfv-------------------------------------------');
-        % for i = 1 : FI
-        %     for j = 1 : VI
-        %         fprintf(logFileID,'%d\t',Xfv(i,j));
-        %     end
-        %     fprintf(logFileID,'\n');
-        % end
-        % fprintf(logFileID,'\n\n');
-        % fprintf(logFileID,'%s\n\n','-----------------------------------------FV Map------------------------------------------');
-        % for i = 1 : F
-        %     fprintf(logFileID,'%s%d\n','f',i);
-        %     instanceVMList = fvMap.get(i);
-        %     vnfCount = instanceVMList.size();
-        %     for j = 1 : vnfCount
-        %         instanceDetails = instanceVMList.get(j-1);
-        %         fprintf(logFileID,'\t%s%d%s%d\n','Instance: ',instanceDetails(1),' -> ',instanceDetails(2));
-        %     end
-        % end
-        % fprintf(logFileID,'\n\n');
-        % fprintf(logFileID,'%s\n\n','-------------------------------------------Xsf-------------------------------------------');
-        % for i = 1 : s
-        %     for j = 1 : FI
-        %         fprintf(logFileID,'%d\t',Xsf(i,j));
-        %     end
-        %     fprintf(logFileID,'\n');
-        % end
-        % fprintf(logFileID,'\n\n%d%s\n\n',s,' SFCs done****************************************************************************************************');
+        [optCost, optNodePlacement, optVMPlacement, Xfvi, Xsfi, Xllvi, sfcClassData, vmCapacity, vnfCapacity] = calculateReliableFitnessValue(N, VI, F, FI, L, alpha, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, s, optNodePlacement, optVMPlacement, r, nodeClassData, rhoNode, rhoVm, rhoVnf); % Find out the fitness value and store it
+        sfcClassData(s).usedLinks = optNodePlacement;
         fvMap = TreeMap(); % Reinitialize map
         for f = 1 : F % For each VNF type
             fvMap.put(f,ArrayList()); % Add the VNF along with an empty arraylist
@@ -171,6 +93,4 @@ function [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost] = reliable
             end
         end
     end
-
-%     fclose(logFileID);
 end

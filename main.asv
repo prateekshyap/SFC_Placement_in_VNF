@@ -411,6 +411,31 @@ vnfTypes
 % end
 % fprintf(logFileID,'\n\n');
 
+lengths = TreeMap();
+for s = 1 : S
+    chainLength = sfcClassData(s).chainLength;
+    if ~lengths.containsKey(chainLength)
+        lengths.put(chainLength,ArrayList());
+    end
+    lengths.get(chainLength).add(s);
+end
+
+sortedSfcClassData = SFC(1,S,zeros(1,2),zeros(1,2));
+index = 1;
+length = lengths.lastKey();
+while size(length) > 0
+    indices = lengths.get(length);
+    if indices.size() == 0
+        break;
+    end
+    length = lengths.lowerKey(length);
+    listSize = indices.size();
+    for i = 1 : listSize
+        sortedSfcClassData(index) = sfcClassData(indices.get(i-1));
+        index = index+1;
+    end
+end
+sfcClassData = sortedSf
 tic;
 
 % [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = bruteForceDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement);
@@ -420,6 +445,19 @@ timer = toc
 fprintf(logFileID,'%f',timer); %This will print the time automatically
 
 optCost
+vnfStatus
+Xsfi
+
+tic;
+
+% [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = bruteForceDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement);
+% [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID);
+[Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost] = reliableMetaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID, rhoNode, rhoVm, rhoVnf);
+timer = toc
+fprintf(logFileID,'%f',timer); %This will print the time automatically
+
+optCost
+vnfStatus
 Xsfi
 
 %% After Deployment and Assignment, print the generated data

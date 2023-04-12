@@ -7,7 +7,7 @@ function [y1] = y1Rel(N, VI, FI, Cvn, Xvn, Cfv, Xfvi, vms, vnfs)
 	end
 	for v = 1 : VI
 		for f = 1 : FI
-			y1 = y1 + Cfv(vnfs(f))*Xfvi(f,v,1);
+			y1 = y1 + Cfv(vms(v),vnfs(f))*Xfvi(f,v,1);
 		end
 	end
 end

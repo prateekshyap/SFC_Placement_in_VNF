@@ -17,7 +17,7 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
 
     %% No Failure
 	for pos = 1 : chainLength % For each VNF in the current chain
-		chosenVM = vmGene(pos,1); % Get the chosen VM for the first level
+        chosenVM = 0;
 		chosenNode = nodeGene(pos,1); % Get the chosen node for the first level
 		fIndex = preSumVnf(chain(pos))+1; % Get the first instance
 		indicator = 0;
@@ -36,7 +36,6 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
 			end
 		end
 		if indicator == 1 && vnfCapacityTemp(chosenInstance) > 0 % If the chosen VM has an instance of the required VNF
-            XfviTemp(chosenInstance,chosenVM,1) = 1; % Deploy
 			XsfiTemp(sIndex,chosenInstance,1) = 1; % Assign
 			vmGene(pos,1) = chosenVM; % Modify the vm gene (note that it will remain unmodified if already present)
             usedLinks(pos) = vnMap.get(vmGene(pos,1)); % Store the physical node
@@ -89,7 +88,7 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
                     minDistanceVM = 0; % This will store the VM with the minimum distance
 	            	for vin = 1 : VI % For each instance
 	            		distance = network(chosenNode,vnMap.get(vin)); % Store the shortest distance from the chosen VM
-	            		if distance < minDistance && vmCapacityTemp(vin) > 0
+	            		if distance < minDistance && vmCapacityTemp(vin) > 0 && chosenNode ~= vnMap.get(vin)
 	            			minDistanceVM = vin; % Update the new VM
                             minDistance = distance; % Update the new minimum distance
 	            		end
@@ -117,13 +116,12 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
 							end
 						end
                         distance = network(vnMap.get(chosenVM),chosenNode);
-                        if distance < minDistance
+                        if distance < minDistance && chosenNode ~= vnMap.get(chosenVM)
                             minDistanceInstance = fin;
                             minDistance = distance;
                         end
 					end
                 end
-				XfviTemp(minDistanceInstance,chosenVM,1) = 1; % Deploy
 				XsfiTemp(sIndex,minDistanceInstance,1) = 1; % Assign
 				vmGene(pos,1) = chosenVM; % Modify the vm gene
                 usedLinks(pos) = vnMap.get(vmGene(pos,1)); % Store the physical node
@@ -156,7 +154,14 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
     		for l = 1 : iota-1 % For each previous level
                 failedNodes.add(nodeGene(pos,l)); % Add the node that is used
             end
-            chosenVM = vmGene(pos,iota); % Get the chosen VM for iota
+            while failedNodes.contains(nodeGene(pos,iota))
+            	nodeGene(pos,iota) = randi(N);
+            end
+            currNodeVmCount = nodeClassData(nodeGene(pos,iota)).vmCount; % Get the VM count of the corresponding node from the node population
+            currNodeVms = nodeClassData(nodeGene(pos,iota)).vms; % Get the list of VMs
+            vmIndex = randi(currNodeVmCount); % Generate a random Index
+            vmGene(pos,iota) = currNodeVms(vmIndex); % Store the corresponding VM in the vm population
+            chosenVM = 0; % Get the chosen VM for iota
             chosenNode = nodeGene(pos,iota); % Get the chosen node for iota
             fIndex = preSumVnf(chain(pos))+1; % Get the first instance
             indicator = 0;
@@ -248,10 +253,11 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
             			end
             		end
             	end
-            	if isDeployed == 0 % If step 2 and 3 were not successful i.e. either all corresponding instances are deployed or we couldn't find any closest free VM
+            	if isDeployed ~= 1 % If step 2 and 3 were not successful i.e. either all corresponding instances are deployed or we couldn't find any closest free VM
             		%% Step 4 - Choose the closest instance to assign
             		minDistance = Inf;
             		minDistanceInstance = 0;
+                    failedNodes
             		for fin = fIndex : fIndex+vnfTypes(chain(pos))-1 % For each instance of the same function
             			chosenVM = 0;
             			for vin = 1 : VI % For each VM
@@ -259,20 +265,38 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
             					chosenVM = vin;
             					break;
             				end
-            			end
-            			if chosenVM ~= 0
-	            			distance = network(vnMap.get(chosenVM),chosenNode);
-	            			if distance < minDistance && vnMap.get(chosenVM) ~= chosenNode
-	            				minDistance = distance;
+                        end
+                        fin
+                        chosenVM
+                        vnMap.get(chosenVM)
+                        chosenNode
+            			if chosenVM ~= 0 && ~failedNodes.contains(vnMap.get(chosenVM))
+	            			distance = network(vnMap.get(chosenVM),chosenNode)
+	            			if distance < minDistance
+                                if failedNodes.contains(vnMap.get(chosenVM))
+                                    failedNodes.contains(vnMap.get(chosenVM))
+                                end
+                                minDistance = distance
 	            				minDistanceInstance = fin;
 	            			end
 	            		end
-            		end
+                    end
+                    if minDistanceInstance == 0
+                        minDistance
+                    end
         			XsfiTemp(sIndex,minDistanceInstance,iota) = 1; % This indicates that the chosen instance is going to be assigned as a backup at level iota
             		vmGene(pos,iota) = chosenVM; % Modify the vm gene
             		nodeGene(pos,iota) = vnMap.get(vmGene(pos,iota)); % Store the physical node
             		nodeMaps(pos,iota) = minDistanceInstance; % Store the instance
             		if iota > 1 && nodeMaps(pos,iota) == nodeMaps(pos,iota-1)
+            			isDeployed
+            			vnfStatus(fIndex)
+            			fin
+            			XfviTemp
+            			vnMap.get(chosenVM)
+            			failedNodes
+            			failedNodes.contains(vnMap.get(chosenVM))
+            			minDistance
             			minDistanceInstance
             			nodeMaps
             			fprintf('Dhoka number 4');

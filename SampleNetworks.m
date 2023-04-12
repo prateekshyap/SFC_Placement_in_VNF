@@ -984,7 +984,7 @@ for ch = 1 : S %1 to 5
     currSfcLength = sfcLengths(1,ch); %get the length of sth sfc
     currSfcMatrix = sfcMatrix(:,:,ch); %get the sth sfc matrix
     sfcClassData(1,ch).usedLinks = zeros(currSfcLength-1,2); %keeps track of the used links for the sfc
-    sfcClassData(1,ch).nodeMaps = zeros(N,F); %keeps track of the used physical nodes for the sfc
+    sfcClassData(1,ch).usedInstances = zeros(N,F); %keeps track of the used physical nodes for the sfc
     for currSfcNode = 1 : currSfcLength-1 %for all edges
         currSrc = 0;
         currDest = 0;
@@ -1035,8 +1035,8 @@ for ch = 1 : S %1 to 5
         % currDest
         sfcClassData(1,ch).usedLinks(currSfcNode,1) = currSrc;
         sfcClassData(1,ch).usedLinks(currSfcNode,2) = currDest;
-        sfcClassData(1,ch).nodeMaps(currSrc,vnfStatus(1,vnfRow)) = 1;
-        sfcClassData(1,ch).nodeMaps(currDest,vnfStatus(1,vnfCol)) = 1;
+        sfcClassData(1,ch).usedInstances(currSrc,vnfStatus(1,vnfRow)) = 1;
+        sfcClassData(1,ch).usedInstances(currDest,vnfStatus(1,vnfCol)) = 1;
     	% sfcClassData(1,c).usedLinks = usedLinks; %keeps track of the used links for the sfc
         % y3
         % fprintf('===============================================\n');
@@ -1050,7 +1050,7 @@ for c = 1 : S
 	chainLength = sfcClassData(1,c).chainLength;
 	chain = sfcClassData(1,c).chain;
 	usedLinks = sfcClassData(1,c).usedLinks;
-	nodeMaps = sfcClassData(1,c).nodeMaps;
+	usedInstances = sfcClassData(1,c).usedInstances;
 	nodeNames = strings(1,N);
 	for node = 1 : N %for each node
 		% node
@@ -1071,7 +1071,7 @@ for c = 1 : S
 	    	nodeName = nodeName+"<TABLE BORDER=""0"" BGCOLOR=""darkgrey"">"+newline;
 
 	    	for f = 1 : currVmVnfCount %for each VNF on the current VM
-	    		if nodeMaps(node,vnfStatus(1,currVmVnfs(1,f))) == 1
+	    		if usedInstances(node,vnfStatus(1,currVmVnfs(1,f))) == 1
 	   				nodeName = nodeName+"<TR><TD PORT=""f"+sprintf("%d",vnfStatus(1,currVmVnfs(1,f)))+""" BGCOLOR=""bisque"">f<SUB>"+sprintf("%d",vnfStatus(1,currVmVnfs(1,f)))+"</SUB></TD></TR>"+newline;
 	   			else	
 	   				nodeName = nodeName+"<TR><TD PORT=""f"+sprintf("%d",vnfStatus(1,currVmVnfs(1,f)))+""" BGCOLOR=""darkgrey"">f<SUB>"+sprintf("%d",vnfStatus(1,currVmVnfs(1,f)))+"</SUB></TD></TR>"+newline;

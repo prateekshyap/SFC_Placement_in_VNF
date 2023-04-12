@@ -239,29 +239,29 @@ vnfs = ceil(rand(1,30)*3)+1
 sum(vnfs)
 %}
 
-network = zeros(11,11);
-links = ceil(rand(1,100)*15);
-network(1,10) = links(1); network(10,1) = links(1);
-network(5,7) = links(2); network(7,5) = links(2);
-network(9,6) = links(3); network(6,9) = links(3);
-network(10,4) = links(4); network(4,10) = links(4);
-network(1,2) = links(5); network(2,1) = links(5);
-network(8,11) = links(6); network(11,8) = links(6);
-network(2,3) = links(7); network(3,2) = links(7);
-network(2,9) = links(8); network(9,2) = links(8);
-network(2,6) = links(9); network(6,2) = links(9);
-network(8,10) = links(10); network(10,8) = links(10);
-network(9,2) = links(11); network(2,9) = links(11);
-network(4,11) = links(12); network(11,4) = links(12);
-network(7,9) = links(13); network(9,7) = links(13);
-network(4,7) = links(14); network(7,4) = links(14);
-network(2,4) = links(15); network(4,2) = links(15);
-network(10,5) = links(16); network(5,10) = links(16);
-network(8,7) = links(17); network(7,8) = links(17);
-network(9,10) = links(18); network(10,9) = links(18);
-network(7,3) = links(19); network(3,7) = links(19);
-network(8,1) = links(20); network(1,8) = links(20);
-network(1,5) = links(21); network(5,1) = links(21);
+% network = zeros(11,11);
+% links = ceil(rand(1,100)*15);
+% network(1,10) = links(1); network(10,1) = links(1);
+% network(5,7) = links(2); network(7,5) = links(2);
+% network(9,6) = links(3); network(6,9) = links(3);
+% network(10,4) = links(4); network(4,10) = links(4);
+% network(1,2) = links(5); network(2,1) = links(5);
+% network(8,11) = links(6); network(11,8) = links(6);
+% network(2,3) = links(7); network(3,2) = links(7);
+% network(2,9) = links(8); network(9,2) = links(8);
+% network(2,6) = links(9); network(6,2) = links(9);
+% network(8,10) = links(10); network(10,8) = links(10);
+% network(9,2) = links(11); network(2,9) = links(11);
+% network(4,11) = links(12); network(11,4) = links(12);
+% network(7,9) = links(13); network(9,7) = links(13);
+% network(4,7) = links(14); network(7,4) = links(14);
+% network(2,4) = links(15); network(4,2) = links(15);
+% network(10,5) = links(16); network(5,10) = links(16);
+% network(8,7) = links(17); network(7,8) = links(17);
+% network(9,10) = links(18); network(10,9) = links(18);
+% network(7,3) = links(19); network(3,7) = links(19);
+% network(8,1) = links(20); network(1,8) = links(20);
+% network(1,5) = links(21); network(5,1) = links(21);
 % network(1,1) = 1; network(1,1) = 1;
 % network(1,1) = 1; network(1,1) = 1;
 % network(1,1) = 1; network(1,1) = 1;
@@ -333,10 +333,76 @@ network(1,5) = links(21); network(5,1) = links(21);
 % mat(2,:,:) = [1 2 3 4; 5 6 7 8; 9 10 11 12]';
 % mat
 
-fileID = fopen('input/sevenReliabilityOne/network.txt','r');
-formatSpecifier = '%f';
-dimension = [16,16];
+% fileID = fopen('input/sevenReliabilityOne/network.txt','r');
+% formatSpecifier = '%f';
+% dimension = [16,16];
+% 
+% inputNetwork = fscanf(fileID,formatSpecifier,dimension); %Physical network
+% fclose(fileID);
+% bridgeStatus = findBridges(16,inputNetwork)
 
-inputNetwork = fscanf(fileID,formatSpecifier,dimension); %Physical network
-fclose(fileID);
-bridgeStatus = findBridges(16,inputNetwork)
+
+% import java.util.TreeMap
+% 
+% test = TreeMap();
+% test.put(1,8);
+% if size(test.lowerKey(1)) == 0
+%     fprintf('null');
+% else
+%     fprintf('kya hai');
+% end
+
+
+
+
+x = [10 12 14 16 18 20];             % The range of x values.
+y = [50 100 150 200 250 300];             % The range of y values.
+[X,Y] = meshgrid (x,y); % This generates the actual grid of x and y values.
+
+lenX = size(X);
+Z = zeros(lenX(1),lenX(2));
+Z(1,1) = 100;
+Z(1,2) = 110;
+Z(1,3) = 120;
+Z(1,4) = 130;
+Z(1,5) = 140;
+Z(1,6) = 150;
+Z(2,1) = 90;
+Z(2,2) = 92;
+Z(2,3) = 94;
+Z(2,4) = 97;
+Z(2,5) = 99;
+Z(2,6) = 100;
+Z(3,1) = 120;
+Z(3,2) = 125;
+Z(3,3) = 131;
+Z(3,4) = 134;
+Z(3,5) = 135;
+Z(3,6) = 138;
+Z(4,1) = 90;
+Z(4,2) = 120;
+Z(4,3) = 125;
+Z(4,4) = 131;
+Z(4,5) = 135;
+Z(4,6) = 138;
+Z(5,1) = 90;
+Z(5,2) = 92;
+Z(5,3) = 94;
+Z(5,4) = 97;
+Z(5,5) = 99;
+Z(5,6) = 100;
+Z(6,1) = 100;
+Z(6,2) = 110;
+Z(6,3) = 120;
+Z(6,4) = 130;
+Z(6,5) = 140;
+Z(6,6) = 150;
+% Generating the Z Data
+figure(1);              % Generating a new window to plot in.
+surf(X,Y,Z)             % The surface plotting function.
+
+figure(2);
+mesh(X,Y,Z)
+
+figure(3);
+plot3(X,Y,Z);

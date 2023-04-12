@@ -3,7 +3,7 @@ classdef SFC
 		chainLength
 		chain
 		usedLinks = zeros(1,2);
-		nodeMaps = zeros(1,2);
+		usedInstances = zeros(1,2);
 	end
 	methods
 		function obj = SFC(len,vec,links,nodes)
@@ -11,7 +11,7 @@ classdef SFC
 			    obj.chainLength = len;
 			    obj.chain = vec;
 			    obj.usedLinks = links;
-			    obj.nodeMaps = nodes;
+			    obj.usedInstances = nodes;
             end
         end
 	end
