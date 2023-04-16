@@ -1,4 +1,5 @@
-function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, sIndex, logFileID, onePercent, totalIterations)
+% function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, sIndex, logFileID, onePercent, totalIterations)
+function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, sIndex, onePercent, totalIterations, crossoverType)
 
 	global mutationProbability;
     global mutationCount;
@@ -37,139 +38,20 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
     worstConstantCount = 0;
     previousWorstFitnessValue = fitnessValues(worstIndex);
 
-    % sfcClassData(sIndex).chain
-    fprintf(logFileID,'%s\n','chain ');
-    for i = 1 : sfcClassData(sIndex).chainLength
-		fprintf(logFileID,'%d\t',sfcClassData(sIndex).chain(i));
-	end
-	fprintf(logFileID,'\n\n');
-
-    % vmPopulations
-    fprintf(logFileID,'%s\n','Population ');
-    for i = 1 : populationSize
-		for j = 1 : chainLength
-			fprintf(logFileID,'%d\t',vmPopulations(i,j));
-		end
-		fprintf(logFileID,'\n');
-	end
-	fprintf(logFileID,'\n\n');
-    % fitnessValues
-	fprintf(logFileID,'%s\n','Fitness Values ');
-    for i = 1 : populationSize
-		fprintf(logFileID,'%d\t',fitnessValues(i));
-	end
-	fprintf(logFileID,'\n\n');
-
-    % vmPopulations(bestIndex,:)
-	fprintf(logFileID,'%s\n','Best Gene ');
-    for i = 1 : chainLength
-		fprintf(logFileID,'%d\t',vmPopulations(bestIndex,i));
-	end
-	fprintf(logFileID,'\n\n');
-    % vmPopulations(worstIndex,:)
-	fprintf(logFileID,'%s\n','Worst Gene ');
-    for i = 1 : chainLength
-		fprintf(logFileID,'%d\t',vmPopulations(worstIndex,i));
-	end
-	fprintf(logFileID,'\n\n');
-    % vmPopulations(secondWorstIndex,:)
-	fprintf(logFileID,'%s\n','Second Worst Gene ');
-    for i = 1 : chainLength
-		fprintf(logFileID,'%d\t',vmPopulations(secondWorstIndex,i));
-	end
-	fprintf(logFileID,'\n\n');
-
-    % fitnessValues(bestIndex)
-	fprintf(logFileID,'%s\n','Best Fitness Value ');
-	fprintf(logFileID,'%f\n\n',fitnessValues(bestIndex));
-    % fitnessValues(worstIndex)
-	fprintf(logFileID,'%s\n','Worst Fitness Value ');
-	fprintf(logFileID,'%f\n\n',fitnessValues(worstIndex));
-    % fitnessValues(secondWorstIndex)
-	fprintf(logFileID,'%s\n','Second Worst Fitness Value ');
-	fprintf(logFileID,'%f\n\n',fitnessValues(secondWorstIndex));
-
-    
    	% GA steps
    	for it = 1 : iterations % For each iteration
-        fprintf(logFileID,'%s%d%s\n\n','-------------------------------------------Iteration number: ',it,'------------------------------------------');
-   		vmParent1 = vmPopulations(worstIndex,:); % 1st member for crossover
+        vmParent1 = vmPopulations(worstIndex,:); % 1st member for crossover
    		vmParent2 = vmPopulations(secondWorstIndex,:); % 2nd member for crossover
-   		fprintf(logFileID,'%s\n','Parent 1 ');
-	    for i = 1 : chainLength
-			fprintf(logFileID,'%d\t',vmParent1(i));
-		end
-		fprintf(logFileID,'\n\n');
-		fprintf(logFileID,'%s\n','Parent 2 ');
-	    for i = 1 : chainLength
-			fprintf(logFileID,'%d\t',vmParent2(i));
-		end
-		fprintf(logFileID,'\n\n');
 
    		% Hybrid Offspring Formation
-   		[vmChildren] = crossover(vmParent1, vmParent2, chainLength, C, VI); % Perform crossover operation
-		fprintf(logFileID,'%s\n','Children ');
-	    for i = 1 : C
-			for j = 1 : chainLength
-				fprintf(logFileID,'%d\t',vmChildren(i,j));
-			end
-			fprintf(logFileID,'\n');
-		end
-		fprintf(logFileID,'\n\n');
-
-   		% Mutation
-   		%{
-   		mutationCount = mutationCount+1; % Increment the mutation count
-   		if (randomMutationIterations.contains(mutationCount)) % If the current iteration is present in the set
-   			% Perform mutation
-            fprintf(logFileID,'\n%s\n','Mutation being performed');
-            mutationIndices = randi(chainLength,1,C); % Generate random indices for each child
-            newMutationValues = zeros(C,chainLength+1); % This will store length+1 new values to ensure that we have at least one value that is currently not present in the child gene
-            for cin = 1 : C % For each child
-                newMutationValues(cin,:) = randperm(VI,chainLength+1); % Generate a random permutation of length+1
-            end
-            for cin = 1 : C % For each child
-                geneValues = TreeSet(); % Initialize
-                for in = 1 : chainLength % For each value
-                    geneValues.add(vmChildren(cin,in)); % Add it to the treeset
-                end
-                for in = 1 : chainLength+1 % For each value present in the mutation permutation
-                    if ~geneValues.contains(newMutationValues(cin,in)) % If the current mutation value is not present in the gene
-                        vmChildren(cin,mutationIndices(cin)) = newMutationValues(cin,in); % Store the new value at the generated index
-                        break;
-                    end
-                end
-            end
-            % vmChildren            
-			fprintf(logFileID,'%s\n','Children ');
-		    for i = 1 : C
-				for j = 1 : chainLength
-					fprintf(logFileID,'%d\t',vmChildren(i,j));
-				end
-				fprintf(logFileID,'\n');
-			end
-			fprintf(logFileID,'\n\n');
-        end
-        if mutationCount == 100 % If mutation count reaches 100
-        	mutationCount = 0; % Reset it
-	        mutationIterations = randperm(100,mutationProbability*100); % Then generate probability number of random iterations in which mutation will be performed
-	        randomMutationIterations = TreeSet(); % Set version of the above permutation
-	        for in = 1 : mutationProbability*100 % For each index
-	            randomMutationIterations.add(mutationIterations(in)); % Add the index to treeset
-	        end
-	        fprintf(logFileID,'\n%s\n\n','Mutation iterations');
-	        for i = 1 : mutationProbability*100
-	            fprintf(logFileID,'%d\t',mutationIterations(i));
-	        end
-	        fprintf(logFileID,'\n\n');
-	    end
-	    %}
-
+   		[vmChildren] = crossover(vmParent1, vmParent2, chainLength, C, VI, crossoverType); % Perform crossover operation
+		
         childrenFitnessValues = zeros(1,C);
         for cin = 1 : C % For each child
             [childrenFitnessValues(cin),vmChildren(cin,:),t1,t2,t3,t4,t5] = calculateFitnessValue(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, vmChildren(cin,:)); % Find out the fitness value and store it
         end
 
+<<<<<<< HEAD
 		fprintf(logFileID,'%s\n','Children ');
 	    for i = 1 : C
 			for j = 1 : chainLength
@@ -202,6 +84,10 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
 		end
 		fprintf(logFileID,'\n\n');
 
+=======
+        [childrenFitnessValues, vmChildren] = getSortedChildren(childrenFitnessValues, vmChildren, C, chainLength);
+        
+>>>>>>> main
    		% Check for uniqueness of the child genes
    		uniqueChildren = ones(1,C); % By default each child is unique
    		indicator = 0;
@@ -220,11 +106,7 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
 	   			end
 	   		end
         end
-        fprintf(logFileID,'%s\n\n','Unique Status');
-        for i = 1 : C
-			fprintf(logFileID,'%d\t',uniqueChildren(i));
-		end
-		fprintf(logFileID,'\n\n');
+        
    		uniqueIndex1 = 1;
    		uniqueIndex2 = 1;
    		while uniqueIndex1 <= 4 && uniqueChildren(uniqueIndex1) == 0 % Until we find an unique child
@@ -320,6 +202,7 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
 			end
         end
 
+<<<<<<< HEAD
         % if (fitnessValues(worstIndex) == previousWorstFitnessValue)
         % 	if worstConstantCount >= 30
         % 		break;
@@ -382,6 +265,8 @@ function [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xv
 		fprintf(logFileID,'%s\n','Second Worst Fitness Value ');
 		fprintf(logFileID,'%f\n\n',fitnessValues(secondWorstIndex));
 
+=======
+>>>>>>> main
 		if mod(it,onePercent) == 0
 			percent = ((sIndex-1)*iterations+it)/onePercent;
 			for back = 1 : 104

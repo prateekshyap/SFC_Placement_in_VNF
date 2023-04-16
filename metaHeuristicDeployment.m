@@ -1,4 +1,4 @@
-function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID)
+function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, crossoverType)
     
     global mutationProbability;
     global mutationCount;
@@ -7,7 +7,11 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDepl
     import java.util.TreeMap;
     import java.util.TreeSet;
     import java.util.ArrayList;
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> main
     Xfv = zeros(FI,VI); %FIxVI matrix to indicate whether a vnf instance f is deployed on the VM v or not
 	fvMap = TreeMap(); %Map version of Xfv
 	vnfStatus = zeros(1,FI); %This will indicate which instance is of which type
@@ -45,16 +49,6 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDepl
     for f = 1 : F % For each VNF type
         fvMap.put(f,ArrayList()); % Add the VNF along with an empty arraylist
     end
-    fprintf(logFileID,'%s\n\n','------------------------------------------VM Capacity---------------------------------------');
-    for i = 1 : VI
-        fprintf(logFileID,'%d\t',vmCapacity(i));
-    end
-    fprintf(logFileID,'\n\n');
-    fprintf(logFileID,'%s\n\n','------------------------------------------VNF Capacity--------------------------------------');
-    for i = 1 : FI
-        fprintf(logFileID,'%d\t',vnfCapacity(i));
-    end
-    fprintf(logFileID,'\n\n');
 
     % Setting GA parameters
     fileID = fopen('input/smallNet11/GAPar.txt','r');
@@ -71,11 +65,11 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDepl
         for in = 1 : mutationProbability*100 % For each index
             randomMutationIterations.add(mutationIterations(in)); % Add the index to treeset
         end
-        fprintf(logFileID,'\n%s\n\n','Mutation iterations');
+        % fprintf(logFileID,'\n%s\n\n','Mutation iterations');
         for i = 1 : mutationProbability*100
-            fprintf(logFileID,'%d\t',mutationIterations(i));
+            % fprintf(logFileID,'%d\t',mutationIterations(i));
         end
-        fprintf(logFileID,'\n\n');
+        % fprintf(logFileID,'\n\n');
     end
 
     iterations = parameters(2); % Total number of GA iterations
@@ -90,6 +84,7 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDepl
         fprintf(' ');
     end
 
+<<<<<<< HEAD
     for s = 1 : S % For each SFC s
         [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, s, logFileID, onePercent, totalIterations); % Call GA
         chainLength = sfcClassData(s).chainLength; % Get the length of s
@@ -151,6 +146,15 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDepl
         % waitbar(s/S);
         fprintf(logFileID,'\n\n%d%s\n\n',s,' SFCs done****************************************************************************************************');
         fvMap = TreeMap(); % Reinitialize map
+=======
+    for s = 1 : S % For each SFC
+%         [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, s, logFileID, onePercent, totalIterations); % Call GA
+        [optCost, optPlacement] = geneticAlgorithmImpl(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, s, onePercent, totalIterations, crossoverType); % Call GA
+        chainLength = sfcClassData(s).chainLength;
+        chain = sfcClassData(s).chain;
+        [optCost, optPlacement, Xfv, Xsf, sfcClassData, vmCapacity, vnfCapacity] = calculateFitnessValue(N, VI, F, FI, L, Cvn, Xvn, Cfv, Xfv, Xsf, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, s, optPlacement); % Find out the fitness value and store it
+        fvMap = TreeMap();    
+>>>>>>> main
         for f = 1 : F % For each VNF type
             fvMap.put(f,ArrayList()); % Add the VNF along with an empty arraylist
         end
@@ -164,6 +168,4 @@ function [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDepl
             end
         end
     end
-
-%     fclose(logFileID);
 end
