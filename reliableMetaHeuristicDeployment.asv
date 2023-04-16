@@ -132,19 +132,18 @@ function [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost, r] = relia
     % Manual progress bar
     totalIterations = S*iterations; % Find out the total number of iterations
     onePercent = totalIterations/100; % Find out the number of iterations for one percent work
-    fprintf('\n');
-    for fwd = 1 : 104
-        fprintf(' ');
-    end
-    itCopy = iterations;
+%     for fwd = 1 : 104
+%         fprintf(' ');
+%     end
+
     for s = 1 : S % For each SFC s
-        [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmImpl(N, VI, F, FI, L, alpha, r, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, s, logFileID, onePercent, totalIterations, itCopy, rhoNode, rhoVm, rhoVnf, execType); % Call GA
-        if iterations > 20 % If 10 SFCs are done and number of iterations are more than 50
-            iterations = iterations - 20; % Reduce the number of iterations by 50
+        [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmImpl(N, VI, F, FI, L, alpha, r, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, s, logFileID, onePercent, totalIterations, iterations, rhoNode, rhoVm, rhoVnf); % Call GA
+        if mod(s,10) == 0 && iterations > 50 % If 10 SFCs are done and number of iterations are more than 50
+            iterations = iterations - 50; % Reduce the number of iterations by 50
         end
         chainLength = sfcClassData(s).chainLength; % Get the length of s
         chain = sfcClassData(s).chain; % Get s
-        [optCost, optNodePlacement, optVMPlacement, Xfvi, Xsfi, Xllvi, sfcClassData, vmCapacity, vnfCapacity] = calculateReliableFitnessValue(N, VI, F, FI, L, alpha, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, s, optNodePlacement, optVMPlacement, r, nodeClassData, rhoNode, rhoVm, rhoVnf, 1); % Find out the fitness value and store it
+        [optCost, optNodePlacement, optVMPlacement, Xfvi, Xsfi, Xllvi, sfcClassData, vmCapacity, vnfCapacity] = calculateReliableFitnessValue(N, VI, F, FI, L, alpha, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, s, optNodePlacement, optVMPlacement, r, nodeClassData, rhoNode, rhoVm, rhoVnf); % Find out the fitness value and store it
         sfcClassData(s).usedLinks = optNodePlacement;
         fvMap = TreeMap(); % Reinitialize map
         for f = 1 : F % For each VNF type

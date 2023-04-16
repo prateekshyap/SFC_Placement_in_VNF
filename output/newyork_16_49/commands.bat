@@ -1,0 +1,11 @@
+dot -Tpng gv/graphPrint.gv -o img/graph.png
+dot -Tpng gv/sfcAssgn1.gv -o img/sfcAssgn1.png
+dot -Tpng gv/sfcAssgn2.gv -o img/sfcAssgn2.png
+dot -Tpng gv/sfcAssgn3.gv -o img/sfcAssgn3.png
+dot -Tpng gv/sfcAssgn4.gv -o img/sfcAssgn4.png
+dot -Tpng gv/sfcAssgn5.gv -o img/sfcAssgn5.png
+dot -Tpng gv/sfcAssgn6.gv -o img/sfcAssgn6.png
+dot -Tpng gv/sfcAssgn7.gv -o img/sfcAssgn7.png
+dot -Tpng gv/sfcAssgn8.gv -o img/sfcAssgn8.png
+dot -Tpng gv/sfcAssgn9.gv -o img/sfcAssgn9.png
+dot -Tpng gv/sfcAssgn10.gv -o img/sfcAssgn10.png

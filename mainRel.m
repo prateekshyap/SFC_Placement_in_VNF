@@ -22,6 +22,8 @@ global low;
 global visited;
 global isBridge;
 global time;
+global costStorage;
+global timeStorage;
 
 import java.util.TreeMap;
 import java.util.HashSet;
@@ -32,14 +34,18 @@ import java.util.LinkedList;
 logFileID = fopen('log.txt','wt');
 
 %% Constants and Variables
-
-% parfor loop = 1 : 100
+costOldGA = zeros(3,100); %%%%%%% UNCOMMENT AT NIGHT
+costNewGA = zeros(3,100); %%%%%%% UNCOMMENT AT NIGHT
+% for loop = 1 : 100
 % sVal = [10 20];
-% parfor loop = 1 : 100
+parfor loop = 1 : 100 %%%%%%% UNCOMMENT AT NIGHT
 % loop
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-fileID = fopen('input/sevenReliabilityOne/constants.txt','r');
+
+inputFilePath = 'input/india_35_80/';
+outputFilePath = 'output/india_35_80/';
+fileID = fopen(sprintf("%s%s",inputFilePath,'constants.txt'),'r');
 formatSpecifier = '%f';
 dimension = [1,10];
 
@@ -65,10 +71,9 @@ rhoVnf = constants(9); %Failure probability of VNFs
 
 % Other constants
 L = constants(10); %Packet size
-maximumCores = 64; %Maximum allowed cores on a physical node
 
 %% Reading Network Data
-fileID = fopen('input/sevenReliabilityOne/network.txt','r');
+fileID = fopen(sprintf("%s%s",inputFilePath,'network.txt'),'r');
 formatSpecifier = '%f';
 dimension = [N,N];
 
@@ -87,25 +92,23 @@ fclose(fileID);
 %     end
 % end
 
-fileID = fopen('input/newyork_16_49/newyork.graphml');
-[topology,latlong,nodenames,mat,P] = importGraphML('input/newyork_16_49/newyork.graphml')
-fclose(fileID);
-
 [network,nextHop] = allPairShortestPath(N,inputNetwork); %Floyd-Warshall
 [bridgeStatus] = findBridges(N,inputNetwork); % Find bridge status for all edges in the network
 
 %% Reading Network Data
-fileID = fopen('input/sevenReliabilityOne/bandwidth.txt','r');
-formatSpecifier = '%f';
-dimension = [N,N];
-bandwidths = fscanf(fileID,formatSpecifier,dimension); %Bandwidths of physical links
-fclose(fileID);
+% fileID = fopen(sprintf("%s%s",inputFilePath,'bandwidth.txt'),'r');
+% formatSpecifier = '%f';
+% dimension = [N,N];
+% bandwidths = fscanf(fileID,formatSpecifier,dimension); %Bandwidths of physical links
+% fclose(fileID);
 
 %% Generating Network Data
-% [bandwidths] = generateBandwidth(inputNetwork,N);
+fileID = fopen(sprintf("%s%s",inputFilePath,'bandwidthRange.txt'),'r');
+bandwidthRange = fscanf(fileID,'%f',[1,2]);
+[bandwidths] = generateBandwidth(inputNetwork,N,bandwidthRange);
 
 %% Reading Node Types
-fileID = fopen('input/sevenReliabilityOne/nodeTypes.txt','r');
+fileID = fopen(sprintf("%s%s",inputFilePath,'nodeTypes.txt'),'r');
 formatSpecifier = '%d';
 dimension = [1,N];
 nodeStatus = fscanf(fileID,formatSpecifier,dimension); %Type of nodes indicating the number of cores
@@ -129,7 +132,7 @@ fclose(fileID);
 % 	end
 % end
 
-fileID = fopen('input/sevenReliabilityOne/vmTypes.txt','r');
+fileID = fopen(sprintf("%s%s",inputFilePath,'vmTypes.txt'),'r');
 formatSpecifier = '%d';
 dimension = [V,2];
 temp = fscanf(fileID,formatSpecifier,dimension); %Type of VMs and their requirements
@@ -138,38 +141,32 @@ vmTypes = temp(1:V,1)';
 vmCoreRequirements = temp(1:V,2)';
 VI = sum(vmTypes);
 
-fileID = fopen('input/sevenReliabilityOne/vnfTypes.txt','r');
+fileID = fopen(sprintf("%s%s",inputFilePath,'vnfTypes.txt'),'r');
 formatSpecifier = '%d';
 dimension = [1,F];
 vnfTypes = fscanf(fileID,formatSpecifier,dimension); %Type of VNFs and their requirements
 fclose(fileID);
 FI = sum(vnfTypes);
 
-fileID = fopen('input/sevenReliabilityOne/costVN.txt','r');
+fileID = fopen(sprintf("%s%s",inputFilePath,'costVN.txt'),'r');
 formatSpecifier = '%f';
 dimension = [1,V];
 Cvn = fscanf(fileID,formatSpecifier,dimension); %Cost of hosting VMs on Nodes
 fclose(fileID);
 
 % Cost of deploying VNFs on VMs
-fileID = fopen('input/sevenReliabilityOne/costFV.txt','r');
+fileID = fopen(sprintf("%s%s",inputFilePath,'costFV.txt'),'r');
 formatSpecifier = '%f';
 dimension = [V,F];
 Cfv = fscanf(fileID,formatSpecifier,dimension); %Cost of deploying VNFs on VMs
 fclose(fileID);
-
-% Failure level
-iota = 0;
-
-% Binary Variables
-X = 0;
 
 %% Array to store all SFC objects
 sfcClassData = SFC(1,S,zeros(1,2),zeros(1,2));
 lengths = 0;
 sfcStatus = 1; % Set this for random generation or manual input
 if sfcStatus == 1 %Random SFC generation
-    S = 5;
+    S = 10;
 	lengthStatus = 1;
     if lengthStatus == 1
         lengths = randi(ceil(F*0.6),[1,S])+2;
@@ -223,18 +220,40 @@ end
 %% Function deployment on the network
 % [Xfv, fvMap, vnfStatus] = VNFDeploy(VI, F, FI, vmStatus, vmCoreRequirements, vnfTypes, vnfCoreRequirement); %Sequential deployment
 % [Xfv, fvMap, vnfStatus] = greedyDeployment(N, VI, F, FI, inputNetwork, vnMap, vmStatus, vmCoreRequirements, vnfTypes) %Greedy algorithm when SFCs are not known
-
+vnfTypes = zeros(1,F);
+vnfFreq = zeros(1,F);
+while min(vnfTypes) ~= 3
+for i = 1 : S
+        chain = randperm(F,lengths(i)) % Generate a random permutation as an SFC
+        sfcClassData(1,i) = SFC(lengths(i),chain,zeros(1,2),zeros(1,2)); % Store the chain and its length
+end
 [FI, vnfTypes, vnfFreq] = generateVNFData(V, F, S, vmTypes, vmCoreRequirements, vnfCoreRequirement, sfcClassData);
+lambda = zeros(S,F);
+for s = 1 : S
+	chain = sfcClassData(s).chain;
+	chainLength = sfcClassData(s).chainLength;
+	for c = 1 : chainLength
+		lambda(s,chain(c)) = round(rand(1,1)*9+1);
+	end
+end
+delta = zeros(S,F);
+mu = ones(1,F);
+end
+
 vnfTypes
 
+
+
+%%%%%%% UNCOMMENT AT NIGHT
 % tic; % Starts the timer
 % 
 % % [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = bruteForceDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement);
 % % [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID);
-% [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost, r] = reliableMetaHeuristicDeployment(N, VI, F, FI, S, L, alpha, Cvn, Xvn, Cfv, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID, rhoNode, rhoVm, rhoVnf);
+[Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost, r] = reliableMetaHeuristicDeployment(N, VI, F, FI, S, L, alpha, Cvn, Xvn, Cfv, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID, inputFilePath, rhoNode, rhoVm, rhoVnf, 1);
 % timer = toc % Stops the timer
 % 
-% optCost
+optCost
+costOldGA(:,loop) = optCost;
 % vnfStatus
 % Xsfi
 
@@ -265,18 +284,46 @@ while size(length) > 0
 end
 sfcClassData = sortedSfcClassData;
 
-tic;
-
 % [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = bruteForceDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement);
 % [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID);
-[Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost, r] = reliableMetaHeuristicDeployment(N, VI, F, FI, S, L, alpha, Cvn, Xvn, Cfv, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID, rhoNode, rhoVm, rhoVnf);
-timer = toc
-fprintf(logFileID,'%f',timer); %This will print the time automatically
+[Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost, r] = reliableMetaHeuristicDeployment(N, VI, F, FI, S, L, alpha, Cvn, Xvn, Cfv, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID, inputFilePath, rhoNode, rhoVm, rhoVnf, 2);
 
-optCost
-vnfStatus
-Xsfi
+% fprintf(logFileID,'%f',timer); %This will print the time automatically
 
+costNewGA(:,loop) = optCost; %%%%%%% UNCOMMENT AT NIGHT
+% vnfStatus
+% Xsfi
+
+
+
+ %%%%%%% UNCOMMENT AT NIGHT
+end
+costOldGA
+costNewGA
+
+costs = sortrows([costOldGA; costNewGA]');
+costOldGA(:) = costs(:,1);
+costNewGA(:) = costs(:,2);
+
+figure;
+plot(1:1:100,costOldGA(1,:));
+hold on;
+plot(1:1:100,costOldGA(2,:));
+hold on;
+plot(1:1:100,costOldGA(3,:));
+hold on;
+plot(1:1:100,costNewGA(1,:));
+hold on;
+plot(1:1:100,costNewGA(2,:));
+hold on;
+plot(1:1:100,costNewGA(3,:));
+title('Comparison with existing GA (Newyork)');
+xlabel('Observation number');
+ylabel('Cost');
+legend('Existing GA, r = 0','Existing GA, r = 1','Existing GA, r = 2','Proposed GA, r = 0','Proposed GA, r = 1','Proposed GA, r = 2');
+
+
+%{
 %% Arary to store all VM objects
 vmClassData = VM(1,zeros(1,2)); %to store the VM status
 vnfCount = sum(Xfvi(:,:,1)); %count the vnfs on each VM
@@ -404,9 +451,10 @@ gvText = gvText+linkData;
 gvText = gvText+newline+"splines=false";
 gvText = gvText+newline+"}";
 
-fileID = fopen('output/sevenReliabilityOne/gv/graphPrint.gv','w+');
+fileID = fopen(sprintf("%s%s",outputFilePath,'gv/graphPrint.gv'),'w+');
 commands = commands+"dot -Tpng gv/graphPrint.gv -o img/graph.png";
 fprintf(fileID,"%s",gvText);
+fclose(fileID);
 
 %% SFC and SFC assignment print
 for c = 1 : S
@@ -577,15 +625,15 @@ for c = 1 : S
 	end
 	gvText = gvText+newline+"}";
 
-	fileID = fopen(sprintf('%s%d%s','output/sevenReliabilityOne/gv/sfcAssgn',c,'.gv'),'w+');
+	fileID = fopen(sprintf('%s%s%d%s',outputFilePath,'gv/sfcAssgn',c,'.gv'),'w+');
 	commands = commands+newline+"dot -Tpng "+sprintf('%s%d%s','gv/sfcAssgn',c,'.gv')+" -o "+sprintf('%s%d%s','img/sfcAssgn',c,'.png');
 	fprintf(fileID,"%s",gvText);
 	fclose(fileID);
 end
 
-fileID = fopen('output/sevenReliabilityOne/commands.bat','w+');
+fileID = fopen(sprintf("%s%s",outputFilePath,'commands.bat'),'w+');
 fprintf(fileID,"%s",commands);
 fclose(fileID);
 
-
+%}
 % end

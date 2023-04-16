@@ -1,4 +1,4 @@
-function [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmImpl(N, VI, F, FI, L, alpha, r, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, sIndex, logFileID, onePercent, totalIterations, rhoNode, rhoVm, rhoVnf)
+function [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmImpl(N, VI, F, FI, L, alpha, r, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, sIndex, logFileID, onePercent, totalIterations, itCopy, rhoNode, rhoVm, rhoVnf, execType)
 
 	global mutationProbability;
     global mutationCount;
@@ -26,7 +26,7 @@ function [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmI
         nodePop(:,:) = nodePopulations(p,:,:);
         vmPop = zeros(chainLength,r);
         vmPop(:,:) = vmPopulations(p,:,:);
-   		[fitnessValues(p),nodePopulations(p,:,:),vmPopulations(p,:,:),t1,t2,t3,t4,t5,t6] = calculateReliableFitnessValue(N, VI, F, FI, L, alpha, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, nodePop, vmPop, r, nodeClassData, rhoNode, rhoVm, rhoVnf); % Find out the fitness value and store it
+   		[fitnessValues(p),nodePopulations(p,:,:),vmPopulations(p,:,:),t1,t2,t3,t4,t5,t6] = calculateReliableFitnessValue(N, VI, F, FI, L, alpha, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, nodePop, vmPop, r, nodeClassData, rhoNode, rhoVm, rhoVnf, 0); % Find out the fitness value and store it
    		if p > 1 % If we have more than one fitness value
    			if fitnessValues(p) < fitnessValues(bestIndex) % If the newly calculated fitness value is less than the best fitness value
    				bestIndex = p; % Update the best fitness index
@@ -55,7 +55,7 @@ function [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmI
         vmParent2(:,:) = vmPopulations(secondWorstIndex,:,:); % 2nd member for crossover
 
    		% Hybrid Offspring Formation
-   		[nodeChildren, vmChildren] = crossoverRel(nodeParent1, nodeParent2, vmParent1, vmParent2, vnMap, chainLength, C, VI, r); % Perform crossover operation
+   		[nodeChildren, vmChildren] = crossoverRel(nodeParent1, nodeParent2, vmParent1, vmParent2, vnMap, chainLength, C, VI, r, execType); % Perform crossover operation
 
    		% Finding out fitness values
         childrenFitnessValues = zeros(1,C);
@@ -64,24 +64,26 @@ function [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmI
             nodePop(:,:) = nodeChildren(cin,:,:);
             vmPop = zeros(chainLength,r);
             vmPop(:,:) = vmChildren(cin,:,:);
-            [childrenFitnessValues(cin),nodeChildren(cin,:,:),vmChildren(cin,:,:),t1,t2,t3,t4,t5,t6] = calculateReliableFitnessValue(N, VI, F, FI, L, alpha, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, nodePop, vmPop, r, nodeClassData, rhoNode, rhoVm, rhoVnf); % Find out the fitness value and store it
+            [childrenFitnessValues(cin),nodeChildren(cin,:,:),vmChildren(cin,:,:),t1,t2,t3,t4,t5,t6] = calculateReliableFitnessValue(N, VI, F, FI, L, alpha, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, nodePop, vmPop, r, nodeClassData, rhoNode, rhoVm, rhoVnf, 0); % Find out the fitness value and store it
         end
 
-        %{
+        if execType == 1
         % Uncomment this block when you're executing this algorithm with uniform crossover
         childrenFitnessValues(3) = Inf;
         childrenFitnessValues(4) = Inf;
 		%}
+        end
 
         [childrenFitnessValues, nodeChildren, vmChildren] = getSortedChildrenRel(childrenFitnessValues, nodeChildren, vmChildren, C, chainLength, r); % Sort the children in ascending order of their fitness values
 
    		% Check for uniqueness of the child genes
    		uniqueChildren = ones(1,C); % By default each child is unique
-   		%{
+   		if execType == 1
         % Uncomment this block when you're executing this algorithm with uniform crossover
         uniqueChildren(3) = 0;
         uniqueChildren(4) = 0;
    		%}
+        end
    		indicator = 0;
    		for cin = 1 : C % For each child
 	   		for p = 1 : populationSize % For each member in population matrix
@@ -169,8 +171,8 @@ function [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmI
         			vmMutaGene2(indices(ind),:) = vmPopulations(bestIndex,indices(ind),:); % Copy from the best child
         		end
         		% Find out the fitness values
-        		fitnessValue1 = calculateReliableFitnessValue(N, VI, F, FI, L, alpha, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, nodeMutaGene1, vmMutaGene1, r, nodeClassData, rhoNode, rhoVm, rhoVnf); % Find out the fitness value and store it
-                fitnessValue2 = calculateReliableFitnessValue(N, VI, F, FI, L, alpha, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, nodeMutaGene2, vmMutaGene2, r, nodeClassData, rhoNode, rhoVm, rhoVnf); % Find out the fitness value and store it
+        		fitnessValue1 = calculateReliableFitnessValue(N, VI, F, FI, L, alpha, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, nodeMutaGene1, vmMutaGene1, r, nodeClassData, rhoNode, rhoVm, rhoVnf, 0); % Find out the fitness value and store it
+                fitnessValue2 = calculateReliableFitnessValue(N, VI, F, FI, L, alpha, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, nodeMutaGene2, vmMutaGene2, r, nodeClassData, rhoNode, rhoVm, rhoVnf, 0); % Find out the fitness value and store it
         		% Update the worst chromosomes if the fitness values are improved after mutagenesis
         		if fitnessValue1 < fitnessValues(worstIndex)
         			nodePopulations(worstIndex,:,:) = nodeMutaGene1;
@@ -216,7 +218,7 @@ function [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmI
         % end
 
 		if mod(it,onePercent) == 0
-			percent = ((sIndex-1)*iterations+it)/onePercent;
+			percent = ((sIndex-1)*itCopy+it)/onePercent;
 			for back = 1 : 104
 				fprintf('\b');
 			end

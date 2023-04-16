@@ -360,43 +360,7 @@ y = [50 100 150 200 250 300];             % The range of y values.
 [X,Y] = meshgrid (x,y); % This generates the actual grid of x and y values.
 
 lenX = size(X);
-Z = zeros(lenX(1),lenX(2));
-Z(1,1) = 100;
-Z(1,2) = 110;
-Z(1,3) = 120;
-Z(1,4) = 130;
-Z(1,5) = 140;
-Z(1,6) = 150;
-Z(2,1) = 90;
-Z(2,2) = 92;
-Z(2,3) = 94;
-Z(2,4) = 97;
-Z(2,5) = 99;
-Z(2,6) = 100;
-Z(3,1) = 120;
-Z(3,2) = 125;
-Z(3,3) = 131;
-Z(3,4) = 134;
-Z(3,5) = 135;
-Z(3,6) = 138;
-Z(4,1) = 90;
-Z(4,2) = 120;
-Z(4,3) = 125;
-Z(4,4) = 131;
-Z(4,5) = 135;
-Z(4,6) = 138;
-Z(5,1) = 90;
-Z(5,2) = 92;
-Z(5,3) = 94;
-Z(5,4) = 97;
-Z(5,5) = 99;
-Z(5,6) = 100;
-Z(6,1) = 100;
-Z(6,2) = 110;
-Z(6,3) = 120;
-Z(6,4) = 130;
-Z(6,5) = 140;
-Z(6,6) = 150;
+Z = X+Y;
 % Generating the Z Data
 figure(1);              % Generating a new window to plot in.
 surf(X,Y,Z)             % The surface plotting function.
@@ -406,3 +370,9 @@ mesh(X,Y,Z)
 
 figure(3);
 plot3(X,Y,Z);
+
+pops = 10 : 5 : 50;
+its = 50 : 25 : 250;
+[POP, IT] = meshgrid(pops, its);
+POP
+IT

@@ -1,4 +1,4 @@
-function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, vmCapacityTemp, vnfCapacityTemp] = calculateReliableFitnessValue(N, VI, F, FI, L, alpha, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, nodeGene, vmGene, r, nodeClassData, rhoNode, rhoVm, rhoVnf)
+function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, vmCapacityTemp, vnfCapacityTemp] = calculateReliableFitnessValue(N, VI, F, FI, L, alpha, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, nodeGene, vmGene, r, nodeClassData, rhoNode, rhoVm, rhoVnf, isFinal)
 
 	import java.util.TreeSet;
 
@@ -124,12 +124,27 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
                         end
 					end
                 end
-				XsfiTemp(sIndex,minDistanceInstance,1) = 1; % Assign
-				vmGene(pos,1) = minDistanceVM; % Modify the vm gene
-                usedLinks(pos) = vnMap.get(vmGene(pos,1)); % Store the physical node
-            	nodeGene(pos,1) = vnMap.get(vmGene(pos,1)); % Store the physical node
-                usedInstances(pos,1) = minDistanceInstance; % Store the instance number
-                vnfCapacityTemp(minDistanceInstance) = vnfCapacityTemp(minDistanceInstance)-1; % Decrease the capacity
+                if minDistanceInstance == 0
+                    tempVm = 0;
+                    for vin = 1 : VI
+                        if XfviTemp(fIndex,vin,1) == 1
+                            tempVm = vin;
+                            break;
+                        end
+                    end
+                    XsfiTemp(sIndex,fIndex,1) = 1; % Assign
+				    vmGene(pos,1) = tempVm; % Modify the vm gene
+                    usedLinks(pos) = vnMap.get(vmGene(pos,1)); % Store the physical node
+            	    nodeGene(pos,1) = vnMap.get(vmGene(pos,1)); % Store the physical node
+                    usedInstances(pos,1) = fIndex; % Store the instance number
+                else
+				    XsfiTemp(sIndex,minDistanceInstance,1) = 1; % Assign
+				    vmGene(pos,1) = minDistanceVM; % Modify the vm gene
+                    usedLinks(pos) = vnMap.get(vmGene(pos,1)); % Store the physical node
+            	    nodeGene(pos,1) = vnMap.get(vmGene(pos,1)); % Store the physical node
+                    usedInstances(pos,1) = minDistanceInstance; % Store the instance number
+                    vnfCapacityTemp(minDistanceInstance) = vnfCapacityTemp(minDistanceInstance)-1; % Decrease the capacity
+                end
 			end
         end
     end
@@ -283,10 +298,24 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
                             end
 	            		end
                     end
-        			XsfiTemp(sIndex,minDistanceInstance,iota) = 1; % This indicates that the chosen instance is going to be assigned as a backup at level iota
-            		vmGene(pos,iota) = minDistanceVM; % Modify the vm gene
-            		nodeGene(pos,iota) = vnMap.get(vmGene(pos,iota)); % Store the physical node
-            		usedInstances(pos,iota) = minDistanceInstance; % Store the instance
+                    if minDistanceInstance == 0
+                        tempVm = 0;
+                        for vin = 1 : VI
+                            if XfviTemp(fIndex,vin,1) == 1
+                                tempVm = vin;
+                                break;
+                            end
+                        end
+                        XsfiTemp(sIndex,fIndex,iota) = 1; % Assign
+				        vmGene(pos,iota) = tempVm; % Modify the vm gene
+            	        nodeGene(pos,iota) = vnMap.get(vmGene(pos,iota)); % Store the physical node
+                        usedInstances(pos,iota) = fIndex; % Store the instance number
+                    else
+        			    XsfiTemp(sIndex,minDistanceInstance,iota) = 1; % This indicates that the chosen instance is going to be assigned as a backup at level iota
+            		    vmGene(pos,iota) = minDistanceVM; % Modify the vm gene
+            		    nodeGene(pos,iota) = vnMap.get(vmGene(pos,iota)); % Store the physical node
+            		    usedInstances(pos,iota) = minDistanceInstance; % Store the instance
+                    end
             	end
             end
         end
@@ -308,10 +337,21 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
 	    end
     end
 
-	y1 = y1Rel(N, VI, FI, Cvn, Xvn, Cfv, XfviTemp, vmStatus, vnfStatus);
-	y2 = y2Rel(VI, FI, r, sIndex, lambda, delta, mu, XfviTemp, XsfiTemp, vnfStatus, sfcClassData, rhoNode, rhoVm, rhoVnf);
-	y3 = y3Rel(N, FI, L, r, sIndex, medium, inputNetwork, bandwidths, XllviTemp, rhoNode, rhoVm, rhoVnf);
-
-	cost = alpha*y1+(1-alpha)*(y2+y3);
-   
+    if isFinal == 1
+        cost = zeros(1,r);
+        for iota = 1 : r
+    
+	        y1 = y1Rel(N, VI, FI, Cvn, Xvn, Cfv, XfviTemp, vmStatus, vnfStatus);
+	        y2 = y2Rel(VI, FI, iota, sIndex, lambda, delta, mu, XfviTemp, XsfiTemp, vnfStatus, sfcClassData, rhoNode, rhoVm, rhoVnf);
+	        y3 = y3Rel(N, FI, L, iota, sIndex, medium, inputNetwork, bandwidths, XllviTemp, rhoNode, rhoVm, rhoVnf);
+        
+	        cost(iota) = alpha*y1+(1-alpha)*(y2+y3);
+        end
+    else
+        y1 = y1Rel(N, VI, FI, Cvn, Xvn, Cfv, XfviTemp, vmStatus, vnfStatus);
+        y2 = y2Rel(VI, FI, r, sIndex, lambda, delta, mu, XfviTemp, XsfiTemp, vnfStatus, sfcClassData, rhoNode, rhoVm, rhoVnf);
+        y3 = y3Rel(N, FI, L, r, sIndex, medium, inputNetwork, bandwidths, XllviTemp, rhoNode, rhoVm, rhoVnf);
+    
+        cost = alpha*y1+(1-alpha)*(y2+y3);
+    end
 end

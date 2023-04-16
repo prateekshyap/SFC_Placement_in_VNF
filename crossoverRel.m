@@ -1,4 +1,4 @@
-function [nodeChildren, vmChildren] = crossoverRel(nodeGene1, nodeGene2, vmGene1, vmGene2, vnMap, len, C, VI, r)
+function [nodeChildren, vmChildren] = crossoverRel(nodeGene1, nodeGene2, vmGene1, vmGene2, vnMap, len, C, VI, r, execType)
 
     global mutationProbability;
     
@@ -164,7 +164,7 @@ function [nodeChildren, vmChildren] = crossoverRel(nodeGene1, nodeGene2, vmGene1
         vmChildren(4,i) = temp;
     end
 %}
-
+if execType == 1
     % This is uniform crossover
     nodeChildren = zeros(C,len,r);
     vmChildren = zeros(C,len,r);
@@ -187,8 +187,8 @@ function [nodeChildren, vmChildren] = crossoverRel(nodeGene1, nodeGene2, vmGene1
             vmChildren(2,c,:) = temp;
         end
     end
-
-%{
+%}
+else
 %   This is hybrid two point crossover and generation
     import java.util.TreeSet;
     nodeChildren = zeros(C,len,r);
@@ -290,5 +290,5 @@ function [nodeChildren, vmChildren] = crossoverRel(nodeGene1, nodeGene2, vmGene1
             nodeChildren(4,i,iota) = vnMap.get(vmChildren(4,i,iota));
         end
     end
-    %}
+end  
 end
