@@ -1,4 +1,4 @@
-function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, vmCapacityTemp, vnfCapacityTemp] = calculateReliableFitnessValue(N, VI, F, FI, L, alpha, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, nodeGene, vmGene, r, nodeClassData, rhoNode, rhoVm, rhoVnf)
+function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, vmCapacityTemp, vnfCapacityTemp] = calculateReliableFitnessValue(N, VI, F, FI, L, alpha, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, nodeGene, vmGene, r, nodeClassData, rhoNode, rhoVm, rhoVnf, isFinal)
 
 	import java.util.TreeSet;
 
@@ -337,13 +337,21 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
 	    end
     end
 
-    cost = zeros(1,r);
-    for iota = 1 : r
-
-	    y1 = y1Rel(N, VI, FI, Cvn, Xvn, Cfv, XfviTemp, vmStatus, vnfStatus);
-	    y2 = y2Rel(VI, FI, r, sIndex, lambda, delta, mu, XfviTemp, XsfiTemp, vnfStatus, sfcClassData, rhoNode, rhoVm, rhoVnf);
-	    y3 = y3Rel(N, FI, L, r, sIndex, medium, inputNetwork, bandwidths, XllviTemp, rhoNode, rhoVm, rhoVnf);
+    if isFinal == 1
+        cost = zeros(1,r);
+        for iota = 1 : r
     
-	    cost = alpha*y1+(1-alpha)*(y2+y3);
+	        y1 = y1Rel(N, VI, FI, Cvn, Xvn, Cfv, XfviTemp, vmStatus, vnfStatus);
+	        y2 = y2Rel(VI, FI, iota, sIndex, lambda, delta, mu, XfviTemp, XsfiTemp, vnfStatus, sfcClassData, rhoNode, rhoVm, rhoVnf);
+	        y3 = y3Rel(N, FI, L, iota, sIndex, medium, inputNetwork, bandwidths, XllviTemp, rhoNode, rhoVm, rhoVnf);
+        
+	        cost(iota) = alpha*y1+(1-alpha)*(y2+y3);
+        end
+    else
+        y1 = y1Rel(N, VI, FI, Cvn, Xvn, Cfv, XfviTemp, vmStatus, vnfStatus);
+        y2 = y2Rel(VI, FI, r, sIndex, lambda, delta, mu, XfviTemp, XsfiTemp, vnfStatus, sfcClassData, rhoNode, rhoVm, rhoVnf);
+        y3 = y3Rel(N, FI, L, r, sIndex, medium, inputNetwork, bandwidths, XllviTemp, rhoNode, rhoVm, rhoVnf);
+    
+        cost = alpha*y1+(1-alpha)*(y2+y3);
     end
 end
