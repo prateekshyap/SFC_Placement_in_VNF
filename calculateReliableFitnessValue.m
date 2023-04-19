@@ -34,13 +34,13 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
 				end
 			end
 		end
-		if indicator == 1 && vnfCapacityTemp(chosenInstance) > 0 % If the chosen VM has an instance of the required VNF
+		if indicator == 1 && vnfCapacityTemp(1,chosenInstance) > 0 % If the chosen VM has an instance of the required VNF
 			XsfiTemp(sIndex,chosenInstance,1) = 1; % Assign
 			vmGene(pos,1) = chosenVM; % Modify the vm gene (note that it will remain unmodified if already present)
             usedLinks(pos) = vnMap.get(vmGene(pos,1)); % Store the physical node
             nodeGene(pos,1) = vnMap.get(vmGene(pos,1)); % Store the physical node
             usedInstances(pos,1) = chosenInstance; % Store the instance number
-			vnfCapacityTemp(chosenInstance) = vnfCapacityTemp(chosenInstance)-1; % Decrease the capacity
+			vnfCapacityTemp(1,chosenInstance) = vnfCapacityTemp(1,chosenInstance)-1; % Decrease the capacity
 		else % If the assignment couldn't be done, we need to find another instance and assignment
 			%% Step 2 - Find an undeployed instance to deploy on any VM on the chosen node
 			freeVNF = 0;
@@ -78,7 +78,7 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
             		nodeGene(pos,1) = vnMap.get(vmGene(pos,1)); % Store the physical node
                     usedInstances(pos,1) = freeVNF; % Store the instance number
 	                vmCapacityTemp(chosenVM) = vmCapacityTemp(chosenVM)-1; % Decrease the capacity
-	                vnfCapacityTemp(freeVNF) = vnfCapacityTemp(freeVNF)-1; % Decrease the capacity
+	                vnfCapacityTemp(1,freeVNF) = vnfCapacityTemp(1,freeVNF)-1; % Decrease the capacity
 	            else % If no such VM found, choose another free VM to deploy that instance
 	            	%% Step 3 - Choose the closest free VM to deploy this instance
 	            	% Please note that the capacity of the VM is calculated according to the total number of
@@ -100,7 +100,7 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
             		nodeGene(pos,1) = vnMap.get(vmGene(pos,1)); % Store the physical node
                     usedInstances(pos,1) = freeVNF; % Store the instance number
 	                vmCapacityTemp(minDistanceVM) = vmCapacityTemp(minDistanceVM)-1; % Decrease the capacity
-	                vnfCapacityTemp(freeVNF) = vnfCapacityTemp(freeVNF)-1; % Decrease the capacity
+	                vnfCapacityTemp(1,freeVNF) = vnfCapacityTemp(1,freeVNF)-1; % Decrease the capacity
 	            end
 			else % If no such instance could be found i.e. all the corresponding instances are deployed
 				%% Step 4 - Choose the closest instance to assign
@@ -108,7 +108,7 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
                 minDistanceInstance = 0;
                 minDistanceVM = 0;
 				for fin = fIndex : fIndex+vnfTypes(chain(pos))-1 % For each instance of the same function
-                    if vnfCapacityTemp(fin) > 0 % If it has more capacity
+                    if vnfCapacityTemp(1,fin) > 0 % If it has more capacity
                         chosenVM = 0;
 						for vin = 1 : VI % For each VM
 							if XfviTemp(fin,vin,1) == 1 % If required VM is spotted
@@ -124,27 +124,27 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
                         end
 					end
                 end
-                if minDistanceInstance == 0
-                    tempVm = 0;
-                    for vin = 1 : VI
-                        if XfviTemp(fIndex,vin,1) == 1
-                            tempVm = vin;
-                            break;
-                        end
-                    end
-                    XsfiTemp(sIndex,fIndex,1) = 1; % Assign
-				    vmGene(pos,1) = tempVm; % Modify the vm gene
-                    usedLinks(pos) = vnMap.get(vmGene(pos,1)); % Store the physical node
-            	    nodeGene(pos,1) = vnMap.get(vmGene(pos,1)); % Store the physical node
-                    usedInstances(pos,1) = fIndex; % Store the instance number
-                else
+                % if minDistanceInstance == 0
+                %     tempVm = 0;
+                %     for vin = 1 : VI
+                %         if XfviTemp(fIndex,vin,1) == 1
+                %             tempVm = vin;
+                %             break;
+                %         end
+                %     end
+                %     XsfiTemp(sIndex,fIndex,1) = 1; % Assign
+				%     vmGene(pos,1) = tempVm; % Modify the vm gene
+                %     usedLinks(pos) = vnMap.get(vmGene(pos,1)); % Store the physical node
+            	%     nodeGene(pos,1) = vnMap.get(vmGene(pos,1)); % Store the physical node
+                %     usedInstances(pos,1) = fIndex; % Store the instance number
+                % else
 				    XsfiTemp(sIndex,minDistanceInstance,1) = 1; % Assign
 				    vmGene(pos,1) = minDistanceVM; % Modify the vm gene
                     usedLinks(pos) = vnMap.get(vmGene(pos,1)); % Store the physical node
             	    nodeGene(pos,1) = vnMap.get(vmGene(pos,1)); % Store the physical node
                     usedInstances(pos,1) = minDistanceInstance; % Store the instance number
-                    vnfCapacityTemp(minDistanceInstance) = vnfCapacityTemp(minDistanceInstance)-1; % Decrease the capacity
-                end
+                    vnfCapacityTemp(1,minDistanceInstance) = vnfCapacityTemp(1,minDistanceInstance)-1; % Decrease the capacity
+                % end
 			end
         end
     end
@@ -208,11 +208,12 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
         			break;
         		end
             end
-            if (indicator == 1) && (~failedNodes.contains(chosenNode)) % If the chosen VM has an instance of the required VNF and the chosen node is not already present in the previous reliability levels
+            if (indicator == 1) && vnfCapacityTemp(iota,chosenInstance) > 0 && (~failedNodes.contains(chosenNode)) % If the chosen VM has an instance of the required VNF and the chosen node is not already present in the previous reliability levels
             	XsfiTemp(sIndex,chosenInstance,iota) = 1; % This indicates that the chosen instance is going to be assigned as a backup at level iota
             	vmGene(pos,iota) = chosenVM; % Modify the vm gene
             	nodeGene(pos,iota) = vnMap.get(vmGene(pos,iota)); % Store the physical node
             	usedInstances(pos,iota) = chosenInstance; % Store the instance
+                vnfCapacityTemp(iota,chosenInstance) = vnfCapacityTemp(iota,chosenInstance)-1; % Decrease the capacity by 1
             else % If the node couldn't be chosen, we need to find another instance
             	%% Step 2 - Find an undeployed instance to deploy on any VM on the chosen node
             	freeVNF = 0;
@@ -251,7 +252,8 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
             			nodeGene(pos,iota) = vnMap.get(vmGene(pos,iota)); % Store the physical node
             			usedInstances(pos,iota) = freeVNF; % Store the instance
             			vmCapacityTemp(chosenVM) = vmCapacityTemp(chosenVM)-1; % Decrease the capacity by 1
-            		else % If no such VM is found or the node is used in previous levels
+            		    vnfCapacityTemp(iota,freeVNF) = vnfCapacityTemp(iota,freeVNF)-1; % Decrease the capacity by 1
+                    else % If no such VM is found or the node is used in previous levels
             			%% Step 3 - Choose the closest free VM to deploy this instance
             			minDistance = Inf; % This will store the minimum distance
             			minDistanceVM = 0; % This will store the VM with the minimum distance
@@ -270,7 +272,8 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
             				nodeGene(pos,iota) = vnMap.get(vmGene(pos,iota)); % Store the physical node
             				usedInstances(pos,iota) = freeVNF; % Store the instance
             				vmCapacityTemp(minDistanceVM) = vmCapacityTemp(minDistanceVM)-1; % Decrease the capacity by 1
-            			end
+            			    vnfCapacityTemp(iota,freeVNF) = vnfCapacityTemp(iota,freeVNF)-1; % Decrease the capacity by 1
+                        end
             		end
             	end
             	if isDeployed ~= 1 % If step 2 and 3 were not successful i.e. either all corresponding instances are deployed or we couldn't find any closest free VM
@@ -279,24 +282,26 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
             		minDistanceInstance = 0;
             		minDistanceVM = 0;
             		for fin = fIndex : fIndex+vnfTypes(chain(pos))-1 % For each instance of the same function
-            			chosenVM = 0;
-            			for vin = 1 : VI % For each VM
-            				if XfviTemp(fin,vin,1) == 1 % If required VM is spotted
-            					chosenVM = vin;
-            					break;
-            				end
-                        end
-            			if (chosenVM ~= 0) && (~failedNodes.contains(vnMap.get(chosenVM)))
-	            			distance = network(vnMap.get(chosenVM),chosenNode);
-	            			if distance < minDistance
-                                if failedNodes.contains(vnMap.get(chosenVM))
-                                    failedNodes.contains(vnMap.get(chosenVM))
-                                end
-                                minDistance = distance;
-	            				minDistanceInstance = fin;
-	            				minDistanceVM = chosenVM;
+                        if vnfCapacityTemp(iota,fin) > 0 % If the VNF instance has more capacity
+            			    chosenVM = 0;
+            			    for vin = 1 : VI % For each VM
+            				    if XfviTemp(fin,vin,1) == 1 % If required VM is spotted
+            					    chosenVM = vin;
+            					    break;
+            				    end
                             end
-	            		end
+            			    if (chosenVM ~= 0) && (~failedNodes.contains(vnMap.get(chosenVM)))
+	            			    distance = network(vnMap.get(chosenVM),chosenNode);
+	            			    if distance < minDistance
+                                    if failedNodes.contains(vnMap.get(chosenVM))
+                                        failedNodes.contains(vnMap.get(chosenVM))
+                                    end
+                                    minDistance = distance;
+	            				    minDistanceInstance = fin;
+	            				    minDistanceVM = chosenVM;
+                                end
+                            end
+                        end
                     end
                     if minDistanceInstance == 0
                         tempVm = 0;
@@ -315,6 +320,7 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
             		    vmGene(pos,iota) = minDistanceVM; % Modify the vm gene
             		    nodeGene(pos,iota) = vnMap.get(vmGene(pos,iota)); % Store the physical node
             		    usedInstances(pos,iota) = minDistanceInstance; % Store the instance
+                        vnfCapacityTemp(iota,minDistanceInstance) = vnfCapacityTemp(iota,minDistanceInstance)-1; % Decrease the capacity by 1
                     end
             	end
             end

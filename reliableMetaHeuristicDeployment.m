@@ -34,15 +34,11 @@ function [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost, r] = relia
     %% Genetic algorithm
     nodeCapacity = zeros(1,N); % This will store the empty slots for the VNFs on the nodes
     vmCapacity = zeros(1,VI); % This will store the empty slots for the VNFs on the VMs
-    vnfCapacity = ones(1,FI); % This will store the capacity of the VNFs in terms of how many SFCs they can serve
     for n = 1 : N % For each node
         nodeCapacity(n) = nodeStatus(n)/vnfCoreRequirement; % Number of cores present in the node divided by the number of cores required by a VNF
     end
     for v = 1 : VI % For each VM instance
         vmCapacity(v) = vmCoreRequirements(vmStatus(v))/vnfCoreRequirement; % Number of cores acquired by a VM divided by the numner of cores required by a VNF
-    end
-    for f = 1 : FI
-        vnfCapacity(f) = ceil(vnfFreq(vnfStatus(f))/vnfTypes(vnfStatus(f))); % Get the ratio which indicates the capacity
     end
     for f = 1 : F % For each VNF type
         fvMap.put(f,ArrayList()); % Add the VNF along with an empty arraylist
@@ -64,6 +60,20 @@ function [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost, r] = relia
     Xfvi = zeros(FI,VI,r); % FIxVI matrix to indicate whether a vnf instance f is deployed on the VM v or not
     Xsfi = zeros(1,FI,r); % SxFI matrix to indicate whether an SFC uses the f instance of VNFs or not
     Xllvi = zeros(1,FI,FI,N,N,r); % 4-D matrix to indicate whether a virtual link uses a physical link or not
+    vnfCapacity = ones(r,FI); % This will store the capacity of the VNFs in terms of how many SFCs they can serve
+    % vnfFreq
+    for f = 1 : FI % For no failure
+        % vnfFreq(vnfStatus(f))
+        % vnfTypes(vnfStatus(f))
+        % vnfFreq(vnfStatus(f))/vnfTypes(vnfStatus(f))
+        vnfCapacity(1,f) = ceil(vnfFreq(vnfStatus(f))/vnfTypes(vnfStatus(f))); % Get the ratio which indicates the capacity
+    end
+    for iota = 2 : r % For failures
+        for f = 1 : FI
+            vnfCapacity(iota,f) = vnfCapacity(iota-1,f); % Copy the capacity
+        end
+    end
+    vnfCapacity
     %{
     %% Code for obtaining plot results
     costStorage = zeros(9);
@@ -160,5 +170,5 @@ function [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost, r] = relia
             end
         end
     end
-    
+    vnfCapacity
 end

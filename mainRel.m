@@ -1,6 +1,6 @@
-clear all
-close all
-clc
+% clear all
+% close all
+% clc
 
 global VMCombination;
 global VMCost;
@@ -34,17 +34,17 @@ import java.util.LinkedList;
 logFileID = fopen('log.txt','wt');
 
 %% Constants and Variables
-costOldGA = zeros(3,100); %%%%%%% UNCOMMENT AT NIGHT
-costNewGA = zeros(3,100); %%%%%%% UNCOMMENT AT NIGHT
+% costOldGA = zeros(3,100); %%%%%%% UNCOMMENT AT NIGHT
+% costNewGA = zeros(3,100); %%%%%%% UNCOMMENT AT NIGHT
 % for loop = 1 : 100
 % sVal = [10 20];
-parfor loop = 1 : 30 %%%%%%% UNCOMMENT AT NIGHT
+% parfor loop = 1 : 30 %%%%%%% UNCOMMENT AT NIGHT
 % loop
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-inputFilePath = 'input/india_35_80/';
-outputFilePath = 'output/india_35_80/';
+inputFilePath = 'input/germany_50_88/';
+outputFilePath = 'output/germany_50_88/';
 fileID = fopen(sprintf("%s%s",inputFilePath,'constants.txt'),'r');
 formatSpecifier = '%f';
 dimension = [1,10];
@@ -224,7 +224,7 @@ end
 % [Xfv, fvMap, vnfStatus] = greedyDeployment(N, VI, F, FI, inputNetwork, vnMap, vmStatus, vmCoreRequirements, vnfTypes) %Greedy algorithm when SFCs are not known
 vnfTypes = zeros(1,F);
 vnfFreq = zeros(1,F);
-while min(vnfTypes) ~= 3
+while min(vnfTypes) ~= 4
 for i = 1 : S
         chain = randperm(F,lengths(i)) % Generate a random permutation as an SFC
         sfcClassData(1,i) = SFC(lengths(i),chain,zeros(1,2),zeros(1,2)); % Store the chain and its length
@@ -245,7 +245,7 @@ end
 vnfTypes
 
 
-
+%{
 %%%%%% UNCOMMENT AT NIGHT
 % tic; % Starts the timer
 % 
@@ -258,7 +258,7 @@ optCost
 costOldGA(:,loop) = optCost;
 % vnfStatus
 % Xsfi
-
+%}
 
 lengths = TreeMap();
 for s = 1 : S
@@ -292,17 +292,17 @@ sfcClassData = sortedSfcClassData;
 
 % fprintf(logFileID,'%f',timer); %This will print the time automatically
 
-costNewGA(:,loop) = optCost; %%%%%%% UNCOMMENT AT NIGHT
-% vnfStatus
-% % Xfvi(:,:,1)
+% costNewGA(:,loop) = optCost; %%%%%%% UNCOMMENT AT NIGHT
+vnfStatus
+% Xfvi(:,:,1)
 % Xsfi
-% degreeSum = zeros(4,FI);
-% for iota = 1 : r
-%     degreeSum(iota,:) = sum(Xsfi(:,:,iota));
-% end
-% degreeSum
+degreeSum = zeros(4,FI);
+for iota = 1 : r
+    degreeSum(iota,:) = sum(Xsfi(:,:,iota));
+end
+degreeSum
 
-
+%{
  %%%%%%% UNCOMMENT AT NIGHT
 end
 costOldGA
@@ -327,7 +327,7 @@ title('Comparison with existing GA (India35)');
 xlabel('Observation number');
 ylabel('Cost');
 legend('Existing GA, r = 0','Existing GA, r = 1','Existing GA, r = 2','Proposed GA, r = 0','Proposed GA, r = 1','Proposed GA, r = 2');
-
+%}
 
 
 %{
