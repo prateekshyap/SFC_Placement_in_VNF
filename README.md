@@ -25,7 +25,7 @@ These files are actively modified and working properly.
 | [SFC](./SFC.m) | 18 | Class for SFCs |
 | [generateNetwork](./generateNetwork.m) | 151 | Function to generate Network for testing |
 | [generateBandwidth](./generateBandwidth) | 14 | Function to generate Network Bandwidths for testing |
-| Total | 2273 |  |
+| Total | 2370 |  |
 
 ## List of potentially usable files
 | File Name | LOC | Purpose | 
@@ -34,7 +34,7 @@ These files are actively modified and working properly.
 | [print](./print.m) | 426 | Sample code to print variables into a file |
 | [findBridges](./findBridges.m) | 51 | Function to find the Bridges in a network |
 | [FileReadTest](./FileReadTest.m) | 408 | Rough File to check new things |
-| Total | 847 |  |
+| Total | 2652 |  |
 
 ## List of outdated files
 These files have not been modified recently. If you want to run them, you might need to change some variable dimensions and function parameters.
@@ -64,7 +64,7 @@ These files have not been modified recently. If you want to run them, you might 
 | [Function](./Function.m) | 5 |  |
 | Total | 2854 |  |
 
-Last updated on: 13-Apr-2023 10:33 AM
+Last updated on: 23-Apr-2023 06:50 PM
 
 ## Input File Formats
 1. **constants.txt** <br>
