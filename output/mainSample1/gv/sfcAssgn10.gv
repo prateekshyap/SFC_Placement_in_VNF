@@ -1,0 +1,148 @@
+digraph G
+{
+ranksep = "equally"
+rankdir = LR
+subgraph sfc
+{
+node [shape=circle]
+{rank = same; f3; };
+{rank = same; f1; };
+{rank = same; f2; };
+f3[style=filled label=<f<SUB>3</SUB>> color="slategray2"]
+f1[style=filled label=<f<SUB>1</SUB>> color="slategray2"]
+f2[style=filled label=<f<SUB>2</SUB>> color="slategray2"]
+f3 -> f1
+f1 -> f2
+}
+subgraph network
+{
+node [shape=none]
+{rank = same; 1; };
+{rank = same; 2; 3; 5; 6; };
+{rank = same; 4; };
+2[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="darkgray">
+<TR><TD PORT="f8" BGCOLOR="slategray2">f<SUB>3</SUB></TD></TR>
+<TR><TD PORT="f15" BGCOLOR="darkgray">f<SUB>5</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+6[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="darkgray">
+<TR><TD PORT="f3" BGCOLOR="slategray2">f<SUB>1</SUB></TD></TR>
+<TR><TD PORT="f12" BGCOLOR="darkgray">f<SUB>4</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+6[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="darkgray">
+<TR><TD PORT="f3" BGCOLOR="slategray2">f<SUB>1</SUB></TD></TR>
+<TR><TD PORT="f12" BGCOLOR="darkgray">f<SUB>4</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+5[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="darkgray">
+<TR><TD PORT="f2" BGCOLOR="lightcoral">f<SUB>1</SUB></TD></TR>
+<TR><TD PORT="f11" BGCOLOR="darkgray">f<SUB>4</SUB></TD></TR>
+</TABLE>
+</TD>
+<TD>
+<TABLE BORDER="0" BGCOLOR="darkgray">
+<TR><TD PORT="f6" BGCOLOR="slategray2">f<SUB>2</SUB></TD></TR>
+<TR><TD PORT="f9" BGCOLOR="lightcoral">f<SUB>3</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+1[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="darkgray">
+<TR><TD PORT="f4" BGCOLOR="tan">f<SUB>2</SUB></TD></TR>
+<TR><TD PORT="f7" BGCOLOR="tan">f<SUB>3</SUB></TD></TR>
+</TABLE>
+</TD>
+<TD>
+<TABLE BORDER="0" BGCOLOR="darkgray">
+<TR><TD PORT="f13" BGCOLOR="darkgray">f<SUB>5</SUB></TD></TR>
+<TR><TD PORT="f18" BGCOLOR="darkgray">f<SUB>6</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+3[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="darkgray">
+<TR><TD PORT="f1" BGCOLOR="tan">f<SUB>1</SUB></TD></TR>
+<TR><TD PORT="f16" BGCOLOR="darkgray">f<SUB>6</SUB></TD></TR>
+</TABLE>
+</TD>
+<TD>
+<TABLE BORDER="0" BGCOLOR="darkgray">
+<TR><TD PORT="f10" BGCOLOR="darkgray">f<SUB>4</SUB></TD></TR>
+<TR><TD PORT="f14" BGCOLOR="darkgray">f<SUB>5</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+4[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="darkgray">
+<TR><TD PORT="f5" BGCOLOR="lightcoral">f<SUB>2</SUB></TD></TR>
+<TR><TD PORT="f17" BGCOLOR="darkgray">f<SUB>6</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+2 -> 1[label="3" color="black" penwidth=2]
+1 -> 6[label="3" color="black" penwidth=2]
+6 -> 5[label="4" color="black" penwidth=2]
+1 -> 3[label="4" color="gray" fontcolor="gray" dir = none]
+1 -> 5[label="1" color="gray" fontcolor="gray" dir = none]
+2 -> 3[label="2" color="gray" fontcolor="gray" dir = none]
+2 -> 5[label="2" color="gray" fontcolor="gray" dir = none]
+3 -> 4[label="1" color="gray" fontcolor="gray" dir = none]
+3 -> 5[label="4" color="gray" fontcolor="gray" dir = none]
+4 -> 5[label="2" color="gray" fontcolor="gray" dir = none]
+4 -> 6[label="3" color="gray" fontcolor="gray" dir = none]
+}
+splines=false
+f3 -> 2[color="slategray3" style=dashed constraint=false]
+f1 -> 6[color="slategray3" style=dashed constraint=false]
+f2 -> 5[color="slategray3" style=dashed constraint=false]
+}

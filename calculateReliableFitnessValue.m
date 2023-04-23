@@ -5,13 +5,14 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
 	XfviTemp = Xfvi; % Create a copy of Xfvi for modification
 	XsfiTemp = Xsfi; % Create a copy of Xsfi for modification
 	XsfiTemp(sIndex,:,:) = zeros(FI,r); % Add a new block for the current SFC
-	XllviTemp = Xllvi; % Create a copy of Xllvi for modification
-	XllviTemp(sIndex,:,:,:,:,:) = zeros(FI,FI,N,N,r); % Add a new matrix for the current SFC
+% 	XllviTemp = Xllvi; % Create a copy of Xllvi for modification
+% 	XllviTemp(sIndex,:,:,:,:,:) = zeros(FI,FI,N,N,r); % Add a new matrix for the current SFC
+    XllviTemp = 0;
 	vmCapacityTemp = vmCapacity; % Create a copy of VM Capacity for modification
 	vnfCapacityTemp = vnfCapacity; % Create a copy of VNF Capacity for modification
 	chain = sfcClassData(sIndex).chain; % Get the current chain
 	chainLength = sfcClassData(sIndex).chainLength; % Get the current chain length
-    usedLinks = zeros(1,chainLength); % To store the sequence of physical nodes
+    usedLinks = zeros(chainLength,r); % To store the sequence of physical nodes
     usedInstances = zeros(chainLength,r); % To store the sequence of function instances
 
     %% No Failure
@@ -39,6 +40,7 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
 			vmGene(pos,1) = chosenVM; % Modify the vm gene (note that it will remain unmodified if already present)
             usedLinks(pos) = vnMap.get(vmGene(pos,1)); % Store the physical node
             nodeGene(pos,1) = vnMap.get(vmGene(pos,1)); % Store the physical node
+            usedLinks(pos,1) = nodeGene(pos,1);
             usedInstances(pos,1) = chosenInstance; % Store the instance number
 			vnfCapacityTemp(1,chosenInstance) = vnfCapacityTemp(1,chosenInstance)-1; % Decrease the capacity
 		else % If the assignment couldn't be done, we need to find another instance and assignment
@@ -76,6 +78,7 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
 					vmGene(pos,1) = chosenVM; % Modify the vm gene (note that it will remain unmodified if already present)
 	                usedLinks(pos) = vnMap.get(vmGene(pos,1)); % Store the physical node
             		nodeGene(pos,1) = vnMap.get(vmGene(pos,1)); % Store the physical node
+                    usedLinks(pos,1) = nodeGene(pos,1);
                     usedInstances(pos,1) = freeVNF; % Store the instance number
 	                vmCapacityTemp(chosenVM) = vmCapacityTemp(chosenVM)-1; % Decrease the capacity
 	                vnfCapacityTemp(1,freeVNF) = vnfCapacityTemp(1,freeVNF)-1; % Decrease the capacity
@@ -98,6 +101,7 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
 					vmGene(pos,1) = minDistanceVM; % Modify the vm gene
                     usedLinks(pos) = vnMap.get(vmGene(pos,1)); % Store the physical node
             		nodeGene(pos,1) = vnMap.get(vmGene(pos,1)); % Store the physical node
+                    usedLinks(pos,1) = nodeGene(pos,1);
                     usedInstances(pos,1) = freeVNF; % Store the instance number
 	                vmCapacityTemp(minDistanceVM) = vmCapacityTemp(minDistanceVM)-1; % Decrease the capacity
 	                vnfCapacityTemp(1,freeVNF) = vnfCapacityTemp(1,freeVNF)-1; % Decrease the capacity
@@ -124,44 +128,30 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
                         end
 					end
                 end
-                % if minDistanceInstance == 0
-                %     tempVm = 0;
-                %     for vin = 1 : VI
-                %         if XfviTemp(fIndex,vin,1) == 1
-                %             tempVm = vin;
-                %             break;
-                %         end
-                %     end
-                %     XsfiTemp(sIndex,fIndex,1) = 1; % Assign
-				%     vmGene(pos,1) = tempVm; % Modify the vm gene
-                %     usedLinks(pos) = vnMap.get(vmGene(pos,1)); % Store the physical node
-            	%     nodeGene(pos,1) = vnMap.get(vmGene(pos,1)); % Store the physical node
-                %     usedInstances(pos,1) = fIndex; % Store the instance number
-                % else
-				    XsfiTemp(sIndex,minDistanceInstance,1) = 1; % Assign
-				    vmGene(pos,1) = minDistanceVM; % Modify the vm gene
-                    usedLinks(pos) = vnMap.get(vmGene(pos,1)); % Store the physical node
-            	    nodeGene(pos,1) = vnMap.get(vmGene(pos,1)); % Store the physical node
-                    usedInstances(pos,1) = minDistanceInstance; % Store the instance number
-                    vnfCapacityTemp(1,minDistanceInstance) = vnfCapacityTemp(1,minDistanceInstance)-1; % Decrease the capacity
-                % end
+			    XsfiTemp(sIndex,minDistanceInstance,1) = 1; % Assign
+			    vmGene(pos,1) = minDistanceVM; % Modify the vm gene
+                usedLinks(pos) = vnMap.get(vmGene(pos,1)); % Store the physical node
+        	    nodeGene(pos,1) = vnMap.get(vmGene(pos,1)); % Store the physical node
+                usedLinks(pos,1) = nodeGene(pos,1);
+                usedInstances(pos,1) = minDistanceInstance; % Store the instance number
+                vnfCapacityTemp(1,minDistanceInstance) = vnfCapacityTemp(1,minDistanceInstance)-1; % Decrease the capacity
 			end
         end
     end
 
     sfcClassData(sIndex).usedLinks = usedLinks; % Store the physical nodes
     sfcClassData(sIndex).usedInstances = usedInstances; % Store the instance indices
-    for e = 1 : chainLength-1 % For each edge in the SFC
-    	startNode = nodeGene(e,1); % Get the source
-    	finalNode = nodeGene(e+1,1); % Get the destination
-        while startNode ~= finalNode % Till we reach the destination
-        	uNode = startNode; % Current node
-        	vNode = nextHop(startNode,finalNode); % Next hop node
-        	XllviTemp(sIndex,usedInstances(e,1),usedInstances(e+1,1),uNode,vNode,1) = 1;
-        	XllviTemp(sIndex,usedInstances(e,1),usedInstances(e+1,1),vNode,uNode,1) = 1;
-        	startNode = nextHop(startNode,finalNode); % Update the start node
-        end
-    end
+%     for e = 1 : chainLength-1 % For each edge in the SFC
+%     	startNode = nodeGene(e,1); % Get the source
+%     	finalNode = nodeGene(e+1,1); % Get the destination
+%         while startNode ~= finalNode % Till we reach the destination
+%         	uNode = startNode; % Current node
+%         	vNode = nextHop(startNode,finalNode); % Next hop node
+%         	XllviTemp(sIndex,usedInstances(e,1),usedInstances(e+1,1),uNode,vNode,1) = 1;
+%         	XllviTemp(sIndex,usedInstances(e,1),usedInstances(e+1,1),vNode,uNode,1) = 1;
+%         	startNode = nextHop(startNode,finalNode); % Update the start node
+%         end
+%     end
 
     %% Failure
     for iota = 2 : r % For the next levels of reliability
@@ -212,6 +202,7 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
             	XsfiTemp(sIndex,chosenInstance,iota) = 1; % This indicates that the chosen instance is going to be assigned as a backup at level iota
             	vmGene(pos,iota) = chosenVM; % Modify the vm gene
             	nodeGene(pos,iota) = vnMap.get(vmGene(pos,iota)); % Store the physical node
+                usedLinks(pos,iota) = nodeGene(pos,iota);
             	usedInstances(pos,iota) = chosenInstance; % Store the instance
                 vnfCapacityTemp(iota,chosenInstance) = vnfCapacityTemp(iota,chosenInstance)-1; % Decrease the capacity by 1
             else % If the node couldn't be chosen, we need to find another instance
@@ -250,6 +241,7 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
             			XsfiTemp(sIndex,freeVNF,iota) = 1; % This indicates that the chosen instance is going to be assigned as a backup at level iota
             			vmGene(pos,iota) = chosenVM; % Modify the vm gene
             			nodeGene(pos,iota) = vnMap.get(vmGene(pos,iota)); % Store the physical node
+                        usedLinks(pos,iota) = nodeGene(pos,iota);
             			usedInstances(pos,iota) = freeVNF; % Store the instance
             			vmCapacityTemp(chosenVM) = vmCapacityTemp(chosenVM)-1; % Decrease the capacity by 1
             		    vnfCapacityTemp(iota,freeVNF) = vnfCapacityTemp(iota,freeVNF)-1; % Decrease the capacity by 1
@@ -270,6 +262,7 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
             				XsfiTemp(sIndex,freeVNF,iota) = 1; % This indicates that the chosen instance is going to be assigned as a backup at level iota
             				vmGene(pos,iota) = minDistanceVM; % Modify the vm gene
             				nodeGene(pos,iota) = vnMap.get(vmGene(pos,iota)); % Store the physical node
+                            usedLinks(pos,iota) = nodeGene(pos,iota);
             				usedInstances(pos,iota) = freeVNF; % Store the instance
             				vmCapacityTemp(minDistanceVM) = vmCapacityTemp(minDistanceVM)-1; % Decrease the capacity by 1
             			    vnfCapacityTemp(iota,freeVNF) = vnfCapacityTemp(iota,freeVNF)-1; % Decrease the capacity by 1
@@ -314,50 +307,53 @@ function [cost, nodeGene, vmGene, XfviTemp, XsfiTemp, XllviTemp, sfcClassData, v
                         XsfiTemp(sIndex,fIndex,iota) = 1; % Assign
 				        vmGene(pos,iota) = tempVm; % Modify the vm gene
             	        nodeGene(pos,iota) = vnMap.get(vmGene(pos,iota)); % Store the physical node
+                        usedLinks(pos,iota) = nodeGene(pos,iota);
                         usedInstances(pos,iota) = fIndex; % Store the instance number
                     else
         			    XsfiTemp(sIndex,minDistanceInstance,iota) = 1; % This indicates that the chosen instance is going to be assigned as a backup at level iota
             		    vmGene(pos,iota) = minDistanceVM; % Modify the vm gene
             		    nodeGene(pos,iota) = vnMap.get(vmGene(pos,iota)); % Store the physical node
             		    usedInstances(pos,iota) = minDistanceInstance; % Store the instance
+                        usedLinks(pos,iota) = nodeGene(pos,iota);
                         vnfCapacityTemp(iota,minDistanceInstance) = vnfCapacityTemp(iota,minDistanceInstance)-1; % Decrease the capacity by 1
                     end
             	end
             end
         end
+        sfcClassData(sIndex).usedLinks = usedLinks;
     	sfcClassData(sIndex).usedInstances = usedInstances;
-    	for e = 1 : chainLength-1 % For each edge in the SFC
-    		startNode = 0;
-    		finalNode = nodeGene(e,iota);
-    		for l = 1 : iota % For each level
-    			startNode = finalNode; % It will start from the previous final node
-    			finalNode = nodeGene(e+1,l); % Next final node will be the node that was the l level node
-    			while startNode ~= finalNode % Till we reach the destination
-    				uNode = startNode; % Current node
-    				vNode = nextHop(startNode,finalNode); % Next hop node
-    				XllviTemp(sIndex,usedInstances(e,iota),usedInstances(e+1,iota),uNode,vNode,iota) = 1;
-    				XllviTemp(sIndex,usedInstances(e,iota),usedInstances(e+1,iota),vNode,uNode,iota) = 1;
-    				startNode = nextHop(startNode,finalNode); % Update the start node
-    			end
-    		end
-	    end
+%     	for e = 1 : chainLength-1 % For each edge in the SFC
+%     		startNode = 0;
+%     		finalNode = nodeGene(e,iota);
+%     		for l = 1 : iota % For each level
+%     			startNode = finalNode; % It will start from the previous final node
+%     			finalNode = nodeGene(e+1,l); % Next final node will be the node that was the l level node
+%     			while startNode ~= finalNode % Till we reach the destination
+%     				uNode = startNode; % Current node
+%     				vNode = nextHop(startNode,finalNode); % Next hop node
+%     				XllviTemp(sIndex,usedInstances(e,iota),usedInstances(e+1,iota),uNode,vNode,iota) = 1;
+%     				XllviTemp(sIndex,usedInstances(e,iota),usedInstances(e+1,iota),vNode,uNode,iota) = 1;
+%     				startNode = nextHop(startNode,finalNode); % Update the start node
+%     			end
+%     		end
+% 	    end
     end
 
-    if isFinal == 1
-        cost = zeros(1,r);
-        for iota = 1 : r
-    
-	        y1 = y1Rel(N, VI, FI, Cvn, Xvn, Cfv, XfviTemp, vmStatus, vnfStatus);
-	        y2 = y2Rel(VI, FI, iota, sIndex, lambda, delta, mu, XfviTemp, XsfiTemp, vnfStatus, sfcClassData, rhoNode, rhoVm, rhoVnf);
-	        y3 = y3Rel(N, FI, L, iota, sIndex, medium, inputNetwork, bandwidths, XllviTemp, rhoNode, rhoVm, rhoVnf);
-        
-	        cost(iota) = alpha*y1+(1-alpha)*(y2+y3);
-        end
-    else
-        y1 = y1Rel(N, VI, FI, Cvn, Xvn, Cfv, XfviTemp, vmStatus, vnfStatus);
-        y2 = y2Rel(VI, FI, r, sIndex, lambda, delta, mu, XfviTemp, XsfiTemp, vnfStatus, sfcClassData, rhoNode, rhoVm, rhoVnf);
-        y3 = y3Rel(N, FI, L, r, sIndex, medium, inputNetwork, bandwidths, XllviTemp, rhoNode, rhoVm, rhoVnf);
+%     if isFinal == 1
+%         cost = zeros(1,r);
+%         for iota = 1 : r
+%     
+% 	        y1 = y1Rel(N, VI, FI, Cvn, Xvn, Cfv, XfviTemp, vmStatus, vnfStatus, isFinal);
+% 	        y2 = y2Rel(VI, FI, iota, sIndex, lambda, delta, mu, XfviTemp, XsfiTemp, vnfStatus, sfcClassData, rhoNode, rhoVm, rhoVnf, isFinal);
+% 	        y3 = y3Rel(N, FI, L, iota, sIndex, medium, inputNetwork, nextHop, bandwidths, rhoNode, rhoVm, rhoVnf, sfcClassData, isFinal);
+%         
+% 	        cost(iota) = alpha*y1+(1-alpha)*(y2+y3);
+%         end
+%     else
+        y1 = y1Rel(N, VI, FI, Cvn, Xvn, Cfv, XfviTemp, vmStatus, vnfStatus, isFinal);
+        y2 = y2Rel(VI, FI, r, sIndex, lambda, delta, mu, XfviTemp, XsfiTemp, vnfStatus, sfcClassData, rhoNode, rhoVm, rhoVnf, isFinal);
+        y3 = y3Rel(N, FI, L, r, sIndex, medium, inputNetwork, nextHop, bandwidths, rhoNode, rhoVm, rhoVnf, sfcClassData, isFinal);
     
         cost = alpha*y1+(1-alpha)*(y2+y3);
-    end
+%     end
 end

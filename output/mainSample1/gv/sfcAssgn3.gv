@@ -6,10 +6,19 @@ subgraph sfc
 {
 node [shape=circle]
 {rank = same; f2; };
+{rank = same; f4; };
+{rank = same; f6; };
+{rank = same; f3; };
 {rank = same; f5; };
 f2[style=filled label=<f<SUB>2</SUB>> color="slategray2"]
+f4[style=filled label=<f<SUB>4</SUB>> color="slategray2"]
+f6[style=filled label=<f<SUB>6</SUB>> color="slategray2"]
+f3[style=filled label=<f<SUB>3</SUB>> color="slategray2"]
 f5[style=filled label=<f<SUB>5</SUB>> color="slategray2"]
-f2 -> f5
+f2 -> f4
+f4 -> f6
+f6 -> f3
+f3 -> f5
 }
 subgraph network
 {
@@ -17,75 +26,20 @@ node [shape=none]
 {rank = same; 1; };
 {rank = same; 2; 3; 5; 6; };
 {rank = same; 4; };
-6[style=filled
-label=<
-<TABLE BORDER="0" BGCOLOR="gray">
-<TR>
-<TD>
-<TABLE BORDER="0" BGCOLOR="darkgray">
-<TR><TD PORT="f3" BGCOLOR="darkgray">f<SUB>1</SUB></TD></TR>
-</TABLE>
-</TD>
-<TD>
-<TABLE BORDER="0" BGCOLOR="darkgray">
-<TR><TD PORT="f4" BGCOLOR="darkgray">f<SUB>2</SUB></TD></TR>
-</TABLE>
-</TD>
-<TD>
-<TABLE BORDER="0" BGCOLOR="darkgray">
-<TR><TD PORT="f5" BGCOLOR="slategray2">f<SUB>2</SUB></TD></TR>
-</TABLE>
-</TD>
-<TD>
-<TABLE BORDER="0" BGCOLOR="darkgray">
-<TR><TD PORT="f6" BGCOLOR="darkgray">f<SUB>3</SUB></TD></TR>
-</TABLE>
-</TD>
-</TR>
-</TABLE>>]
-
-4[style=filled
-label=<
-<TABLE BORDER="0" BGCOLOR="gray">
-<TR>
-<TD>
-<TABLE BORDER="0" BGCOLOR="darkgray">
-<TR><TD PORT="f13" BGCOLOR="darkgray">f<SUB>5</SUB></TD></TR>
-<TR><TD PORT="f14" BGCOLOR="slategray2">f<SUB>5</SUB></TD></TR>
-</TABLE>
-</TD>
-<TD>
-<TABLE BORDER="0" BGCOLOR="darkgray">
-<TR><TD PORT="f15" BGCOLOR="darkgray">f<SUB>5</SUB></TD></TR>
-<TR><TD PORT="f16" BGCOLOR="darkgray">f<SUB>6</SUB></TD></TR>
-</TABLE>
-</TD>
-</TR>
-</TABLE>>]
-
 1[style=filled
 label=<
 <TABLE BORDER="0" BGCOLOR="gray">
 <TR>
 <TD>
 <TABLE BORDER="0" BGCOLOR="darkgray">
-<TR><TD PORT="f7" BGCOLOR="darkgray">f<SUB>3</SUB></TD></TR>
-<TR><TD PORT="f8" BGCOLOR="darkgray">f<SUB>3</SUB></TD></TR>
+<TR><TD PORT="f4" BGCOLOR="slategray2">f<SUB>2</SUB></TD></TR>
+<TR><TD PORT="f7" BGCOLOR="slategray2">f<SUB>3</SUB></TD></TR>
 </TABLE>
 </TD>
-</TR>
-</TABLE>>]
-
-2[style=filled
-label=<
-<TABLE BORDER="0" BGCOLOR="gray">
-<TR>
 <TD>
 <TABLE BORDER="0" BGCOLOR="darkgray">
-<TR><TD PORT="f19" BGCOLOR="darkgray">f<SUB>7</SUB></TD></TR>
-<TR><TD PORT="f20" BGCOLOR="darkgray">f<SUB>7</SUB></TD></TR>
-<TR><TD PORT="f21" BGCOLOR="darkgray">f<SUB>8</SUB></TD></TR>
-<TR><TD PORT="f22" BGCOLOR="darkgray">f<SUB>8</SUB></TD></TR>
+<TR><TD PORT="f13" BGCOLOR="tan">f<SUB>5</SUB></TD></TR>
+<TR><TD PORT="f18" BGCOLOR="lightcoral">f<SUB>6</SUB></TD></TR>
 </TABLE>
 </TD>
 </TR>
@@ -97,14 +51,84 @@ label=<
 <TR>
 <TD>
 <TABLE BORDER="0" BGCOLOR="darkgray">
-<TR><TD PORT="f9" BGCOLOR="darkgray">f<SUB>4</SUB></TD></TR>
-<TR><TD PORT="f10" BGCOLOR="darkgray">f<SUB>4</SUB></TD></TR>
+<TR><TD PORT="f1" BGCOLOR="darkgray">f<SUB>1</SUB></TD></TR>
+<TR><TD PORT="f16" BGCOLOR="slategray2">f<SUB>6</SUB></TD></TR>
 </TABLE>
 </TD>
 <TD>
 <TABLE BORDER="0" BGCOLOR="darkgray">
-<TR><TD PORT="f11" BGCOLOR="darkgray">f<SUB>4</SUB></TD></TR>
-<TR><TD PORT="f12" BGCOLOR="darkgray">f<SUB>4</SUB></TD></TR>
+<TR><TD PORT="f10" BGCOLOR="slategray2">f<SUB>4</SUB></TD></TR>
+<TR><TD PORT="f14" BGCOLOR="lightcoral">f<SUB>5</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+3[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="darkgray">
+<TR><TD PORT="f1" BGCOLOR="darkgray">f<SUB>1</SUB></TD></TR>
+<TR><TD PORT="f16" BGCOLOR="slategray2">f<SUB>6</SUB></TD></TR>
+</TABLE>
+</TD>
+<TD>
+<TABLE BORDER="0" BGCOLOR="darkgray">
+<TR><TD PORT="f10" BGCOLOR="slategray2">f<SUB>4</SUB></TD></TR>
+<TR><TD PORT="f14" BGCOLOR="lightcoral">f<SUB>5</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+3[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="darkgray">
+<TR><TD PORT="f1" BGCOLOR="darkgray">f<SUB>1</SUB></TD></TR>
+<TR><TD PORT="f16" BGCOLOR="slategray2">f<SUB>6</SUB></TD></TR>
+</TABLE>
+</TD>
+<TD>
+<TABLE BORDER="0" BGCOLOR="darkgray">
+<TR><TD PORT="f10" BGCOLOR="slategray2">f<SUB>4</SUB></TD></TR>
+<TR><TD PORT="f14" BGCOLOR="lightcoral">f<SUB>5</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+1[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="darkgray">
+<TR><TD PORT="f4" BGCOLOR="slategray2">f<SUB>2</SUB></TD></TR>
+<TR><TD PORT="f7" BGCOLOR="slategray2">f<SUB>3</SUB></TD></TR>
+</TABLE>
+</TD>
+<TD>
+<TABLE BORDER="0" BGCOLOR="darkgray">
+<TR><TD PORT="f13" BGCOLOR="tan">f<SUB>5</SUB></TD></TR>
+<TR><TD PORT="f18" BGCOLOR="lightcoral">f<SUB>6</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+2[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="darkgray">
+<TR><TD PORT="f8" BGCOLOR="lightcoral">f<SUB>3</SUB></TD></TR>
+<TR><TD PORT="f15" BGCOLOR="slategray2">f<SUB>5</SUB></TD></TR>
 </TABLE>
 </TD>
 </TR>
@@ -116,26 +140,48 @@ label=<
 <TR>
 <TD>
 <TABLE BORDER="0" BGCOLOR="darkgray">
-<TR><TD PORT="f17" BGCOLOR="darkgray">f<SUB>6</SUB></TD></TR>
-<TR><TD PORT="f18" BGCOLOR="darkgray">f<SUB>6</SUB></TD></TR>
-</TABLE>
-</TD>
-<TD>
-<TABLE BORDER="0" BGCOLOR="darkgray">
-<TR><TD PORT="f1" BGCOLOR="darkgray">f<SUB>1</SUB></TD></TR>
-</TABLE>
-</TD>
-<TD>
-<TABLE BORDER="0" BGCOLOR="darkgray">
 <TR><TD PORT="f2" BGCOLOR="darkgray">f<SUB>1</SUB></TD></TR>
+<TR><TD PORT="f11" BGCOLOR="tan">f<SUB>4</SUB></TD></TR>
+</TABLE>
+</TD>
+<TD>
+<TABLE BORDER="0" BGCOLOR="darkgray">
+<TR><TD PORT="f6" BGCOLOR="lightcoral">f<SUB>2</SUB></TD></TR>
+<TR><TD PORT="f9" BGCOLOR="tan">f<SUB>3</SUB></TD></TR>
 </TABLE>
 </TD>
 </TR>
 </TABLE>>]
 
-6 -> 4[label="3" color="black" penwidth=2]
-1 -> 2[label="3" color="gray" fontcolor="gray" dir = none]
-1 -> 3[label="4" color="gray" fontcolor="gray" dir = none]
+6[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="darkgray">
+<TR><TD PORT="f3" BGCOLOR="darkgray">f<SUB>1</SUB></TD></TR>
+<TR><TD PORT="f12" BGCOLOR="lightcoral">f<SUB>4</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+4[style=filled
+label=<
+<TABLE BORDER="0" BGCOLOR="gray">
+<TR>
+<TD>
+<TABLE BORDER="0" BGCOLOR="darkgray">
+<TR><TD PORT="f5" BGCOLOR="tan">f<SUB>2</SUB></TD></TR>
+<TR><TD PORT="f17" BGCOLOR="tan">f<SUB>6</SUB></TD></TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>>]
+
+1 -> 3[label="4" color="black" penwidth=2]
+3 -> 1[label="4" color="black" penwidth=2]
+1 -> 2[label="3" color="black" penwidth=2]
 1 -> 5[label="1" color="gray" fontcolor="gray" dir = none]
 1 -> 6[label="3" color="gray" fontcolor="gray" dir = none]
 2 -> 3[label="2" color="gray" fontcolor="gray" dir = none]
@@ -143,9 +189,13 @@ label=<
 3 -> 4[label="1" color="gray" fontcolor="gray" dir = none]
 3 -> 5[label="4" color="gray" fontcolor="gray" dir = none]
 4 -> 5[label="2" color="gray" fontcolor="gray" dir = none]
+4 -> 6[label="3" color="gray" fontcolor="gray" dir = none]
 5 -> 6[label="4" color="gray" fontcolor="gray" dir = none]
 }
 splines=false
-f2 -> 6[color="slategray3" style=dashed constraint=false]
-f5 -> 4[color="slategray3" style=dashed constraint=false]
+f2 -> 1[color="slategray3" style=dashed constraint=false]
+f4 -> 3[color="slategray3" style=dashed constraint=false]
+f6 -> 3[color="slategray3" style=dashed constraint=false]
+f3 -> 1[color="slategray3" style=dashed constraint=false]
+f5 -> 2[color="slategray3" style=dashed constraint=false]
 }

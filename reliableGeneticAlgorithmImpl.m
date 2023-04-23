@@ -66,18 +66,19 @@ function [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmI
             vmPop(:,:) = vmChildren(cin,:,:);
             [childrenFitnessValues(cin),nodeChildren(cin,:,:),vmChildren(cin,:,:),t1,t2,t3,t4,t5,t6] = calculateReliableFitnessValue(N, VI, F, FI, L, alpha, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, sIndex, nodePop, vmPop, r, nodeClassData, rhoNode, rhoVm, rhoVnf, 0); % Find out the fitness value and store it
         end
-
+        %{
         if execType == 1
         % Uncomment this block when you're executing this algorithm with uniform crossover
         childrenFitnessValues(3) = Inf;
         childrenFitnessValues(4) = Inf;
 		%}
         end
-
+		%}
         [childrenFitnessValues, nodeChildren, vmChildren] = getSortedChildrenRel(childrenFitnessValues, nodeChildren, vmChildren, C, chainLength, r); % Sort the children in ascending order of their fitness values
 
    		% Check for uniqueness of the child genes
    		uniqueChildren = ones(1,C); % By default each child is unique
+   		%{
    		if execType == 1
         % Uncomment this block when you're executing this algorithm with uniform crossover
         uniqueChildren(3) = 0;
@@ -236,7 +237,7 @@ function [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmI
 			else
 				fprintf('%d\n',percent);
 			end
-		end
+        end
    	end
     
    	optCost = fitnessValues(bestIndex); % Store the best fitness value

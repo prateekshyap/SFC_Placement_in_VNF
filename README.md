@@ -7,19 +7,19 @@ These files are actively modified and working properly.
 
 | File Name | LOC | Purpose | 
 | :--------: | :--------: | :--------: | 
-| [main](./main.m) | 593 | Driver File |
+| [mainRel](./mainRel.m) | 609 | Driver File |
 | [greedyHosting](./greedyHosting.m) | 59 | Function to host the VMs |
-| [generateVNFData](./generateVNFData.m) | 110 | Function to generate the VNF data before Deployment |
-| [reliableMetaHeuristicDeployment](./reliableMetaHeuristicDeployment.m) | 158 | Meta Heuristic Deployment with Reliability |
+| [generateVNFData](./generateVNFData.m) | 100 | Function to generate the VNF data before Deployment |
+| [reliableMetaHeuristicDeployment](./reliableMetaHeuristicDeployment.m) | 181 | Meta Heuristic Deployment with Reliability |
 | [reliableGeneticAlgorithm](./reliableGeneticAlgorithmImpl.m) | 245 | Genetic Algorithm with Reliability |
 | [generatePopulation](./generatePopulation.m) | 57 | Function to generate the initial population with Reliability |
 | [crossoverRel](./crossoverRel.m) | 294 | Hybrid Offspring Formation Algorithm with Reliability |
 | [getSortedChildrenRel](./getSortedChildrenRel.m) | 65 | Function to sort the offsprings with Reliability |
-| [calculateReliableFitnessValue](./calculateReliableFitnessValue.m) | 346 | Function to adjust the chromosomes in Genetic Algorithm with Reliability |
+| [calculateReliableFitnessValue](./calculateReliableFitnessValue.m) | 359 | Function to adjust the chromosomes in Genetic Algorithm with Reliability |
 | [allPairShortestPath](./allPairShortestPath.m) | 39 | Floyd-Warshall Algorithm |
 | [y1Rel](./y1Rel.m) | 13 | Function to calculate y1 with Reliability|
-| [y2Rel](./y2Rel.m) | 46 | Function to calculate y2 with Reliability|
-| [y3Rel](./y3Rel.m) | 37 | Function to calculate y3 with Reliability|
+| [y2Rel](./y2Rel.m) | 52 | Function to calculate y2 with Reliability|
+| [y3Rel](./y3Rel.m) | 86 | Function to calculate y3 with Reliability|
 | [Node](./Node.m) | 14 | Class for Physical Nodes |
 | [VM](./VM.m) | 14 | Class for VMs |
 | [SFC](./SFC.m) | 18 | Class for SFCs |
@@ -30,8 +30,8 @@ These files are actively modified and working properly.
 ## List of potentially usable files
 | File Name | LOC | Purpose | 
 | :--------: | :--------: | :--------: | 
-| [plotTemp](./plotTemp.m) | 23 | Rough File to generate plots |
-| [print](./print.m) | 365 | Sample code to print variables into a file |
+| [plotTemp](./plotTemp.m) | 1767 | Rough File to generate plots |
+| [print](./print.m) | 426 | Sample code to print variables into a file |
 | [findBridges](./findBridges.m) | 51 | Function to find the Bridges in a network |
 | [FileReadTest](./FileReadTest.m) | 408 | Rough File to check new things |
 | Total | 847 |  |
@@ -42,6 +42,7 @@ These files have not been modified recently. If you want to run them, you might 
 | File Name | LOC | Purpose | 
 | :--------: | :--------: | :--------: | 
 | [sampleNetworks](./sampleNetworks.m) | 1219 | Old Driver File |
+| [main](./main.m) | 1219 | Old Driver File |
 | [VMHost](./VMHost.m) | 53 | Sequential VM Hosting |
 | [VNFDeploy](./VNFDeploy.m) | 50 | Sequential VNF Deployment |
 | [greedyDeployment](./greedyDeployment.m) | 7 | Function to deploy the VNFs |
@@ -107,14 +108,14 @@ Cost matrix of deploying VNFs on VMs.
 12. **GAPar.txt** <br>
 Parameters for Genetic Algorithm.
 
-## main.m
+## mainRel.m
 Execution starts from this file.
-1. At **line number - 34** log file is opened. You can copy the print statements from [print](./print.m) file to other files and the corresponding results will be stored in the log file.
+1. At **line number - 41** log file is opened. You can copy the print statements from [print](./print.m) file to other files and the corresponding results will be stored in the log file.
 2. You can change the input and output file paths at **line number - 45** and **46**. This change should be done according to the network being chosen. Note that some of the network input data are incomplete. Take the files with a pinch of salt.
-3. You can change the number of SFCs at **line number - 168**.
-4. You can change or add VM hosting strategies at **line number - 200**.
-5. You can change or add VNF deployment strategies at **line number - 219**.
-6. Image generation is done at **line number - 319**. Graphviz files are generated for the network and the SFC assignments.
+3. You can change the number of SFCs at **line number - 167**.
+4. You can change or add VM hosting strategies at **line number - 199**.
+5. You can change or add VNF deployment strategies at **line number - 220**.
+6. Image generation is done at **line number - 335**. Graphviz files are generated for the network and the SFC assignments.
 
 ## greedyHosting.m
 It uses a greedy backtracking approach to host the VMs on the physical network ensuring cost minimization.
@@ -123,10 +124,19 @@ It uses a greedy backtracking approach to host the VMs on the physical network e
 This file generates the number of VNF instances required for each VNF according to the given set of SFCs. There are two strategies i.e. **random increment with floor function** and **strategic decrement with round function**. You can comment and uncomment the respective blocks to change the strategy.
 
 ## reliableMetaHeuristicDeployment.m
-This is the parent file that calls [Reliable Genetic Algorithm](./reliableGeneticAlgorithm.m) for each SFC. You can change the capacity calculation strategies at **line number - 34**. You can set the GA parameters at **line number - 51**. There are different blocks of code to get the results. You can comment and uncomment them according to the requirement.
+This is the parent file that calls [Reliable Genetic Algorithm](./reliableGeneticAlgorithm.m) for each SFC.
+1. You can change the capacity calculation strategies at **line number - 33**.
+2. You can set the GA parameters at **line number - 46**.
+There are different blocks of code to get the results. You can comment and uncomment them according to the requirement.
 
 ## reliableGeneticAlgorithmImpl.m
-This file contains the implementation of Genetic Algorithm. You can set the total number of offsprings at **line number - 19**. Note that this step will break the entire code writen further. Please change the logic accordingly. Initial population generation is done at **line number - 21**. Offspring formation is done at **line number - 57**. You should uncomment the blocks at **line number - 71** and **81** when you are executing GA with uniform crossover. Mutagenesis is performed at **line number - 153**. Progress bar implementation is done at **line number - 218**.
+This file contains the implementation of Genetic Algorithm.
+1. You can set the total number of offsprings at **line number - 19**. Note that this step will break the entire code writen further. Please change the logic accordingly.
+2. Initial population generation is done at **line number - 21**.
+3. Offspring formation is done at **line number - 57**.
+4. You should uncomment the blocks at **line number - 70** and **81** when you are executing GA with uniform crossover.
+5. Mutagenesis is performed at **line number - 156**.
+6. Progress bar implementation is done at **line number - 221**.
 
 ## generatePopulation.m
 This file contains the code to generate the initial node and VM population.
@@ -138,7 +148,7 @@ This file contains different crossover and offspring generation strategies namel
 This file contains the code to sort the offsprings in increasing order according to their fitness values.
 
 ## calculateReliableFitnessValue.m
-This file adjusts the chromosomes before calculating the fitness value. Objective function is calculated at **line number - 344**.
+This file adjusts the chromosomes before calculating the fitness value. Objective function is calculated at **line number - 357**.
 
 ## y1Rel.m - y3Rel.m
 These files calculate the fitness value. For more details please refer to the [report](./report.pdf).

@@ -1,6 +1,6 @@
-% clear all
-% close all
-% clc
+clear all
+close all
+clc
 
 global VMCombination;
 global VMCost;
@@ -24,6 +24,13 @@ global isBridge;
 global time;
 global costStorage;
 global timeStorage;
+global y1Yet;
+global y2Yet;
+global y3Yet;
+
+y1Yet = 0;
+y2Yet = 0;
+y3Yet = 0;
 
 import java.util.TreeMap;
 import java.util.HashSet;
@@ -32,19 +39,11 @@ import java.util.LinkedList;
 
 %% Data Generation File
 logFileID = fopen('log.txt','wt');
-
-%% Constants and Variables
-% costOldGA = zeros(3,100); %%%%%%% UNCOMMENT AT NIGHT
-% costNewGA = zeros(3,100); %%%%%%% UNCOMMENT AT NIGHT
-% for loop = 1 : 100
-% sVal = [10 20];
-% parfor loop = 1 : 30 %%%%%%% UNCOMMENT AT NIGHT
-% loop
+% parfor loop = 1 : 100
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-inputFilePath = 'input/germany_50_88/';
-outputFilePath = 'output/germany_50_88/';
+inputFilePath = 'input/newyork_16_49/';
+outputFilePath = 'output/newyork_16_49/';
 fileID = fopen(sprintf("%s%s",inputFilePath,'constants.txt'),'r');
 formatSpecifier = '%f';
 dimension = [1,10];
@@ -83,7 +82,6 @@ fclose(fileID);
 %% Generating Network Data
 % [inputNetwork] = generateNetwork(N,126);
 
-
 % for i = 1 : N
 %     for j = 1 : N
 %         if inputNetwork(i,j) ~= inputNetwork(j,i)
@@ -92,7 +90,7 @@ fclose(fileID);
 %     end
 % end
 
-[network,nextHop] = allPairShortestPath(N,inputNetwork); %Floyd-Warshall
+[network,nextHop] = allPairShortestPath(N,inputNetwork); % Floyd-Warshall
 [bridgeStatus] = findBridges(N,inputNetwork); % Find bridge status for all edges in the network
 
 %% Reading Network Data
@@ -224,7 +222,9 @@ end
 % [Xfv, fvMap, vnfStatus] = greedyDeployment(N, VI, F, FI, inputNetwork, vnMap, vmStatus, vmCoreRequirements, vnfTypes) %Greedy algorithm when SFCs are not known
 vnfTypes = zeros(1,F);
 vnfFreq = zeros(1,F);
-while min(vnfTypes) ~= 4
+%{
+%% Keep a minimum number of instances and this value will become r next time
+while min(vnfTypes) ~= 3
 for i = 1 : S
         chain = randperm(F,lengths(i)) % Generate a random permutation as an SFC
         sfcClassData(1,i) = SFC(lengths(i),chain,zeros(1,2),zeros(1,2)); % Store the chain and its length
@@ -243,10 +243,9 @@ mu = ones(1,F);
 end
 
 vnfTypes
-
+%}
 
 %{
-%%%%%% UNCOMMENT AT NIGHT
 % tic; % Starts the timer
 % 
 % % [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = bruteForceDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement);
@@ -260,6 +259,7 @@ costOldGA(:,loop) = optCost;
 % Xsfi
 %}
 
+%% SFC Sorting according to length
 lengths = TreeMap();
 for s = 1 : S
     chainLength = sfcClassData(s).chainLength;
@@ -292,43 +292,21 @@ sfcClassData = sortedSfcClassData;
 
 % fprintf(logFileID,'%f',timer); %This will print the time automatically
 
+% optCost
 % costNewGA(:,loop) = optCost; %%%%%%% UNCOMMENT AT NIGHT
-vnfStatus
-% Xfvi(:,:,1)
-% Xsfi
-degreeSum = zeros(4,FI);
-for iota = 1 : r
-    degreeSum(iota,:) = sum(Xsfi(:,:,iota));
-end
-degreeSum
+% vnfStatus
+% % Xfvi(:,:,1)
+% % Xsfi
+% degreeSum = zeros(3,FI);
+% for iota = 1 : r
+%     degreeSum(iota,:) = sum(Xsfi(:,:,iota));
+% end
+% degreeSum
 
 %{
- %%%%%%% UNCOMMENT AT NIGHT
+loop
 end
-costOldGA
-costNewGA
-
-costOldGA = sortrows(costOldGA',3)';
-costNewGA = sortrows(costNewGA',3)';
-
-figure;
-plot(1:1:30,costOldGASmall(1,71:100));
-hold on;
-plot(1:1:30,costOldGASmall(2,71:100));
-hold on;
-plot(1:1:30,costOldGASmall(3,71:100));
-hold on;
-plot(1:1:30,costNewGASmall(1,71:100));
-hold on;
-plot(1:1:30,costNewGASmall(2,71:100));
-hold on;
-plot(1:1:30,costNewGASmall(3,71:100));
-title('Comparison with existing GA (India35)');
-xlabel('Observation number');
-ylabel('Cost');
-legend('Existing GA, r = 0','Existing GA, r = 1','Existing GA, r = 2','Proposed GA, r = 0','Proposed GA, r = 1','Proposed GA, r = 2');
 %}
-
 
 %{
 %% Arary to store all VM objects
@@ -345,21 +323,6 @@ for i = 1 : VI %for each VM instance
     end
     vmClassData(1,i) = VM(vnfCount(1,i),vnfs); %create the VM object
 end
-
-%% SFC assignment on the network
-% [Xsf, sfcClassData] = SFCAssign(F, FI, S, vnfTypes, sfcClassData, fvMap, vnMap);
-
-% % Binary Variables
-% Xfvi = Xfv; % for iota 0, this new binary variable boils down to the existing binary variable indicating the VNF deployment
-% Xski = Xsf; % for iota 0, this new binary vairable boils down to the existing binary variable indicating the SFC assignment
-% 
-% fprintf('\n');
-% fprintf('------------------------------------------Costs------------------------------------------\n');
-% y1 = getY1(N, VI, FI, Cvn, Xvn, Cfv, Xfv, vmStatus, vnfStatus)
-% y2 = getY2(VI, F, FI, S, lambda, delta, mu, Xfvi, Xski, vnfStatus)
-% y3 = getY3(L, S, medium, network, bandwidths, nextHop, sfcClassData)
-% y1+y2+y3
-
 
 % end
 
@@ -641,6 +604,6 @@ end
 fileID = fopen(sprintf("%s%s",outputFilePath,'commands.bat'),'w+');
 fprintf(fileID,"%s",commands);
 fclose(fileID);
-
 %}
+
 % end

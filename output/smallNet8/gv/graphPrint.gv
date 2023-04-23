@@ -12,10 +12,14 @@ label=<
 <TR>
 <TD>
 <TABLE BORDER="0" BGCOLOR="lightblue">
-<TR><TD PORT="f4" BGCOLOR="lightblue">f<SUB>2</SUB></TD></TR>
-<TR><TD PORT="f5" BGCOLOR="lightblue">f<SUB>3</SUB></TD></TR>
-<TR><TD PORT="f6" BGCOLOR="lightblue">f<SUB>3</SUB></TD></TR>
-<TR><TD PORT="f11" BGCOLOR="lightblue">f<SUB>5</SUB></TD></TR>
+<TR><TD PORT="f1" BGCOLOR="lightblue">f<SUB>1</SUB></TD></TR>
+<TR><TD PORT="f10" BGCOLOR="lightblue">f<SUB>4</SUB></TD></TR>
+</TABLE>
+</TD>
+<TD>
+<TABLE BORDER="0" BGCOLOR="lightgreen">
+<TR><TD PORT="f5" BGCOLOR="lightgreen">f<SUB>2</SUB></TD></TR>
+<TR><TD PORT="f14" BGCOLOR="lightgreen">f<SUB>5</SUB></TD></TR>
 </TABLE>
 </TD>
 </TR>
@@ -27,8 +31,8 @@ label=<
 <TR>
 <TD>
 <TABLE BORDER="0" BGCOLOR="lightblue">
-<TR><TD PORT="f7" BGCOLOR="lightblue">f<SUB>4</SUB></TD></TR>
-<TR><TD PORT="f9" BGCOLOR="lightblue">f<SUB>5</SUB></TD></TR>
+<TR><TD PORT="f4" BGCOLOR="lightblue">f<SUB>2</SUB></TD></TR>
+<TR><TD PORT="f13" BGCOLOR="lightblue">f<SUB>5</SUB></TD></TR>
 </TABLE>
 </TD>
 </TR>
@@ -40,7 +44,7 @@ label=<
 <TR>
 <TD>
 <TABLE BORDER="0" BGCOLOR="lightblue">
-<TR><TD PORT="f2" BGCOLOR="lightblue">f<SUB>1</SUB></TD></TR>
+<TR><TD PORT="f3" BGCOLOR="lightblue">f<SUB>1</SUB></TD></TR>
 </TABLE>
 </TD>
 </TR>
@@ -52,6 +56,7 @@ label=<
 <TR>
 <TD>
 <TABLE BORDER="0" BGCOLOR="lightblue">
+<TR><TD PORT="f12" BGCOLOR="lightblue">f<SUB>4</SUB></TD></TR>
 </TABLE>
 </TD>
 </TR>
@@ -63,6 +68,7 @@ label=<
 <TR>
 <TD>
 <TABLE BORDER="0" BGCOLOR="lightblue">
+<TR><TD PORT="f2" BGCOLOR="lightblue">f<SUB>1</SUB></TD></TR>
 </TABLE>
 </TD>
 </TR>
@@ -74,7 +80,7 @@ label=<
 <TR>
 <TD>
 <TABLE BORDER="0" BGCOLOR="lightblue">
-<TR><TD PORT="f3" BGCOLOR="lightblue">f<SUB>2</SUB></TD></TR>
+<TR><TD PORT="f8" BGCOLOR="lightblue">f<SUB>3</SUB></TD></TR>
 </TABLE>
 </TD>
 </TR>
@@ -86,8 +92,7 @@ label=<
 <TR>
 <TD>
 <TABLE BORDER="0" BGCOLOR="lightblue">
-<TR><TD PORT="f8" BGCOLOR="lightblue">f<SUB>4</SUB></TD></TR>
-<TR><TD PORT="f10" BGCOLOR="lightblue">f<SUB>5</SUB></TD></TR>
+<TR><TD PORT="f7" BGCOLOR="lightblue">f<SUB>3</SUB></TD></TR>
 </TABLE>
 </TD>
 </TR>
@@ -99,7 +104,14 @@ label=<
 <TR>
 <TD>
 <TABLE BORDER="0" BGCOLOR="lightblue">
-<TR><TD PORT="f1" BGCOLOR="lightblue">f<SUB>1</SUB></TD></TR>
+<TR><TD PORT="f9" BGCOLOR="lightblue">f<SUB>3</SUB></TD></TR>
+<TR><TD PORT="f11" BGCOLOR="lightblue">f<SUB>4</SUB></TD></TR>
+</TABLE>
+</TD>
+<TD>
+<TABLE BORDER="0" BGCOLOR="lightgreen">
+<TR><TD PORT="f6" BGCOLOR="lightgreen">f<SUB>2</SUB></TD></TR>
+<TR><TD PORT="f15" BGCOLOR="lightgreen">f<SUB>5</SUB></TD></TR>
 </TABLE>
 </TD>
 </TR>

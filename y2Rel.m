@@ -1,10 +1,12 @@
-function [y2] = y2Rel(VI, FI, r, S, lambda, delta, mu, Xfvi, Xsfi, vnfStatus, sfcClassData, rhoNode, rhoVm, rhoVnf)
-	y2 = 0;
+function [y2] = y2Rel(VI, FI, r, S, lambda, delta, mu, Xfvi, Xsfi, vnfStatus, sfcClassData, rhoNode, rhoVm, rhoVnf, isFinal)
+    global y2Yet;
+    y2 = 0;
 	dq = zeros(FI,r);
 	dpc = zeros(1,FI);
 	lambdaSF = zeros(FI,r);
 	deltaSF = zeros(FI,r);
-	for s = 1 : S
+	
+    for s = 1 : S
 		usedInstances = sfcClassData(s).usedInstances;
 		chainLength = sfcClassData(s).chainLength;
 		for iota = 1 : r
@@ -42,5 +44,9 @@ function [y2] = y2Rel(VI, FI, r, S, lambda, delta, mu, Xfvi, Xsfi, vnfStatus, sf
 				end
 			end
 		end
-	end
+    end
+
+    if isFinal == 1
+        y2Yet = y2;
+    end
 end

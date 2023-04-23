@@ -10,7 +10,6 @@ function [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost, r] = relia
     import java.util.TreeSet;
     import java.util.ArrayList;
 
-    Xfv = zeros(FI,VI); % FIxVI matrix to indicate whether a vnf instance f is deployed on the VM v or not
 	fvMap = TreeMap(); % Map version of Xfv
 	vnfStatus = zeros(1,FI); % This will indicate which instance is of which type
 
@@ -59,7 +58,8 @@ function [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost, r] = relia
     r = min(vnfTypes); % Maximum reliability levels possible
     Xfvi = zeros(FI,VI,r); % FIxVI matrix to indicate whether a vnf instance f is deployed on the VM v or not
     Xsfi = zeros(1,FI,r); % SxFI matrix to indicate whether an SFC uses the f instance of VNFs or not
-    Xllvi = zeros(1,FI,FI,N,N,r); % 4-D matrix to indicate whether a virtual link uses a physical link or not
+%     Xllvi = zeros(1,FI,FI,N,N,r); % 4-D matrix to indicate whether a virtual link uses a physical link or not
+    Xllvi = 0;
     vnfCapacity = ones(r,FI); % This will store the capacity of the VNFs in terms of how many SFCs they can serve
     % vnfFreq
     for f = 1 : FI % For no failure
@@ -73,9 +73,8 @@ function [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost, r] = relia
             vnfCapacity(iota,f) = vnfCapacity(iota-1,f); % Copy the capacity
         end
     end
-    vnfCapacity
     %{
-    %% Code for obtaining plot results
+    %% Code for obtaining 3-D plot results
     costStorage = zeros(9);
     timeStorage = zeros(9);
     for populationSize = 10 : 5 : 50 % For population size 10 to 50 with 5 gap
@@ -85,7 +84,7 @@ function [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost, r] = relia
             tic;
             nodeCapacity = zeros(1,N); % This will store the empty slots for the VNFs on the nodes
             vmCapacity = zeros(1,VI); % This will store the empty slots for the VNFs on the VMs
-            vnfCapacity = ones(1,FI); % This will store the capacity of the VNFs in terms of how many SFCs they can serve
+            vnfCapacity = ones(r,FI); % This will store the capacity of the VNFs in terms of how many SFCs they can serve
             Xfvi = zeros(FI,VI,r); % FIxVI matrix to indicate whether a vnf instance f is deployed on the VM v or not
             Xsfi = zeros(1,FI,r); % SxFI matrix to indicate whether an SFC uses the f instance of VNFs or not
             Xllvi = zeros(1,FI,FI,N,N,r); % 4-D matrix to indicate whether a virtual link uses a physical link or not
@@ -95,8 +94,13 @@ function [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost, r] = relia
             for v = 1 : VI % For each VM instance
                 vmCapacity(v) = vmCoreRequirements(vmStatus(v))/vnfCoreRequirement; % Number of cores acquired by a VM divided by the numner of cores required by a VNF
             end
-            for f = 1 : FI
-                vnfCapacity(f) = ceil(vnfFreq(vnfStatus(f))/vnfTypes(vnfStatus(f))); % Get the ratio which indicates the capacity
+            for f = 1 : FI % For no failure
+                vnfCapacity(1,f) = ceil(vnfFreq(vnfStatus(f))/vnfTypes(vnfStatus(f))); % Get the ratio which indicates the capacity
+            end
+            for iota = 2 : r % For failures
+                for f = 1 : FI
+                    vnfCapacity(iota,f) = vnfCapacity(iota-1,f); % Copy the capacity
+                end
             end
             totalIterations = S*iterations; % Find out the total number of iterations
             onePercent = totalIterations/100; % Find out the number of iterations for one percent work
@@ -105,29 +109,29 @@ function [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost, r] = relia
             end
             optCost = 0;
             for s = 1 : S % For each SFC s
-                [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmImpl(N, VI, F, FI, L, alpha, r, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, itCopy, populationSize, s, logFileID, onePercent, totalIterations, iterations, rhoNode, rhoVm, rhoVnf); % Call GA
+                [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmImpl(N, VI, F, FI, L, alpha, r, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, itCopy, populationSize, s, logFileID, onePercent, totalIterations, iterations, rhoNode, rhoVm, rhoVnf, execType); % Call GA
 %                 if mod(s,5) == 0 && s >= 5 && itCopy > 50 % If 10 SFCs are done and number of iterations are more than 50
 %                     itCopy = itCopy - 50; % Reduce the number of iterations by 50
 %                 end
                 chainLength = sfcClassData(s).chainLength; % Get the length of s
                 chain = sfcClassData(s).chain; % Get s
-                [optCost, optNodePlacement, optVMPlacement, Xfvi, Xsfi, Xllvi, sfcClassData, vmCapacity, vnfCapacity] = calculateReliableFitnessValue(N, VI, F, FI, L, alpha, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, s, optNodePlacement, optVMPlacement, r, nodeClassData, rhoNode, rhoVm, rhoVnf); % Find out the fitness value and store it
+                [optCost, optNodePlacement, optVMPlacement, Xfvi, Xsfi, Xllvi, sfcClassData, vmCapacity, vnfCapacity] = calculateReliableFitnessValue(N, VI, F, FI, L, alpha, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, s, optNodePlacement, optVMPlacement, r, nodeClassData, rhoNode, rhoVm, rhoVnf, 1); % Find out the fitness value and store it
                 sfcClassData(s).usedLinks = optNodePlacement;
-                %{
-                fvMap = TreeMap(); % Reinitialize map
-                for f = 1 : F % For each VNF type
-                    fvMap.put(f,ArrayList()); % Add the VNF along with an empty arraylist
-                end
-                for fin = 1 : FI % For each function instance
-                    vin = 0;
-                    for vin = 1 : VI % For each VM instance
-                        if Xfv(fin,vin) == 1 % If fin is deployed on in
-                            fvMap.get(vnfStatus(fin)).add([fvMap.get(vnfStatus(fin)).size()+1 vin]);
-                            break;
-                        end
-                    end
-                end
-                %}
+                
+                % fvMap = TreeMap(); % Reinitialize map
+                % for f = 1 : F % For each VNF type
+                %     fvMap.put(f,ArrayList()); % Add the VNF along with an empty arraylist
+                % end
+                % for fin = 1 : FI % For each function instance
+                %     vin = 0;
+                %     for vin = 1 : VI % For each VM instance
+                %         if Xfv(fin,vin) == 1 % If fin is deployed on in
+                %             fvMap.get(vnfStatus(fin)).add([fvMap.get(vnfStatus(fin)).size()+1 vin]);
+                %             break;
+                %         end
+                %     end
+                % end
+                
             end
             timeValue = toc;
             costStorage(((populationSize-10)/5)+1,((iterations-50)/25)+1) = optCost;
@@ -147,28 +151,31 @@ function [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost, r] = relia
         fprintf(' ');
     end
     itCopy = iterations;
+    convergence = zeros(S,iterations);
     for s = 1 : S % For each SFC s
-        [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmImpl(N, VI, F, FI, L, alpha, r, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, s, logFileID, onePercent, totalIterations, itCopy, rhoNode, rhoVm, rhoVnf, execType); % Call GA
-        if iterations > 20 % If 10 SFCs are done and number of iterations are more than 50
+        [optCost, optNodePlacement, optVMPlacement, conv] = reliableGeneticAlgorithmImpl(N, VI, F, FI, L, alpha, r, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, s, logFileID, onePercent, totalIterations, itCopy, rhoNode, rhoVm, rhoVnf, execType); % Call GA
+        if mod(s,5) == 0 && iterations > 20 % If 10 SFCs are done and number of iterations are more than 50
             iterations = iterations - 20; % Reduce the number of iterations by 50
         end
         chainLength = sfcClassData(s).chainLength; % Get the length of s
         chain = sfcClassData(s).chain; % Get s
         [optCost, optNodePlacement, optVMPlacement, Xfvi, Xsfi, Xllvi, sfcClassData, vmCapacity, vnfCapacity] = calculateReliableFitnessValue(N, VI, F, FI, L, alpha, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, vmStatus, vnfTypes, vnfStatus, sfcClassData, vnMap, vmCapacity, vnfCapacity, preSumVnf, s, optNodePlacement, optVMPlacement, r, nodeClassData, rhoNode, rhoVm, rhoVnf, 1); % Find out the fitness value and store it
         sfcClassData(s).usedLinks = optNodePlacement;
-        fvMap = TreeMap(); % Reinitialize map
-        for f = 1 : F % For each VNF type
-            fvMap.put(f,ArrayList()); % Add the VNF along with an empty arraylist
-        end
-        for fin = 1 : FI % For each function instance
-            vin = 0;
-            for vin = 1 : VI % For each VM instance
-                if Xfv(fin,vin) == 1 % If fin is deployed on in
-                    fvMap.get(vnfStatus(fin)).add([fvMap.get(vnfStatus(fin)).size()+1 vin]);
-                    break;
-                end
-            end
-        end
+        % fvMap = TreeMap(); % Reinitialize map
+        % for f = 1 : F % For each VNF type
+        %     fvMap.put(f,ArrayList()); % Add the VNF along with an empty arraylist
+        % end
+        % for fin = 1 : FI % For each function instance
+        %     vin = 0;
+        %     for vin = 1 : VI % For each VM instance
+        %         if Xfvi(fin,vin) == 1 % If fin is deployed on in
+        %             fvMap.get(vnfStatus(fin)).add([fvMap.get(vnfStatus(fin)).size()+1 vin]);
+        %             break;
+        %         end
+        %     end
+        % end
+        % convergence(s,:) = conv;
     end
-    vnfCapacity
+    % convergence
+    
 end
