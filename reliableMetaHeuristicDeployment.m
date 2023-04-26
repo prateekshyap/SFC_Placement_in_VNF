@@ -153,7 +153,7 @@ function [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost, r] = relia
     itCopy = iterations;
     convergence = zeros(S,iterations);
     for s = 1 : S % For each SFC s
-        [optCost, optNodePlacement, optVMPlacement, conv] = reliableGeneticAlgorithmImpl(N, VI, F, FI, L, alpha, r, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, s, logFileID, onePercent, totalIterations, itCopy, rhoNode, rhoVm, rhoVnf, execType); % Call GA
+        [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmImpl(N, VI, F, FI, L, alpha, r, Cvn, Xvn, Cfv, Xfvi, Xsfi, Xllvi, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, vmStatus, vmCapacity, vnfTypes, vnfStatus, vnfCapacity, sfcClassData, vnMap, fvMap, preSumVnf, iterations, populationSize, s, logFileID, onePercent, totalIterations, itCopy, rhoNode, rhoVm, rhoVnf, execType); % Call GA
         if mod(s,5) == 0 && iterations > 20 % If 10 SFCs are done and number of iterations are more than 50
             iterations = iterations - 20; % Reduce the number of iterations by 50
         end

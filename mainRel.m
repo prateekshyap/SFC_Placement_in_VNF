@@ -229,6 +229,7 @@ for i = 1 : S
         chain = randperm(F,lengths(i)) % Generate a random permutation as an SFC
         sfcClassData(1,i) = SFC(lengths(i),chain,zeros(1,2),zeros(1,2)); % Store the chain and its length
 end
+%}
 [FI, vnfTypes, vnfFreq] = generateVNFData(V, F, S, vmTypes, vmCoreRequirements, vnfCoreRequirement, sfcClassData);
 lambda = zeros(S,F);
 for s = 1 : S
@@ -240,7 +241,7 @@ for s = 1 : S
 end
 delta = zeros(S,F);
 mu = ones(1,F);
-end
+% end
 
 vnfTypes
 %}
@@ -289,7 +290,7 @@ sfcClassData = sortedSfcClassData;
 % [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = bruteForceDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement);
 % [Xfv, fvMap, vnfStatus, Xsf, sfcClassData, optCost] = metaHeuristicDeployment(N, VI, F, FI, S, L, Cvn, Xvn, Cfv, lambda, delta, mu, medium, network, bandwidths, nextHop, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID);
 [Xfvi, fvMap, vnfStatus, Xsfi, Xllvi, sfcClassData, optCost, r] = reliableMetaHeuristicDeployment(N, VI, F, FI, S, L, alpha, Cvn, Xvn, Cfv, lambda, delta, mu, medium, inputNetwork, network, bandwidths, bridgeStatus, nextHop, nodeClassData, nodeStatus, vmStatus, vnfTypes, sfcClassData, vnMap, vnfFreq, vmCoreRequirements, vnfCoreRequirement, logFileID, inputFilePath, rhoNode, rhoVm, rhoVnf, 2);
-
+optCost
 % fprintf(logFileID,'%f',timer); %This will print the time automatically
 
 % optCost

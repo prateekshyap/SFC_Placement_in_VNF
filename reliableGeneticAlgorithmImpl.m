@@ -71,7 +71,6 @@ function [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmI
         % Uncomment this block when you're executing this algorithm with uniform crossover
         childrenFitnessValues(3) = Inf;
         childrenFitnessValues(4) = Inf;
-		%}
         end
 		%}
         [childrenFitnessValues, nodeChildren, vmChildren] = getSortedChildrenRel(childrenFitnessValues, nodeChildren, vmChildren, C, chainLength, r); % Sort the children in ascending order of their fitness values
@@ -83,8 +82,8 @@ function [optCost, optNodePlacement, optVMPlacement] = reliableGeneticAlgorithmI
         % Uncomment this block when you're executing this algorithm with uniform crossover
         uniqueChildren(3) = 0;
         uniqueChildren(4) = 0;
-   		%}
         end
+        %}
    		indicator = 0;
    		for cin = 1 : C % For each child
 	   		for p = 1 : populationSize % For each member in population matrix
