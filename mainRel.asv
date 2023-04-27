@@ -162,13 +162,6 @@ dimension = [V,F];
 Cfv = fscanf(fileID,formatSpecifier,dimension); %Cost of deploying VNFs on VMs
 fclose(fileID);
 
-%% Core requirements for each VNF
-fileID = fopen(sprintf("%s%s",inputFilePath,'VNFCores.txt'),'r');
-formatSpecifier = '%f';
-dimension = [1,F];
-vnfCoreRequirement = fscanf(fileID,formatSpecifier,dimension); %Cost of deploying VNFs on VMs
-fclose(fileID);
-
 %% Array to store all SFC objects
 sfcClassData = SFC(1,S,zeros(1,2),zeros(1,2));
 lengths = 0;
@@ -240,7 +233,7 @@ for i = 1 : S
         sfcClassData(1,i) = SFC(lengths(i),chain,zeros(1,2),zeros(1,2)); % Store the chain and its length
 end
 %}
-[FI, vnfTypes, vnfFreq] = generateVNFData(V, F, S, nodeStatus, vmTypes, vmCoreRequirements, vnfCoreRequirement, sfcClassData);
+[FI, vnfTypes, vnfFreq] = generateVNFData(V, F, S, vmTypes, vmCoreRequirements, vnfCoreRequirement, sfcClassData);
 lambda = zeros(S,F);
 for s = 1 : S
 	chain = sfcClassData(s).chain;

@@ -1,12 +1,7 @@
-function [FI, vnfTypes, vnfFreq] = generateVNFData(V, F, S, vmTypes, vmCoreRequirements, vnfCoreRequirement, sfcClassData)
+function [FI, vnfTypes, vnfFreq] = generateVNFData(V, F, S, nodeTypes, vmTypes, vmCoreRequirements, vnfCoreRequirement, sfcClassData)
     
     FI = 0; %Total number of function instances
     vnfTypes = zeros(1,F); % This stores the count of each VNF type
-
-    % Find out the total number of VNF instances possible
-    for v = 1 : V %For each VM
-        FI = FI+(vmTypes(v)*vmCoreRequirements(v)/vnfCoreRequirement); %
-    end
 
     % Find out the total requirement of each VNF type
     vnfFreq = zeros(1,F);
@@ -18,6 +13,17 @@ function [FI, vnfTypes, vnfFreq] = generateVNFData(V, F, S, vmTypes, vmCoreRequi
         end
     end
     
+    availableCores = sum(nodeTypes); % Find out the sum of the cores available
+    reduction = sum(vnfCoreRequirement); % We can reduce this number of cores in one iteration
+    requiredCores = 0; % This will store the required number of cores
+    for f = 1 : F % For each VNF
+        requiredCores = requiredCores+vnfFreq(f)*vnfCoreRequirement(f);
+    end
+
+    availableCores
+    reduction
+    requiredCores
+    vnfFreq
     
     %% Random Increment with floor function
     % Find out the minimum number of instances required for each VNF type
