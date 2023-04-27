@@ -130,7 +130,6 @@ fclose(fileID);
 % 	end
 % end
 
-%% Types of VMs and their requirements
 fileID = fopen(sprintf("%s%s",inputFilePath,'vmTypes.txt'),'r');
 formatSpecifier = '%d';
 dimension = [V,2];
@@ -140,7 +139,6 @@ vmTypes = temp(1:V,1)';
 vmCoreRequirements = temp(1:V,2)';
 VI = sum(vmTypes);
 
-%% Types of VNFs and their requirements
 fileID = fopen(sprintf("%s%s",inputFilePath,'vnfTypes.txt'),'r');
 formatSpecifier = '%d';
 dimension = [1,F];
@@ -148,25 +146,17 @@ vnfTypes = fscanf(fileID,formatSpecifier,dimension); %Type of VNFs and their req
 fclose(fileID);
 FI = sum(vnfTypes);
 
-%% Cost of hosting VMs on nodes
 fileID = fopen(sprintf("%s%s",inputFilePath,'costVN.txt'),'r');
 formatSpecifier = '%f';
 dimension = [1,V];
 Cvn = fscanf(fileID,formatSpecifier,dimension); %Cost of hosting VMs on Nodes
 fclose(fileID);
 
-%% Cost of deploying VNFs on VMs
+% Cost of deploying VNFs on VMs
 fileID = fopen(sprintf("%s%s",inputFilePath,'costFV.txt'),'r');
 formatSpecifier = '%f';
 dimension = [V,F];
 Cfv = fscanf(fileID,formatSpecifier,dimension); %Cost of deploying VNFs on VMs
-fclose(fileID);
-
-%% Core requirements for each VNF
-fileID = fopen(sprintf("%s%s",inputFilePath,'VNFCores.txt'),'r');
-formatSpecifier = '%f';
-dimension = [1,F];
-vnfCoreRequirement = fscanf(fileID,formatSpecifier,dimension); %Cost of deploying VNFs on VMs
 fclose(fileID);
 
 %% Array to store all SFC objects
@@ -230,8 +220,8 @@ end
 %% Function deployment on the network
 % [Xfv, fvMap, vnfStatus] = VNFDeploy(VI, F, FI, vmStatus, vmCoreRequirements, vnfTypes, vnfCoreRequirement); %Sequential deployment
 % [Xfv, fvMap, vnfStatus] = greedyDeployment(N, VI, F, FI, inputNetwork, vnMap, vmStatus, vmCoreRequirements, vnfTypes) %Greedy algorithm when SFCs are not known
-vnfTypes = zeros(1,F); % Stores the count of instances for each VNF type
-vnfFreq = zeros(1,F); % Stores the frequency of VNFs in SFCs
+vnfTypes = zeros(1,F);
+vnfFreq = zeros(1,F);
 %{
 %% Keep a minimum number of instances and this value will become r next time
 while min(vnfTypes) ~= 3
@@ -240,7 +230,7 @@ for i = 1 : S
         sfcClassData(1,i) = SFC(lengths(i),chain,zeros(1,2),zeros(1,2)); % Store the chain and its length
 end
 %}
-[FI, vnfTypes, vnfFreq] = generateVNFData(V, F, S, nodeStatus, vmTypes, vmCoreRequirements, vnfCoreRequirement, sfcClassData);
+[FI, vnfTypes, vnfFreq] = generateVNFData(V, F, S, vmTypes, vmCoreRequirements, vnfCoreRequirement, sfcClassData);
 lambda = zeros(S,F);
 for s = 1 : S
 	chain = sfcClassData(s).chain;
