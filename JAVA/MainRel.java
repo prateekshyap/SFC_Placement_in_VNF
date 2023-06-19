@@ -19,6 +19,7 @@ import gen.NetworkPaths;
 import gen.Bandwidth;
 import gen.sfc.ServiceFunctionChain;
 import gen.sfc.SequentialSFC;
+import est.Establishment;
 
 /**
  * -------------------------------------------------------------------------------
@@ -107,9 +108,11 @@ class MainRel
 		bandwidthRange[1] = Double.parseDouble(bandwidthRangeString[1]);
 		// newyork.txt will give the adjacency matrix
 		Map<String,Node> nodes = new TreeMap<>(); // stores the node objects pointed by their names
+		Map<Integer,String> nodeIdName = new TreeMap<>(); // stores the node name to id map
 		Map<Integer,List<List<Double>>> networkGraph = new TreeMap<>(); // stores the actual graph in adjacency list format
 		inputFile = new BufferedReader(new FileReader(new File(inputFilePath+"newyork.txt")));
 		String line = "";
+		int nodeCount = 0;
 		boolean nodeReading = false, linkReading = false;
 		while ((line = inputFile.readLine()) != null) // till there is a new line
 		{
@@ -138,6 +141,7 @@ class MainRel
 				4th parameter: Latitude value
 				5th parameter: Longitude value
 				*/
+				nodeIdName.put(nodeCount++,tokens[0]);
 				nodes.put(tokens[0],new GenericServer(nodes.size(),tokens[0],physicalCores[nodes.size()],Double.parseDouble(tokens[2]),Double.parseDouble(tokens[3])));
 			}
 			if (linkReading) // if link reading is being done
@@ -207,7 +211,10 @@ class MainRel
 		// store the VNF types
 		Map<Integer,VirtualNetworkFunction> vnfTypes = new TreeMap<>();
 		for (int i = 0; i < F_t; ++i)
-			vnfTypes.put(i+1,new VirtualNetworkFunction(i+1,vnfCoreRequirement[i],vnfCost[i]));
+		{
+			double serviceRate = 1; // generate a random service rate for this function, or read from file, currently it is 1
+			vnfTypes.put(i+1,new VirtualNetworkFunction(i+1,vnfCoreRequirement[i],vnfCost[i],serviceRate));
+		}
 
 		// System.out.println(vnfTypes);
 
@@ -268,9 +275,41 @@ class MainRel
 			// taking the first length items as the SFC
 			for (int j = 0; j < length; ++j)
 				chain[j+1] = (Integer)perm.get(j);
-			sfcList.put(i,new SequentialSFC(i,length,chain));
+			// generating arrival and drop rates
+			double[] arrivalRate = new double[F_t+1];
+			double[] dropRate = new double[F_t+1];
+			for (int j = 0; j < length; ++j)
+				arrivalRate[chain[j+1]] = Math.round(Math.random()*(10-1)+1);
+			sfcList.put(i,new SequentialSFC(i,length,chain,arrivalRate,dropRate));
 		}
 
 		// System.out.println(sfcList);
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////// Designed Algorithm ///////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		///////////////////////////////////////////// Greedy VM Hosting ///////////////////////////////////////////////
+
+		Establishment.greedyHosting(N,V_t,nodeIdName,nodes,vmTypes);
+		int V = Establishment.getVMInstanceCount();
+		int[] vmNodeMap = Establishment.getVMNodeMap();
+		int[] vmCount = Establishment.getVMCount();
+		int[] vmType = Establishment.getVMType();
+
+		// System.out.println(nodes);
+		// for (int v = 0; v < V_t; ++v)
+		// 	System.out.print(vmCount[v]+" ");
+		// System.out.println();
+		// for (int v = 0; v < V; ++v)
+		// 	System.out.print(vmType[v]+" ");
+		// System.out.println();
+		// for (int v = 0; v < V; ++v)
+		// 	System.out.print(vmNodeMap[v]+" ");
+		// System.out.println();
+	
+		///////////////////////////////////////////// GA Based Deployment and Assignment ///////////////////////////////////////////////
+
+
 	}
 }

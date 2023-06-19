@@ -11,5 +11,9 @@ public interface ServiceFunctionChain
 	public int getLength();
 	public void setChain(Map<Integer,List<Integer>> chain);
 	public Map<Integer,List<Integer>> getChain();
+	public void setArrivalRate(double[] arrivalRate);
+	public double[] getArrivalRate();
+	public void setDropRate(double[] dropRate);
+	public double[] getDropRate();
 	public String toString();
 }

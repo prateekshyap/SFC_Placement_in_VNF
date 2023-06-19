@@ -1,5 +1,7 @@
 package env.network;
 
+import java.util.List;
+
 public interface Node
 {
 	public void setId(int id);
@@ -12,5 +14,9 @@ public interface Node
 	public double getLatitude();
 	public void setLongitude(double longitude);
 	public double getLongitude();
+	public void setVMCount(int vmCount);
+	public int getVMCount();
+	public void setVMList(List<Integer> vms);
+	public List<Integer> getVMList();
 	public String toString();
 }
